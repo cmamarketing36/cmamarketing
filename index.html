@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>CMA Marketing Agency - Digital Services in Egypt</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <header>
+    <img class="cmalogoh" src="SVG/asdgfArtboard 1.svg" alt="cma logo" />
+    <nav class="navigation">
+      <ul>
+        <li><a href="#about" data-en="About" data-ar="من نحن">About</a></li>
+        <li><a href="#Our-work" data-en="Our work" data-ar="أعمالنا">Our work</a></li>
+        <li><a href="#contactMe" data-en="Contact" data-ar="تواصل معنا">Contact</a></li>
+      </ul>
+    </nav>
+    <button id="langToggle" class="lang-btn">AR</button>
+  </header>
+
+  <hr />
+
+  <section class="hero">
+    <div class="herosup">
+      <h1 class="plan1" data-en="The plane will take off" data-ar="الرحلة ستبدأ الآن">The plane will take off</h1>
+      <h1 class="Don" data-en="Don't miss the opportunity and make your business take off" data-ar="لا تفوت الفرصة وخلّي عملك يقلع">Don't miss the opportunity and make your business take off</h1>
+      <div class="heroptns">
+        <a class="Contactus" href="https://wa.me/201004435408" target="_blank" data-en="Contact us" data-ar="تواصل معنا">Contact us</a>
+      </div>
+    </div>
+    <img class="plan" src="sss/cmaaa.svg" alt="logocma2" />
+  </section>
+
+  <section class="about" id="about">
+    <div class="about-container">
+      <div class="about-image">
+        <img src="sss/people-taking-part-business-event (1).svg" alt="About CMA" width="600" height="400">
+      </div>
+      <div class="about-text">
+        <h2 data-en="About CMA" data-ar="من نحن">About CMA</h2>
+        <p data-en="At CMA, we think differently. We believe in bold ideas that turn into real results for brands and content creators."
+           data-ar="في CMA نفكر بشكل مختلف. نؤمن بالأفكار الجريئة التي تتحول إلى نتائج حقيقية للعلامات التجارية وصناع المحتوى.">
+           At CMA, we think differently. We believe in bold ideas that turn into real results for brands and content creators.
+        </p>
+        <p data-en="We’re a full-service marketing agency focused on building strong digital presence and delivering the professional image every brand deserves."
+           data-ar="نحن وكالة تسويق متكاملة تركز على بناء حضور رقمي قوي وتقديم الصورة الاحترافية التي تستحقها كل علامة تجارية.">
+           We’re a full-service marketing agency focused on building strong digital presence and delivering the professional image every brand deserves.
+        </p>
+        <p data-en="Each project gets a dedicated team to ensure creativity, strategy, and impact—all in one."
+           data-ar="كل مشروع يحصل على فريق مخصص لضمان الإبداع والاستراتيجية والتأثير في آن واحد.">
+           Each project gets a dedicated team to ensure creativity, strategy, and impact—all in one.
+        </p>
+        <p data-en="We manage every account with full focus and professionalism as if it’s our only one."
+           data-ar="ندير كل حساب بتركيز واحترافية وكأنه الوحيد لدينا.">
+           We manage every account with full focus and professionalism as if it’s our only one.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="Ourwork" id="Our-work">
+    <div class="Our--work">
+      <div class="projecttitl">
+        <h1 class="our-work-title" data-en="Our work" data-ar="أعمالنا">Our work</h1>
+      </div>
+
+      <ul class="projects">
+        <li>
+          <a href="project-webapp.html" class="project-card">
+            <div class="image-wrapper">
+              <img src="sss/Content Management IM.svg" alt="Photography" />
+            </div>
+            <p data-en="Photography" data-ar="التصوير">Photography</p>
+          </a>
+        </li>
+
+        <li>
+          <a href="project-app.html" class="project-card">
+            <div class="image-wrapper">
+              <img src="sss/social-media-concept-with-smartphone.svg" alt="Edit Video" />
+            </div>
+            <p data-en="Edit Video" data-ar="مونتاج فيديو">Edit Video</p>
+          </a>
+        </li>
+
+        <li>
+          <a href="project-webapp.html" class="project-card">
+            <div class="image-wrapper">
+              <img src="sss/تعديل فيديو.svg" alt="Graphic design" />
+            </div>
+            <p data-en="Graphic design" data-ar="تصميم جرافيك">Graphic design</p>
+          </a>
+        </li>
+
+        <li>
+          <a href="project-webapp.html" class="project-card">
+            <div class="image-wrapper">
+              <img src="sss/تصوير.svg" alt="Graphic design" />
+            </div>
+            <p data-en="Graphic design" data-ar="تصميم جرافيك">Graphic design</p>
+          </a>
+        </li>
+
+        <li>
+          <a href="project-webapp.html" class="project-card">
+            <div class="image-wrapper">
+              <img src="sss/تعديل فيديو.svg" alt="Graphic design" />
+            </div>
+            <p data-en="Graphic design" data-ar="تصميم جرافيك">Graphic design</p>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="contact-form" id="contactMe">
+    <div class="form-container">
+      <h2 data-en="Contact Us" data-ar="تواصل معنا">Contact Us</h2>
+      <form action="send.php" method="post">
+        <input type="text" name="name" placeholder="Your Name" required data-en="Your Name" data-ar="اسمك" />
+        <input type="tel" name="phone" placeholder="Phone Number" required data-en="Phone Number" data-ar="رقم الهاتف" />
+        <input type="email" name="email" placeholder="Email Address" required data-en="Email Address" data-ar="البريد الإلكتروني" />
+        <textarea name="message" placeholder="Your Message" required data-en="Your Message" data-ar="رسالتك"></textarea>
+        <button type="submit" data-en="Send Message" data-ar="إرسال">Send Message</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="footer-contact">
+    <div class="footer-content">
+      <div class="footer-left">
+        <p><i class="fas fa-envelope"></i> cmamarketing36@gmail.com</p>
+        <p><i class="fas fa-phone-alt"></i> +20 109 479 5739</p>
+        <p><i class="fas fa-phone-alt"></i> +20 100 443 5408</p>
+      </div>
+
+      <div class="footer-right">
+        <a href="https://www.facebook.com/cmamarketing36" target="_blank" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://www.instagram.com/cma_egypt/" target="_blank" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.getElementById('langToggle').addEventListener('click', function () {
+      const isArabic = this.innerText === 'AR';
+      const elements = document.querySelectorAll('[data-en]');
+  
+      elements.forEach(el => {
+        el.textContent = isArabic ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+        if (el.placeholder) {
+          el.placeholder = isArabic ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+        }
+      });
+  
+      this.innerText = isArabic ? 'EN' : 'AR';
+      document.documentElement.setAttribute("lang", isArabic ? "ar" : "en");
+      document.body.style.direction = isArabic ? "rtl" : "ltr";
+    });
+  </script>
+
+  <a href="https://wa.me/201004435408"
+     class="whatsapp-fixed"
+     target="_blank"
+     title="Chat with us on WhatsApp">
+     <img src="https://img.icons8.com/ios-filled/50/ffffff/whatsapp--v1.png" alt="WhatsApp" />
+  </a>
+
+</body>
+</html>
