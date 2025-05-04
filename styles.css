@@ -463,3 +463,73 @@ hr{
     background-color: #ffd700;
     color: black;
   }
+
+  /* ---------- تحسينات للموبايل ---------- */
+@media (max-width: 768px) {
+
+  header {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .navigation ul {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0;
+    margin-top: 1rem;
+  }
+
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+  }
+
+  .herosup {
+    align-items: center;
+  }
+
+  .plan {
+    max-width: 100%;
+    margin-top: 2rem;
+  }
+
+  .about-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .Our--work {
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .projects {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .project-card {
+    width: 100%;
+    max-width: 90%;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-right a {
+    margin: 0 8px;
+  }
+
+  .contact-form {
+    padding: 2rem 1rem;
+  }
+}
