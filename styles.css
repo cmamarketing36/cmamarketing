@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
 
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     scroll-behavior: smooth;
-    font-family:"Poppins", serif;
+    font-family: "Poppins", serif;
 }
 
 body {
@@ -13,23 +13,33 @@ body {
     background-size: 1000% 1000%;
     animation: gradientShift 15s ease infinite;
     color: white;
-  }
-  
-  @keyframes gradientShift {
+    overflow-x: hidden;
+}
+
+@keyframes gradientShift {
     0% {background-position: 0% 50%;}
     50% {background-position: 100% 50%;}
     100% {background-position: 0% 50%;}
 }
 
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 15px;
+    padding-left: 15px;
+}
 
-header{
+header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 2rem auto;
     max-width: 1200px;
-    height: 50px;
-    padding: 0 0.5rem;
+    height: auto;
+    padding: 0 1rem;
+    flex-wrap: wrap;
 }
 
 .cmalogoh { 
@@ -37,15 +47,18 @@ header{
     height: 100px;
 }
 
-.navigation ul{
+.navigation ul {
     display: flex;
     list-style-type: none;
     gap: 2rem;
+    flex-wrap: wrap;
 }
-.navigation a {
-    text-decoration:none;
-    color: #ffffff;
 
+.navigation a {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
 }
 
 .navigation a:hover {
@@ -54,16 +67,20 @@ header{
     -webkit-text-fill-color: transparent;
 }
 
-hr{
+hr {
     opacity: 10%;
+    margin: 0.5rem 0;
 }
 
 .plan {
-  width: 100%;
-  max-width: 700px;
-  height: auto;
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    animation: planFadeIn 1s ease-out forwards;
+    animation-delay: 1s;
 }
-
 
 @keyframes planFadeIn {
     to {
@@ -78,15 +95,16 @@ hr{
     align-items: center;
     margin: 5rem auto;
     max-width: 1200px;
-    padding-top: 1rem;
-    margin-top: 1rem;
-    transform: translateY(-30px);
+    padding: 1rem;
+    gap: 2rem;
 }
+
 .herosup {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
+
 .plan1 {
     font-size: 2.5rem;
     color: #ffffff;
@@ -113,25 +131,28 @@ hr{
         transform: translateX(0);
     }
 }
+
 .Contactus {
+    display: inline-block;
     padding: 13px 24px;
     background: linear-gradient(90deg, #d4af37, #ffd700, #fff8dc, #ffd700, #d4af37);
     color: rgb(0, 0, 0);
     border-radius: 25px;
     text-decoration: none;
-    padding: 0.5rem 1.5rem;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0);
-    transition: all 0.4s ease-in-out; /* انتقال ناعم */
+    transition: all 0.4s ease-in-out;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
+    font-weight: bold;
+    text-align: center;
 }
 
 .Contactus:hover {
     color: #fff;
-    transform: scale(1.1); /* تكبير الزر بشكل أكبر */
+    transform: scale(1.1);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-    background: linear-gradient(90deg, #ffcc00, #ffd700, #ffb300, #ffd700, #ffcc00); /* تغيير خلفية الزر */
+    background: linear-gradient(90deg, #ffcc00, #ffd700, #ffb300, #ffd700, #ffcc00);
 }
 
 .Contactus:hover::before {
@@ -141,10 +162,10 @@ hr{
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.5); /* طبقة توهج */
-    border-radius: 25px; /* تأكيد أن التوهج يكون حول الزر */
-    transform: scale(1.5); /* توسيع التوهج */
-    opacity: 0; /* بداية الطبقة شفافة */
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 25px;
+    transform: scale(1.5);
+    opacity: 0;
     animation: glowEffect 0.4s forwards;
 }
 
@@ -175,6 +196,7 @@ hr{
 
 .about-text {
     flex: 1;
+    min-width: 300px;
     animation: slideInLeft 1s ease forwards;
     font-family: "Poppins", sans-serif;
 }
@@ -198,13 +220,19 @@ hr{
     color: #ffffff;
 }
 
+.about-image {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    justify-content: center;
+    animation: slideInRight 1s ease forwards;
+}
 
 .about-image img {
     width: 100%;
     max-width: 400px;
-
+    height: auto;
 }
-
 
 @keyframes slideInLeft {
     0% { transform: translateX(-50px); opacity: 0; }
@@ -226,35 +254,35 @@ hr{
     z-index: 9999;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .whatsapp-fixed:hover {
+}
+
+.whatsapp-fixed:hover {
     transform: scale(1.15);
     box-shadow: 0 0 30px #25d366;
-  }
-  
-  .whatsapp-fixed img {
+}
+
+.whatsapp-fixed img {
     width: 30px;
     height: 30px;
     display: block;
-  }
+}
 
-  .Ourwork{
-    padding: 4rem 4rem;
+.Ourwork {
+    padding: 4rem 2rem;
     max-width: 1200px;
     margin: 0 auto 6rem auto;
-  }
+}
 
-  .Our--work{
+.Our--work {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: left;
     margin: 5rem auto;
     max-width: 1200px;
-  }
+}
 
-  .our-work-title {
+.our-work-title {
     font-size: 2.5rem;
     margin-bottom: 1rem;
     background: linear-gradient(90deg, #d4af37, #ffd700, #fff8dc, #ffd700, #d4af37);
@@ -262,20 +290,20 @@ hr{
     -webkit-text-fill-color: transparent;
 }
 
-  .projecttitl {
+.projecttitl {
     text-align: center;
     margin-bottom: 3rem;
-  }
-  
-  .projecttitl h1 {
+}
+
+.projecttitl h1 {
     font-size: 3rem;
     color: #ffffff;
     text-transform: uppercase;
     position: relative;
     display: inline-block;
-  }
-  
-  .projecttitl h1::after {
+}
+
+.projecttitl h1::after {
     content: "";
     position: absolute;
     width: 60%;
@@ -285,21 +313,19 @@ hr{
     left: 50%;
     transform: translateX(-50%);
     border-radius: 5px;
-  }
-  
-  /* شبكة المشاريع */
-  .projects {
-    display: flex;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 2rem;
     max-width: 1200px;
     margin: 0 auto 4rem;
     padding: 0;
     list-style: none;
-  }
-  
-  /* كل كارت */
-  .project-card {
+}
+
+.project-card {
     background: #1c1c1e;
     border-radius: 15px;
     overflow: hidden;
@@ -312,16 +338,15 @@ hr{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    
-  }
-  
-  .project-card:hover {
+    height: 100%;
+}
+
+.project-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
-  }
-  
-  /* الصورة */
-  .image-wrapper {
+}
+
+.image-wrapper {
     width: 100%;
     height: 200px;
     display: flex;
@@ -331,64 +356,64 @@ hr{
     border-radius: 10px;
     margin-bottom: 1rem;
     background-color: #29292b;
-  }
-  
-  .image-wrapper img {
+}
+
+.image-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: contain;
     transition: transform 0.4s ease;
-  }
-  
-  .image-wrapper:hover img {
+}
+
+.image-wrapper:hover img {
     transform: scale(1.08);
-  }
-  
-  /* النص */
-  .project-card p {
+}
+
+.project-card p {
     font-size: 1.2rem;
     font-weight: 600;
     margin-top: 0.5rem;
     color: #ffffff;
-  }
+}
 
-  .contact-form {
+.contact-form {
     padding: 4rem 2rem;
     max-width: 600px;
     margin: 0 auto;
     color: #fff;
-  }
-  
-  .form-container h2 {
+}
+
+.form-container h2 {
     text-align: center;
     font-size: 2.5rem;
     margin-bottom: 2rem;
     background: linear-gradient(90deg, #d4af37, #ffd700, #fff8dc);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-  }
-  
-  form {
+}
+
+form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-  }
-  
-  input, textarea {
+}
+
+input, textarea {
     padding: 1rem;
     border-radius: 8px;
     border: none;
     font-size: 1rem;
     background-color: #2a2a2a;
     color: #fff;
-  }
-  
-  textarea {
+    width: 100%;
+}
+
+textarea {
     resize: vertical;
     min-height: 120px;
-  }
-  
-  button {
+}
+
+button {
     padding: 1rem;
     background: linear-gradient(90deg, #d4af37, #ffd700, #fff8dc);
     border: none;
@@ -397,22 +422,20 @@ hr{
     font-weight: bold;
     cursor: pointer;
     transition: background 0.3s ease;
-  }
-  
-  button:hover {
+}
+
+button:hover {
     background: linear-gradient(90deg, #ffcc00, #ffd700, #ffb300);
-  }
+}
 
-
-  .footer-contact {
+.footer-contact {
     background: #121212;
     padding: 3rem 2rem;
     text-align: center;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  
-  .footer-content {
+}
+
+.footer-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -420,35 +443,34 @@ hr{
     margin: 0 auto;
     flex-wrap: wrap;
     gap: 2rem;
-  }
-  
-  .footer-left p {
+}
+
+.footer-left p {
     margin: 0.5rem 0;
     font-size: 1.1rem;
     color: #dddddd;
     display: flex;
     align-items: center;
     gap: 10px;
-  }
-  
-  .footer-left i {
+}
+
+.footer-left i {
     color: #ffd700;
-  }
-  
-  .footer-right a {
+}
+
+.footer-right a {
     color: #ffffff;
     font-size: 1.8rem;
     margin: 0 10px;
     transition: transform 0.3s ease, color 0.3s ease;
-  }
-  
-  .footer-right a:hover {
+}
+
+.footer-right a:hover {
     color: #ffd700;
     transform: scale(1.2);
-  }
+}
 
-
-  .lang-btn {
+.lang-btn {
     background-color: transparent;
     border: 2px solid #ffd700;
     color: white;
@@ -457,88 +479,228 @@ hr{
     cursor: pointer;
     font-weight: bold;
     transition: background 0.3s ease;
-  }
-  
-  .lang-btn:hover {
-    background-color: #ffd700;
-    color: black;
-  }
-
-  /* ---------- تحسينات للموبايل ---------- */
-  @media (max-width: 768px) {
-    header {
-      flex-direction: row; /* نخليها صف واحد */
-      flex-wrap: wrap;
-      justify-content: space-between; /* توزيع مرتب */
-      align-items: center;
-      height: auto;
-      padding: 1rem;
-    }
-  
-    .navigation ul {
-      flex-direction: row; /* هنا التعديل الأهم */
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 0;
-    }
-  }
-
-  .hero {
-    flex-direction: column;
-    text-align: center;
-    padding: 1rem;
-    margin-top: 2rem;
-  }
-
-  .herosup {
-    align-items: center;
-  }
-
-  .plan {
-    max-width: 100%;
-    margin-top: 2rem;
-  }
-
-  .about-container {
-    flex-direction: column;
-    align-items: center;
-    gap: 2rem;
-  }
-
-  .Our--work {
-    align-items: center;
-    text-align: center;
-    padding: 1rem;
-  }
-
-  .projects {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .project-card {
-    width: 100%;
-    max-width: 90%;
-  }
-
-  .footer-content {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .footer-right a {
-    margin: 0 8px;
-  }
-
-  .contact-form {
-    padding: 2rem 1rem;
-  }
 }
 
-@media (max-width: 768px) {
-  h1 {
-    font-size: 24px;
-    text-align: center;
-  }
+.lang-btn:hover {
+    background-color: #ffd700;
+    color: black;
+}
+
+/* وسائط استعلام للشاشات المختلفة */
+
+/* للشاشات الكبيرة (الكمبيوتر المكتبي) */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+    
+    .hero {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .plan1 {
+        font-size: 2.5rem;
+    }
+    
+    .projects {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* للشاشات المتوسطة (التابلت والشاشات الصغيرة) */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .container {
+        max-width: 960px;
+    }
+    
+    .hero {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 2rem;
+    }
+    
+    .plan1 {
+        font-size: 2.2rem;
+    }
+    
+    .Don {
+        font-size: 1.3rem;
+    }
+    
+    .projects {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .about-container {
+        gap: 3rem;
+    }
+}
+
+/* للشاشات الصغيرة (الهواتف الذكية) */
+@media (max-width: 767px) {
+    .container {
+        max-width: 100%;
+        padding: 0 15px;
+    }
+    
+    header {
+        flex-direction: column;
+        gap: 1rem;
+        margin: 1rem auto;
+        padding: 0 0.5rem;
+    }
+    
+    .navigation ul {
+        gap: 1rem;
+        justify-content: center;
+    }
+    
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        margin: 2rem auto;
+        padding: 1rem;
+    }
+    
+    .herosup {
+        align-items: center;
+    }
+    
+    .plan1 {
+        font-size: 2rem;
+    }
+    
+    .Don {
+        font-size: 1.2rem;
+    }
+    
+    .plan {
+        max-width: 100%;
+        margin-top: 2rem;
+    }
+    
+    .about {
+        padding: 2rem 1rem;
+    }
+    
+    .about-container {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .about-text, .about-image {
+        min-width: 100%;
+    }
+    
+    .our-work-title {
+        font-size: 2rem;
+        text-align: center;
+    }
+    
+    .Our--work {
+        align-items: center;
+        padding: 1rem;
+        margin: 2rem auto;
+    }
+    
+    .projecttitl h1 {
+        font-size: 2.2rem;
+    }
+    
+    .projects {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .project-card {
+        max-width: 100%;
+    }
+    
+    .contact-form {
+        padding: 2rem 1rem;
+    }
+    
+    input, textarea {
+        padding: 0.8rem;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .footer-left p {
+        justify-content: center;
+    }
+}
+
+/* للشاشات الصغيرة جدًا */
+@media (max-width: 375px) {
+    .plan1 {
+        font-size: 1.8rem;
+    }
+    
+    .Don {
+        font-size: 1.1rem;
+    }
+    
+    .projecttitl h1 {
+        font-size: 1.8rem;
+    }
+    
+    .form-container h2 {
+        font-size: 2rem;
+    }
+    
+    .navigation ul {
+        gap: 0.8rem;
+    }
+    
+    .navigation a {
+        font-size: 0.9rem;
+    }
+}
+
+/* ضبط خاص للقائمة في الشاشات المتوسطة */
+@media (max-width: 991px) and (min-width: 768px) {
+    header {
+        padding: 0 1rem;
+    }
+    
+    .navigation ul {
+        gap: 1.5rem;
+    }
+}
+
+/* لمنع الأزرار من الالتفاف في الشاشات الصغيرة */
+@media (max-width: 480px) {
+    .Contactus {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .lang-btn {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* لتحسين تجربة المشاهدة في الشاشات الكبيرة جدًا */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1320px;
+    }
+    
+    .hero {
+        gap: 4rem;
+    }
+    
+    .plan1 {
+        font-size: 3rem;
+    }
+    
+    .Don {
+        font-size: 1.8rem;
+    }
 }
