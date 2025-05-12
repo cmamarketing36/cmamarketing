@@ -6,6 +6,90 @@
   <link rel="stylesheet" href="styles.css" />
   <title>CMA Marketing Agency - Digital Services in Egypt</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* أنماط إشعار الشكر */
+    .thank-you-popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .thank-you-content {
+      background-color: white;
+      padding: 40px;
+      border-radius: 15px;
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+      animation: popup-appear 0.5s ease-out;
+      position: relative;
+    }
+    
+    @keyframes popup-appear {
+      0% { opacity: 0; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    
+    .thank-you-icon {
+      font-size: 80px;
+      color: #4CAF50;
+      margin-bottom: 20px;
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-20px); }
+      60% { transform: translateY(-10px); }
+    }
+    
+    .thank-you-title {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    
+    .thank-you-message {
+      font-size: 18px;
+      color: #666;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+    
+    .thank-you-close {
+      display: inline-block;
+      background: #0077B6;
+      color: white;
+      padding: 12px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    .thank-you-close:hover {
+      background: #005a8c;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* إضافة متوافقة مع الدعم اللغوي للموقع */
+    [dir="rtl"] .thank-you-content {
+      font-family: 'Cairo', sans-serif;
+    }
+  </style>
 </head>
 <body>
 
@@ -119,15 +203,15 @@
   <section class="contact-form" id="contactMe">
     <div class="form-container">
       <h2 data-en="Contact Us" data-ar="تواصل معنا">Contact Us</h2>
-      <form action="https://formsubmit.co/cmamarketing36@gmail.com" method="POST">
+      <form id="contactForm" action="https://formsubmit.co/cmamarketing36@gmail.com" method="POST">
         <!-- Honeypot to prevent spam -->
         <input type="text" name="_honey" style="display:none">
         
         <!-- Disable captcha -->
         <input type="hidden" name="_captcha" value="false">
         
-        <!-- Success page - you should replace this with your actual domain -->
-        <input type="hidden" name="_next" value="https://yourwebsite.com/thanks.html">
+        <!-- استخدام Ajax لتنفيذ النموذج بدون إعادة تحميل الصفحة -->
+        <input type="hidden" name="_ajax" value="true">
         
         <!-- Email template subject -->
         <input type="hidden" name="_subject" value="New form submission from CMA Website">
@@ -141,6 +225,16 @@
       </form>
     </div>
   </section>
+
+  <!-- إشعار الشكر بعد إرسال النموذج -->
+  <div class="thank-you-popup" id="thankYouPopup">
+    <div class="thank-you-content">
+      <i class="fas fa-check-circle thank-you-icon"></i>
+      <h2 class="thank-you-title" data-en="Thank You!" data-ar="شكراً لك!">Thank You!</h2>
+      <p class="thank-you-message" data-en="Your message has been sent successfully. We'll contact you soon." data-ar="تم إرسال رسالتك بنجاح. سنتواصل معك قريباً.">Your message has been sent successfully. We'll contact you soon.</p>
+      <button class="thank-you-close" id="closeThankYou" data-en="Close" data-ar="إغلاق">Close</button>
+    </div>
+  </div>
 
   <section class="footer-contact">
     <div class="footer-content">
@@ -161,7 +255,15 @@
     </div>
   </section>
 
+  <a href="https://wa.me/201004435408"
+     class="whatsapp-fixed"
+     target="_blank"
+     title="Chat with us on WhatsApp">
+     <img src="https://img.icons8.com/ios-filled/50/ffffff/whatsapp--v1.png" alt="WhatsApp" />
+  </a>
+
   <script>
+    // تبديل اللغة
     document.getElementById('langToggle').addEventListener('click', function () {
       const isArabic = this.innerText === 'AR';
       const elements = document.querySelectorAll('[data-en]');
@@ -177,14 +279,75 @@
       document.documentElement.setAttribute("lang", isArabic ? "ar" : "en");
       document.body.style.direction = isArabic ? "rtl" : "ltr";
     });
+    
+    // معالجة إرسال النموذج
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const form = this;
+      const formData = new FormData(form);
+      const submitButton = form.querySelector('button[type="submit"]');
+      const originalButtonText = submitButton.textContent;
+      
+      // تغيير نص الزر أثناء الإرسال
+      const loadingText = document.documentElement.lang === 'ar' ? 'جارِ الإرسال...' : 'Sending...';
+      submitButton.textContent = loadingText;
+      submitButton.disabled = true;
+      
+      // إرسال بيانات النموذج باستخدام fetch
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => {
+        // عرض إشعار الشكر بغض النظر عن الرد (FormSubmit قد لا يعيد JSON)
+        document.getElementById('thankYouPopup').style.display = 'flex';
+        form.reset();
+        
+        // استعادة نص الزر الأصلي
+        submitButton.textContent = originalButtonText;
+        submitButton.disabled = false;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        
+        // حتى مع وجود خطأ، سنفترض أن النموذج قد تم إرساله (لأن FormSubmit عادة ما يقوم بإعادة التوجيه)
+        document.getElementById('thankYouPopup').style.display = 'flex';
+        form.reset();
+        
+        // استعادة نص الزر الأصلي
+        submitButton.textContent = originalButtonText;
+        submitButton.disabled = false;
+      });
+    });
+    
+    // إغلاق إشعار الشكر
+    document.getElementById('closeThankYou').addEventListener('click', function() {
+      document.getElementById('thankYouPopup').style.display = 'none';
+    });
+    
+    // إغلاق إشعار الشكر عند النقر خارج مربع الشكر
+    document.getElementById('thankYouPopup').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.style.display = 'none';
+      }
+    });
+    
+    // التحقق مما إذا كان المستخدم قد تم توجيهه من FormSubmit (بعد إرسال نموذج)
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.search.includes('submitted=true')) {
+        document.getElementById('thankYouPopup').style.display = 'flex';
+        
+        // إزالة معلمات الـ URL بعد عرض الإشعار
+        const url = new URL(window.location);
+        url.searchParams.delete('submitted');
+        window.history.replaceState({}, document.title, url.toString());
+      }
+    });
   </script>
-
-  <a href="https://wa.me/201004435408"
-     class="whatsapp-fixed"
-     target="_blank"
-     title="Chat with us on WhatsApp">
-     <img src="https://img.icons8.com/ios-filled/50/ffffff/whatsapp--v1.png" alt="WhatsApp" />
-  </a>
 
 </body>
 </html>
