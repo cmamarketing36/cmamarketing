@@ -45,17 +45,17 @@
            data-ar="في CMA نفكر بشكل مختلف. نؤمن بالأفكار الجريئة التي تتحول إلى نتائج حقيقية للعلامات التجارية وصناع المحتوى.">
            At CMA, we think differently. We believe in bold ideas that turn into real results for brands and content creators.
         </p>
-        <p data-en="We’re a full-service marketing agency focused on building strong digital presence and delivering the professional image every brand deserves."
+        <p data-en="We're a full-service marketing agency focused on building strong digital presence and delivering the professional image every brand deserves."
            data-ar="نحن وكالة تسويق متكاملة تركز على بناء حضور رقمي قوي وتقديم الصورة الاحترافية التي تستحقها كل علامة تجارية.">
-           We’re a full-service marketing agency focused on building strong digital presence and delivering the professional image every brand deserves.
+           We're a full-service marketing agency focused on building strong digital presence and delivering the professional image every brand deserves.
         </p>
         <p data-en="Each project gets a dedicated team to ensure creativity, strategy, and impact—all in one."
            data-ar="كل مشروع يحصل على فريق مخصص لضمان الإبداع والاستراتيجية والتأثير في آن واحد.">
            Each project gets a dedicated team to ensure creativity, strategy, and impact—all in one.
         </p>
-        <p data-en="We manage every account with full focus and professionalism as if it’s our only one."
+        <p data-en="We manage every account with full focus and professionalism as if it's our only one."
            data-ar="ندير كل حساب بتركيز واحترافية وكأنه الوحيد لدينا.">
-           We manage every account with full focus and professionalism as if it’s our only one.
+           We manage every account with full focus and professionalism as if it's our only one.
         </p>
       </div>
     </div>
@@ -119,7 +119,20 @@
   <section class="contact-form" id="contactMe">
     <div class="form-container">
       <h2 data-en="Contact Us" data-ar="تواصل معنا">Contact Us</h2>
-      <form action="send.php" method="post">
+      <form action="https://formsubmit.co/cmamarketing36@gmail.com" method="POST">
+        <!-- Honeypot to prevent spam -->
+        <input type="text" name="_honey" style="display:none">
+        
+        <!-- Disable captcha -->
+        <input type="hidden" name="_captcha" value="false">
+        
+        <!-- Success page - you should replace this with your actual domain -->
+        <input type="hidden" name="_next" value="https://yourwebsite.com/thanks.html">
+        
+        <!-- Email template subject -->
+        <input type="hidden" name="_subject" value="New form submission from CMA Website">
+        
+        <!-- Form Fields -->
         <input type="text" name="name" placeholder="Your Name" required data-en="Your Name" data-ar="اسمك" />
         <input type="tel" name="phone" placeholder="Phone Number" required data-en="Phone Number" data-ar="رقم الهاتف" />
         <input type="email" name="email" placeholder="Email Address" required data-en="Email Address" data-ar="البريد الإلكتروني" />
