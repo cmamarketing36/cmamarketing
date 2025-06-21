@@ -2234,16 +2234,16 @@
     }
 
     // إعدادات الداش بورد
-    function checkAdminAccess() {
-      const path = window.location.pathname;
-      const hash = window.location.hash;
-      
-      if (hash === '#XCMA' || path.includes('XCMA')) {
-        navigateTo('dashboard');
-        return true;
-      }
-      return false;
-    }
+function checkAdminAccess() {
+  const path = window.location.pathname;
+  const hash = window.location.hash;
+
+  if (hash === '#XCMA' || path.includes('XCMA')) {
+    window.location.href = 'https://cmamarketing36.github.io/cmamarketing/xcma';
+    return true;
+  }
+  return false;
+}
 
     // إدارة الداش بورد
     function showDashboardSection(section) {
