@@ -1302,7 +1302,6 @@
     </style>
 </head>
 <body>
-    <!-- الموقع الرئيسي -->
     <div id="mainSite">
         <header>
             <img class="cmalogoh" src="SVG/asdgfArtboard 1.svg" alt="cma logo" />
@@ -1363,8 +1362,7 @@
                 </div>
 
                 <ul class="projects" id="servicesGrid">
-                    <!-- سيتم إضافة الخدمات هنا ديناميكياً -->
-                </ul>
+                    </ul>
             </div>
         </section>
 
@@ -1412,7 +1410,6 @@
         </a>
     </div>
 
-    <!-- صفحات الخدمات -->
     <div id="photographyPage" class="service-page">
         <a href="#" class="back-btn" onclick="backToHome()">
             <i class="fas fa-arrow-left"></i> <span data-en="Back to Home" data-ar="العودة للرئيسية">العودة للرئيسية</span>
@@ -1422,8 +1419,7 @@
             <p data-en="Professional photography services for all your needs" data-ar="خدمات تصوير احترافية لجميع احتياجاتك">Professional photography services for all your needs</p>
         </div>
         <div class="service-gallery" id="photographyGallery">
-            <!-- سيتم إضافة الأعمال هنا من خلال JavaScript -->
-        </div>
+            </div>
     </div>
 
     <div id="videoEditingPage" class="service-page">
@@ -1435,8 +1431,7 @@
             <p data-en="Professional video editing and motion graphics" data-ar="مونتاج فيديو احترافي وجرافيك متحرك">Professional video editing and motion graphics</p>
         </div>
         <div class="service-gallery" id="videoEditingGallery">
-            <!-- سيتم إضافة الأعمال هنا من خلال JavaScript -->
-        </div>
+            </div>
     </div>
 
     <div id="graphicDesignPage" class="service-page">
@@ -1448,11 +1443,9 @@
             <p data-en="Creative graphic design solutions for your business" data-ar="حلول تصميم جرافيك إبداعية لعملك">Creative graphic design solutions for your business</p>
         </div>
         <div class="service-gallery" id="graphicDesignGallery">
-            <!-- سيتم إضافة الأعمال هنا من خلال JavaScript -->
-        </div>
+            </div>
     </div>
 
-    <!-- صفحة تفاصيل المشروع -->
     <div id="projectDetailPage" class="project-detail-page">
         <a href="#" class="back-btn" onclick="backToService()">
             <i class="fas fa-arrow-left"></i> <span data-en="Back to Service" data-ar="العودة للخدمة">العودة للخدمة</span>
@@ -1464,8 +1457,7 @@
 
         <div class="project-gallery-container">
             <div class="project-gallery" id="projectGallery">
-                <!-- سيتم إضافة الصور/الفيديوهات هنا -->
-            </div>
+                </div>
             <button class="gallery-nav prev" onclick="changeSlide(-1)">
                 <i class="fas fa-chevron-left"></i>
             </button>
@@ -1473,8 +1465,7 @@
                 <i class="fas fa-chevron-right"></i>
             </button>
             <div class="gallery-indicators" id="galleryIndicators">
-                <!-- سيتم إضافة المؤشرات هنا -->
-            </div>
+                </div>
         </div>
 
         <div class="project-info">
@@ -1498,7 +1489,6 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول -->
     <div id="loginContainer" class="login-container" style="display: none;">
         <div class="login-form">
             <h2>تسجيل الدخول</h2>
@@ -1511,7 +1501,6 @@
         </div>
     </div>
 
-    <!-- الداش بورد -->
     <div id="dashboardContainer" class="dashboard-container">
         <div class="dashboard-header">
             <h1>لوحة التحكم - CMA</h1>
@@ -1528,7 +1517,6 @@
         </div>
 
         <div class="dashboard-content">
-            <!-- نظرة عامة -->
             <div id="overviewSection" class="dashboard-section active">
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -1572,15 +1560,14 @@
                 </div>
             </div>
 
-            <!-- إدارة الخدمات -->
             <div id="servicesSection" class="dashboard-section">
                 <div class="form-section">
                     <h3>إضافة خدمة جديدة</h3>
                     <form class="admin-form" id="addServiceForm">
-                        <input type="text" id="serviceName" placeholder="اسم الخدمة" required>
-                        <input type="text" id="serviceNameEn" placeholder="اسم الخدمة بالإنجليزية" required>
-                        <textarea id="serviceDescription" placeholder="وصف الخدمة" required></textarea>
-                        <textarea id="serviceDescriptionEn" placeholder="وصف الخدمة بالإنجليزية" required></textarea>
+                        <input type="text" id="serviceName" name="serviceName" placeholder="اسم الخدمة" required>
+                        <input type="text" id="serviceNameEn" name="serviceNameEn" placeholder="اسم الخدمة بالإنجليزية" required>
+                        <textarea id="serviceDescription" name="serviceDescription" placeholder="وصف الخدمة" required></textarea>
+                        <textarea id="serviceDescriptionEn" name="serviceDescriptionEn" placeholder="وصف الخدمة بالإنجليزية" required></textarea>
                         <div class="file-input">
                             <label>صورة الخدمة:</label>
                             <input type="file" id="serviceImage" accept="image/*" required>
@@ -1592,23 +1579,21 @@
                 <div class="services-list">
                     <h3>الخدمات الحالية</h3>
                     <div id="servicesList">
-                        <!-- سيتم إضافة الخدمات هنا -->
-                    </div>
+                        </div>
                 </div>
             </div>
 
-            <!-- إدارة الأعمال -->
             <div id="worksSection" class="dashboard-section">
                 <div class="form-section">
                     <h3>إضافة عمل جديد</h3>
                     <form class="admin-form" id="addWorkForm">
-                        <select id="workService" required>
+                        <select id="workService" name="workService" required>
                             <option value="">اختر الخدمة</option>
                         </select>
-                        <input type="text" id="workTitle" placeholder="عنوان العمل" required>
-                        <input type="text" id="workTitleEn" placeholder="عنوان العمل بالإنجليزية" required>
-                        <textarea id="workDescription" placeholder="وصف العمل" required></textarea>
-                        <textarea id="workDescriptionEn" placeholder="وصف العمل بالإنجليزية" required></textarea>
+                        <input type="text" id="workTitle" name="workTitle" placeholder="عنوان العمل" required>
+                        <input type="text" id="workTitleEn" name="workTitleEn" placeholder="عنوان العمل بالإنجليزية" required>
+                        <textarea id="workDescription" name="workDescription" placeholder="وصف العمل" required></textarea>
+                        <textarea id="workDescriptionEn" name="workDescriptionEn" placeholder="وصف العمل بالإنجليزية" required></textarea>
                         
                         <div class="file-input">
                             <label>الصور:</label>
@@ -1621,8 +1606,7 @@
                         </div>
                         
                         <div id="mediaPreview" class="media-grid">
-                            <!-- سيتم عرض الوسائط المضافة هنا -->
-                        </div>
+                            </div>
                         
                         <button type="submit">إضافة العمل</button>
                     </form>
@@ -1631,42 +1615,34 @@
                 <div class="works-list">
                     <h3>الأعمال الحالية</h3>
                     <div id="worksList">
-                        <!-- سيتم إضافة الأعمال هنا -->
-                    </div>
+                        </div>
                 </div>
             </div>
 
-            <!-- الرسائل -->
             <div id="messagesSection" class="dashboard-section">
                 <div class="messages-list">
                     <h3>رسائل العملاء</h3>
                     <div id="messagesList">
-                        <!-- سيتم إضافة الرسائل هنا -->
-                    </div>
+                        </div>
                 </div>
             </div>
 
-            <!-- الاستشارات -->
             <div id="consultationsSection" class="dashboard-section">
                 <div class="consultations-list">
                     <h3>طلبات الاستشارة التسويقية</h3>
                     <div id="consultationsList">
-                        <!-- سيتم إضافة طلبات الاستشارة هنا -->
-                    </div>
+                        </div>
                 </div>
             </div>
 
-            <!-- الزوار -->
             <div id="visitorsSection" class="dashboard-section">
                 <div class="visitors-list">
                     <h3>تفاصيل الزوار</h3>
                     <div id="visitorsList">
-                        <!-- سيتم إضافة تفاصيل الزوار هنا -->
-                    </div>
+                        </div>
                 </div>
             </div>
 
-            <!-- الإعدادات -->
             <div id="settingsSection" class="dashboard-section">
                 <div class="form-section">
                     <h3>تغيير كلمة المرور</h3>
@@ -1681,7 +1657,6 @@
         </div>
     </div>
 
-    <!-- إشعار الشكر -->
     <div class="thank-you-popup" id="thankYouPopup">
         <div class="thank-you-content">
             <i class="fas fa-check-circle thank-you-icon"></i>
@@ -1691,16 +1666,31 @@
         </div>
     </div>
 
-    <!-- إشعار الاستشارة التسويقية -->
     <div class="consultation-popup" id="consultationPopup">
         <div class="consultation-content">
             <i class="fas fa-lightbulb consultation-icon"></i>
             <h2 class="consultation-title" data-en="Get Free Marketing Consultation!" data-ar="احصل على استشارة تسويقية مجانية!">احصل على استشارة تسويقية مجانية!</h2>
-            <p class="consultation-message" data-en="Take your business to the next level with our expert marketing advice. Book your free consultation now!" data-ar="اطور عملك للمستوى التالي مع نصائحنا التسويقية المتخصصة. احجز استشارتك المجانية الآن!">اطور عملك للمستوى التالي مع نصائحنا التسويقية المتخصصة. احجز استشارتك المجانية الآن!</p>
-            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                <button class="consultation-btn" onclick="requestConsultation()" data-en="Book Now" data-ar="احجز الآن">احجز الآن</button>
-                <button class="consultation-btn" onclick="closeConsultationPopup()" data-en="Maybe Later" data-ar="ربما لاحقاً">ربما لاحقاً</button>
-            </div>
+            <form id="consultationForm" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; margin-bottom: 1.5rem;">
+                <input type="text" name="consultationName" required
+                       data-en="Your Name" data-ar="اسمك"
+                       data-placeholder-en="Your Name" data-placeholder-ar="اسمك"
+                       placeholder="Your Name"
+                       style="padding: 1rem; border-radius: 8px; border: 1px solid #444; font-size: 1rem; background-color: #2a2a2a; color: #fff; width: 100%;">
+                <input type="tel" name="consultationPhone" required
+                       data-en="Phone Number" data-ar="رقم الهاتف"
+                       data-placeholder-en="Phone Number" data-placeholder-ar="رقم الهاتف"
+                       placeholder="Phone Number"
+                       style="padding: 1rem; border-radius: 8px; border: 1px solid #444; font-size: 1rem; background-color: #2a2a2a; color: #fff; width: 100%;">
+                <input type="email" name="consultationEmail" required
+                       data-en="Email Address" data-ar="البريد الإلكتروني"
+                       data-placeholder-en="Email Address" data-placeholder-ar="البريد الإلكتروني"
+                       placeholder="Email Address"
+                       style="padding: 1rem; border-radius: 8px; border: 1px solid #444; font-size: 1rem; background-color: #2a2a2a; color: #fff; width: 100%;">
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <button type="submit" class="consultation-btn" data-en="Book Now" data-ar="احجز الآن">احجز الآن</button>
+                    <button type="button" class="consultation-btn" onclick="closeConsultationPopup()" data-en="Maybe Later" data-ar="ربما لاحقاً">ربما لاحقاً</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1955,40 +1945,6 @@
             }
             
             document.getElementById('consultationPopup').style.display = 'flex';
-        }
-
-        // طلب الاستشارة
-        function requestConsultation() {
-            const name = prompt(currentLanguage === 'ar' ? 'الاسم:' : 'Name:');
-            const phone = prompt(currentLanguage === 'ar' ? 'رقم الهاتف:' : 'Phone:');
-            const email = prompt(currentLanguage === 'ar' ? 'البريد الإلكتروني:' : 'Email:');
-            
-            if (name && phone && email) {
-                const consultation = {
-                    id: Date.now(),
-                    name: name,
-                    phone: phone,
-                    email: email,
-                    date: new Date().toISOString(),
-                    status: 'جديد'
-                };
-                
-                const data = JSON.parse(localStorage.getItem('cmaData'));
-                data.consultations.push(consultation);
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                
-                // إرسال إيميل للاستشارة
-                sendConsultationEmail(consultation);
-                
-                localStorage.setItem('consultationRequested', 'true');
-                closeConsultationPopup();
-                
-                alert(currentLanguage === 'ar' ? 
-                    'تم طلب الاستشارة بنجاح! سنتواصل معك قريباً.' : 
-                    'Consultation requested successfully! We will contact you soon.');
-                
-                updateStats();
-            }
         }
 
         // إرسال إيميل الاستشارة
@@ -2472,7 +2428,7 @@
                             <p style="color: #666; font-size: 0.9rem;">${work.description}</p>
                         </div>
                         <div class="list-item-actions">
-                            <button class="view-btn" onclick="showProjectDetail(${JSON.stringify(work).replace(/"/g, '&quot;')})">عرض</button>
+                            <button class="view-btn" onclick="showProjectDetail(${JSON.stringify(work).replace(/"/g, '"')})">عرض</button>
                             <button class="edit-btn" onclick="editWork(${work.id})">تعديل</button>
                             <button class="delete-btn" onclick="deleteWork(${work.id})">حذف</button>
                         </div>
@@ -2974,6 +2930,45 @@
                 const url = new URL(window.location);
                 url.searchParams.delete('submitted');
                 window.history.replaceState({}, document.title, url.toString());
+            }
+
+            // معالج نموذج الاستشارة
+            const consultationForm = document.getElementById('consultationForm');
+            if (consultationForm) {
+                consultationForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const form = e.target;
+                    const name = form.elements.consultationName.value;
+                    const phone = form.elements.consultationPhone.value;
+                    const email = form.elements.consultationEmail.value;
+
+                    if (name && phone && email) {
+                        const consultation = {
+                            id: Date.now(),
+                            name: name,
+                            phone: phone,
+                            email: email,
+                            date: new Date().toISOString(),
+                            status: 'جديد'
+                        };
+
+                        const data = JSON.parse(localStorage.getItem('cmaData'));
+                        data.consultations.push(consultation);
+                        localStorage.setItem('cmaData', JSON.stringify(data));
+
+                        sendConsultationEmail(consultation);
+
+                        localStorage.setItem('consultationRequested', 'true');
+                        closeConsultationPopup();
+
+                        alert(currentLanguage === 'ar' ?
+                            'تم طلب الاستشارة بنجاح! سنتواصل معك قريباً.' :
+                            'Consultation requested successfully! We will contact you soon.');
+
+                        updateStats();
+                        form.reset();
+                    }
+                });
             }
         });
 
