@@ -1585,7 +1585,7 @@
 
             <div id="worksSection" class="dashboard-section">
                 <div class="form-section">
-                    <h3>إضافة عمل جديد</h3>
+                    <h3 id="workFormTitle">إضافة عمل جديد</h3>
                     <form class="admin-form" id="addWorkForm">
                         <select id="workService" name="workService" required>
                             <option value="">اختر الخدمة</option>
@@ -1608,12 +1608,14 @@
                         <div id="mediaPreview" class="media-grid">
                             </div>
                         
-                        <button type="submit">إضافة العمل</button>
+                        <button type="submit" id="addWorkButton">إضافة العمل</button>
+                        <button type="button" id="cancelEditButton" style="display: none; background: #666;" onclick="cancelEditWork()">إلغاء التعديل</button>
                     </form>
                 </div>
 
                 <div class="works-list">
                     <h3>الأعمال الحالية</h3>
+                    <input type="text" id="workFilterInput" placeholder="بحث في الأعمال..." style="margin-bottom: 1rem;">
                     <div id="worksList">
                         </div>
                 </div>
@@ -1704,8 +1706,8 @@
         let currentProjectDetail = null;
         let currentServicePage = '';
         let currentSlide = 0;
-        let currentWorkMedia = [];
         let videoLinks = [];
+        let currentlyEditingWorkId = null;
 
         // بيانات افتراضية للنظام
         const defaultData = {
@@ -1754,7 +1756,7 @@
                     description: 'مونتاج إعلان تجاري احترافي مع مؤثرات بصرية',
                     descriptionEn: 'Professional commercial video editing with visual effects',
                     media: [],
-                    videos: ['https://www.youtube.com/embed/dQw4w9WgXcQ']
+                    videos: ['https://www.youtube.com/watch?v=dQw4w9WgXcQ']
                 },
                 {
                     id: 3,
@@ -2066,9 +2068,9 @@
                     mediaElement = `<img src="${work.media[0]}" alt="${work.title}">`;
                 } else if (work.videos && work.videos.length > 0) {
                     const videoUrl = work.videos[0];
-                    if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-                        const embedUrl = convertToEmbedUrl(videoUrl);
-                        mediaElement = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen style="width: 100%; height: 100%;"></iframe>`;
+                    const embedUrl = convertToEmbedUrl(videoUrl);
+                    if (embedUrl) {
+                       mediaElement = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen style="width: 100%; height: 100%;"></iframe>`;
                     } else {
                         mediaElement = `<video controls playsinline webkit-playsinline style="width: 100%; height: 100%;">
                             <source src="${videoUrl}" type="video/mp4">
@@ -2109,6 +2111,7 @@
             
             // إخفاء جميع الصفحات
             document.getElementById('mainSite').style.display = 'none';
+            document.getElementById('dashboardContainer').classList.remove('active');
             const servicePages = document.querySelectorAll('.service-page');
             servicePages.forEach(page => page.classList.remove('active'));
             
@@ -2169,8 +2172,8 @@
                 if (media.type === 'image') {
                     slide.innerHTML = `<img src="${media.src}" alt="Project Image">`;
                 } else {
-                    if (media.src.includes('youtube.com') || media.src.includes('youtu.be')) {
-                        const embedUrl = convertToEmbedUrl(media.src);
+                    const embedUrl = convertToEmbedUrl(media.src);
+                    if (embedUrl) {
                         slide.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen style="width: 100%; height: 100%;"></iframe>`;
                     } else {
                         slide.innerHTML = `<video controls playsinline webkit-playsinline style="max-width: 100%; max-height: 100%;">
@@ -2195,14 +2198,18 @@
 
         // تحويل رابط يوتيوب للـ embed
         function convertToEmbedUrl(url) {
-            if (url.includes('youtube.com/watch?v=')) {
-                const videoId = url.split('v=')[1].split('&')[0];
-                return `https://www.youtube.com/embed/${videoId}`;
-            } else if (url.includes('youtu.be/')) {
-                const videoId = url.split('youtu.be/')[1].split('?')[0];
+            if (!url) return null;
+            // Regular expression to find the YouTube video ID from various URL formats
+            const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
+            const match = url.match(youtubeRegex);
+
+            if (match && match[1]) {
+                const videoId = match[1];
                 return `https://www.youtube.com/embed/${videoId}`;
             }
-            return url;
+            
+            // If it's not a YouTube link, return null to handle it as a direct video file
+            return null;
         }
 
         // تغيير الشريحة
@@ -2260,7 +2267,10 @@
             document.getElementById('projectDetailPage').classList.remove('active');
             if (currentServicePage) {
                 showService(currentServicePage);
-            } else {
+            } else if (isLoggedIn) {
+                document.getElementById('dashboardContainer').classList.add('active');
+            }
+            else {
                 backToHome();
             }
         }
@@ -2306,6 +2316,7 @@
             loadConsultations();
             loadVisitors();
             createCharts();
+            document.getElementById('workFilterInput').addEventListener('input', filterWorks);
         }
 
         // عرض قسم الداش بورد
@@ -2406,6 +2417,67 @@
                 });
             }
         }
+        
+        // عرض العمل في الداش بورد
+        function viewWorkInDashboard(workId) {
+            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const work = data.works.find(w => w.id === workId);
+            if(work) {
+                showProjectDetail(work);
+            }
+        }
+        
+        // تعديل العمل
+        function editWork(workId) {
+            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const work = data.works.find(w => w.id === workId);
+            if (!work) return;
+
+            currentlyEditingWorkId = workId;
+
+            // ملء النموذج
+            document.getElementById('workService').value = work.service;
+            document.getElementById('workTitle').value = work.title;
+            document.getElementById('workTitleEn').value = work.titleEn;
+            document.getElementById('workDescription').value = work.description;
+            document.getElementById('workDescriptionEn').value = work.descriptionEn;
+            videoLinks = [...(work.videos || [])];
+            
+            // تحديث واجهة المستخدم لوضع التعديل
+            document.getElementById('workFormTitle').textContent = 'تعديل العمل';
+            document.getElementById('addWorkButton').textContent = 'تحديث العمل';
+            document.getElementById('cancelEditButton').style.display = 'inline-block';
+
+            updateMediaPreview(); // ملاحظة: لا يمكننا إعادة تحميل الصور من base64، سيحتاج المستخدم لإعادة تحديدها إذا أراد تغييرها
+            alert('تم تحميل بيانات العمل في النموذج. لإضافة أو تغيير الصور، يرجى تحديدها مرة أخرى.');
+        }
+
+        function cancelEditWork() {
+            currentlyEditingWorkId = null;
+            document.getElementById('addWorkForm').reset();
+            videoLinks = [];
+            updateMediaPreview();
+            document.getElementById('workFormTitle').textContent = 'إضافة عمل جديد';
+            document.getElementById('addWorkButton').textContent = 'إضافة العمل';
+            document.getElementById('cancelEditButton').style.display = 'none';
+        }
+
+        // فلترة الأعمال
+        function filterWorks() {
+            const filterValue = document.getElementById('workFilterInput').value.toLowerCase();
+            const worksList = document.getElementById('worksList');
+            const items = worksList.getElementsByClassName('list-item');
+
+            Array.from(items).forEach(item => {
+                const title = item.querySelector('strong').textContent.toLowerCase();
+                const description = item.querySelector('p:last-of-type').textContent.toLowerCase();
+                if (title.includes(filterValue) || description.includes(filterValue)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
 
         // تحميل الأعمال
         function loadWorks() {
@@ -2428,7 +2500,7 @@
                             <p style="color: #666; font-size: 0.9rem;">${work.description}</p>
                         </div>
                         <div class="list-item-actions">
-                            <button class="view-btn" onclick="showProjectDetail(${JSON.stringify(work).replace(/"/g, '"')})">عرض</button>
+                            <button class="view-btn" onclick="viewWorkInDashboard(${work.id})">عرض</button>
                             <button class="edit-btn" onclick="editWork(${work.id})">تعديل</button>
                             <button class="delete-btn" onclick="deleteWork(${work.id})">حذف</button>
                         </div>
@@ -2686,21 +2758,20 @@
                 const mediaItem = document.createElement('div');
                 mediaItem.className = 'media-item';
                 
-                if (link.includes('youtube.com') || link.includes('youtu.be')) {
-                    const embedUrl = convertToEmbedUrl(link);
+                const embedUrl = convertToEmbedUrl(link);
+                if (embedUrl) {
                     mediaItem.innerHTML = `
                         <iframe src="${embedUrl}" frameborder="0" allowfullscreen style="width: 100%; height: 100%;"></iframe>
                         <button class="remove-media" onclick="removeVideo(${index})">×</button>
                     `;
                 } else {
-                    mediaItem.innerHTML = `
+                     mediaItem.innerHTML = `
                         <video controls playsinline webkit-playsinline style="width: 100%; height: 100%;">
                             <source src="${link}" type="video/mp4">
                         </video>
                         <button class="remove-media" onclick="removeVideo(${index})">×</button>
                     `;
                 }
-                
                 preview.appendChild(mediaItem);
             });
         }
@@ -2764,59 +2835,73 @@
             const formData = new FormData(this);
             const workImages = document.getElementById('workImages').files;
             
-            const work = {
-                id: Date.now(),
+            const workData = {
                 service: formData.get('workService'),
                 title: formData.get('workTitle'),
                 titleEn: formData.get('workTitleEn'),
                 description: formData.get('workDescription'),
                 descriptionEn: formData.get('workDescriptionEn'),
-                media: [],
                 videos: [...videoLinks]
             };
-            
+
+            const processAndSave = (imageUrls) => {
+                const data = JSON.parse(localStorage.getItem('cmaData'));
+
+                if(currentlyEditingWorkId) {
+                    // وضع التعديل
+                    const workIndex = data.works.findIndex(w => w.id === currentlyEditingWorkId);
+                    if(workIndex !== -1) {
+                        const existingWork = data.works[workIndex];
+                        data.works[workIndex] = {
+                            ...existingWork,
+                            ...workData,
+                            media: imageUrls.length > 0 ? imageUrls : existingWork.media // الاحتفاظ بالصور القديمة إذا لم يتم تحديد صور جديدة
+                        };
+                        alert('تم تحديث العمل بنجاح');
+                    }
+                } else {
+                    // وضع الإضافة
+                    const newWork = {
+                        ...workData,
+                        id: Date.now(),
+                        media: imageUrls,
+                    };
+                    data.works.push(newWork);
+                    alert('تم إضافة العمل بنجاح');
+                }
+                
+                localStorage.setItem('cmaData', JSON.stringify(data));
+                
+                loadWorks();
+                updateStats();
+                cancelEditWork(); // لإعادة تعيين النموذج
+                
+                if (worksChart) {
+                    worksChart.destroy();
+                    worksChart = null;
+                    createWorksChart();
+                }
+            };
+
             if (workImages.length > 0) {
                 let processedImages = 0;
-                
+                let imageUrls = [];
                 Array.from(workImages).forEach(image => {
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        work.media.push(e.target.result);
+                        imageUrls.push(e.target.result);
                         processedImages++;
-                        
                         if (processedImages === workImages.length) {
-                            saveWork(work);
+                            processAndSave(imageUrls);
                         }
                     };
                     reader.readAsDataURL(image);
                 });
             } else {
-                saveWork(work);
+                processAndSave([]);
             }
         });
-
-        function saveWork(work) {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
-            data.works.push(work);
-            localStorage.setItem('cmaData', JSON.stringify(data));
-            
-            loadWorks();
-            updateStats();
-            
-            // إعادة تعيين النموذج والمتغيرات
-            document.getElementById('addWorkForm').reset();
-            videoLinks = [];
-            updateMediaPreview();
-            
-            if (worksChart) {
-                worksChart.destroy();
-                worksChart = null;
-                createWorksChart();
-            }
-            
-            alert('تم إضافة العمل بنجاح');
-        }
-
+        
         document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -2849,7 +2934,7 @@
 
         // وظائف الحذف والتعديل
         function deleteService(serviceId) {
-            if (confirm('هل أنت متأكد من حذف هذه الخدمة؟')) {
+            if (confirm('هل أنت متأكد من حذف هذه الخدمة؟ سيتم حذف جميع الأعمال المرتبطة بها.')) {
                 const data = JSON.parse(localStorage.getItem('cmaData'));
                 data.services = data.services.filter(s => s.id !== serviceId);
                 data.works = data.works.filter(w => w.service !== serviceId);
