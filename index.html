@@ -1128,6 +1128,7 @@
             height: 25px;
             cursor: pointer;
             font-size: 12px;
+            z-index: 10;
         }
 
         .video-link-input {
@@ -1147,6 +1148,50 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+        }
+        
+        /* Aspect Ratio Styles for Video Embeds */
+        .embed-responsive {
+            position: relative;
+            display: block;
+            width: 100%;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .embed-responsive::before {
+            content: "";
+            display: block;
+        }
+
+        .embed-responsive-16by9::before {
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+
+        .embed-responsive-9by16::before {
+            padding-top: 177.77%; /* 9:16 Aspect Ratio for Vertical Videos */
+        }
+        
+        .embed-responsive-1by1::before {
+            padding-top: 100%; /* 1:1 Aspect Ratio for Instagram Square */
+        }
+
+        .embed-responsive iframe,
+        .embed-responsive blockquote,
+        .embed-responsive video {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* TikTok specific style */
+        .tiktok-embed {
+            max-width: 100% !important;
+            min-width: unset !important;
         }
 
         /* وسائط استعلام للشاشات المختلفة */
@@ -2068,14 +2113,7 @@
                     mediaElement = `<img src="${work.media[0]}" alt="${work.title}">`;
                 } else if (work.videos && work.videos.length > 0) {
                     const videoUrl = work.videos[0];
-                    const embedUrl = convertToEmbedUrl(videoUrl);
-                    if (embedUrl) {
-                       mediaElement = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen style="width: 100%; height: 100%;"></iframe>`;
-                    } else {
-                        mediaElement = `<video controls playsinline webkit-playsinline style="width: 100%; height: 100%;">
-                            <source src="${videoUrl}" type="video/mp4">
-                        </video>`;
-                    }
+                    mediaElement = generateEmbedHtml(videoUrl);
                 } else {
                     mediaElement = `<div style="display: flex; align-items: center; justify-content: center; color: #666;">
                         <i class="fas fa-image" style="font-size: 3rem;"></i>
@@ -2171,15 +2209,8 @@
                 
                 if (media.type === 'image') {
                     slide.innerHTML = `<img src="${media.src}" alt="Project Image">`;
-                } else {
-                    const embedUrl = convertToEmbedUrl(media.src);
-                    if (embedUrl) {
-                        slide.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen style="width: 100%; height: 100%;"></iframe>`;
-                    } else {
-                        slide.innerHTML = `<video controls playsinline webkit-playsinline style="max-width: 100%; max-height: 100%;">
-                            <source src="${media.src}" type="video/mp4">
-                        </video>`;
-                    }
+                } else { // It's a video
+                    slide.innerHTML = generateEmbedHtml(media.src);
                 }
                 
                 gallery.appendChild(slide);
@@ -2196,20 +2227,105 @@
             updateGalleryDisplay();
         }
 
-        // تحويل رابط يوتيوب للـ embed
-        function convertToEmbedUrl(url) {
-            if (!url) return null;
-            // Regular expression to find the YouTube video ID from various URL formats
+        // Helper function to load external scripts
+        function loadScript(src, id) {
+            if (document.getElementById(id)) return; // Script already loaded
+            const script = document.createElement('script');
+            script.src = src;
+            script.id = id;
+            script.async = true;
+            document.head.appendChild(script);
+        }
+    
+        // New function to generate embed HTML for various platforms
+        function generateEmbedHtml(url) {
+            let embedHtml = '';
+    
+            // YouTube
             const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
-            const match = url.match(youtubeRegex);
-
-            if (match && match[1]) {
-                const videoId = match[1];
-                return `https://www.youtube.com/embed/${videoId}`;
+            const youtubeMatch = url.match(youtubeRegex);
+            if (youtubeMatch && youtubeMatch[1]) {
+                const videoId = youtubeMatch[1];
+                const isShort = url.includes('/shorts/');
+                const aspectRatioClass = isShort ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
+                embedHtml = `
+                    <div class="embed-responsive ${aspectRatioClass}">
+                        <iframe src="https://www.youtube.com/embed/$${videoId}" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>`;
+                return embedHtml;
             }
-            
-            // If it's not a YouTube link, return null to handle it as a direct video file
-            return null;
+    
+            // Instagram
+            const instagramRegex = /https:\/\/(?:www\.)?instagram\.com\/(p|reel)\/([a-zA-Z0-9_-]+)/;
+            const instagramMatch = url.match(instagramRegex);
+            if (instagramMatch && instagramMatch[2]) {
+                const shortcode = instagramMatch[2];
+                const isReel = instagramMatch[1] === 'reel';
+                const aspectRatioClass = isReel ? 'embed-responsive-9by16' : 'embed-responsive-1by1';
+                loadScript('//www.instagram.com/embed.js', 'instagram-embed-script');
+                embedHtml = `
+                    <div class="embed-responsive ${aspectRatioClass}">
+                         <blockquote class="instagram-media"
+                                     data-instgrm-permalink="https://www.instagram.com/p/${shortcode}/?utm_source=ig_embed"
+                                     data-instgrm-version="14"
+                                     style="width: 100%; height: 100%; margin: 0;">
+                         </blockquote>
+                    </div>`;
+                 // Instagram's script will handle the content loading.
+                return embedHtml;
+            }
+    
+            // TikTok
+            const tiktokRegex = /https:\/\/(?:www\.|vm\.)?tiktok\.com\/.*\/video\/(\d+)/;
+            const tiktokMatch = url.match(tiktokRegex);
+            if (tiktokMatch && tiktokMatch[1]) {
+                const videoId = tiktokMatch[1];
+                loadScript('https://www.tiktok.com/embed.js', 'tiktok-embed-script');
+                // TikTok blockquote is responsive by nature but we wrap it for consistency and to control aspect ratio.
+                embedHtml = `
+                    <div class="embed-responsive embed-responsive-9by16">
+                        <blockquote class="tiktok-embed"
+                                    cite="${url}"
+                                    data-video-id="${videoId}"
+                                    style="width: 100%; height: 100%; margin: 0;">
+                        </blockquote>
+                    </div>`;
+                return embedHtml;
+            }
+    
+            // Facebook
+            const facebookRegex = /https:\/\/(?:www\.)?facebook\.com\/(?:watch\/?\?v=|.*\/videos\/|reel\/)(\d+)/;
+            const facebookMatch = url.match(facebookRegex);
+            if (facebookMatch) {
+                const encodedUrl = encodeURIComponent(url);
+                const isReel = url.includes('/reel/');
+                const aspectRatioClass = isReel ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
+                embedHtml = `
+                    <div class="embed-responsive ${aspectRatioClass}" style="overflow: auto;">
+                        <iframe src="https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&width=560" 
+                                style="border:none;overflow:hidden" 
+                                scrolling="no" 
+                                frameborder="0" 
+                                allowfullscreen="true" 
+                                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+                        </iframe>
+                    </div>`;
+                return embedHtml;
+            }
+    
+            // Fallback for direct video links
+            embedHtml = `
+                <div class="embed-responsive embed-responsive-16by9">
+                    <video controls playsinline webkit-playsinline>
+                        <source src="${url}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>`;
+            return embedHtml;
         }
 
         // تغيير الشريحة
@@ -2758,20 +2874,10 @@
                 const mediaItem = document.createElement('div');
                 mediaItem.className = 'media-item';
                 
-                const embedUrl = convertToEmbedUrl(link);
-                if (embedUrl) {
-                    mediaItem.innerHTML = `
-                        <iframe src="${embedUrl}" frameborder="0" allowfullscreen style="width: 100%; height: 100%;"></iframe>
-                        <button class="remove-media" onclick="removeVideo(${index})">×</button>
-                    `;
-                } else {
-                     mediaItem.innerHTML = `
-                        <video controls playsinline webkit-playsinline style="width: 100%; height: 100%;">
-                            <source src="${link}" type="video/mp4">
-                        </video>
-                        <button class="remove-media" onclick="removeVideo(${index})">×</button>
-                    `;
-                }
+                mediaItem.innerHTML = `
+                    ${generateEmbedHtml(link)}
+                    <button class="remove-media" onclick="removeVideo(${index})">×</button>
+                `;
                 preview.appendChild(mediaItem);
             });
         }
