@@ -641,8 +641,17 @@
             position: relative;
         }
 
+        .service-item-media.is-vertical {
+            height: auto;
+            aspect-ratio: 9 / 16;
+            max-width: 250px; /* Limit width for vertical videos */
+            margin: 0 auto;
+        }
+
         .service-item-media img,
-        .service-item-media video {
+        .service-item-media video,
+        .service-item-media .video-facade,
+        .service-item-media iframe {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -733,7 +742,20 @@
             transition: transform 0.5s ease;
         }
 
-        .gallery-slide img, .gallery-slide video {
+        .gallery-slide.is-vertical {
+            height: 100%;
+            width: auto;
+            max-width: 100%;
+        }
+
+        .gallery-slide.is-vertical .video-facade,
+        .gallery-slide.is-vertical iframe {
+            aspect-ratio: 9 / 16;
+            height: 100%;
+            width: auto;
+        }
+
+        .gallery-slide img, .gallery-slide video, .gallery-slide iframe, .gallery-slide .video-facade {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
@@ -826,6 +848,35 @@
             background: linear-gradient(90deg, #ffcc00, #ffd700, #ffb300);
             transform: translateY(-2px);
         }
+        
+        /* Video Facade for Lazy Loading */
+        .video-facade {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+        }
+        .video-facade img {
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        .video-facade:hover img {
+            opacity: 1;
+        }
+        .video-facade .play-button {
+            position: absolute;
+            font-size: 5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 0 15px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .video-facade:hover .play-button {
+            transform: scale(1.1);
+            color: #fff;
+        }
+
 
         /* أنماط الداش بورد */
         .dashboard-container {
@@ -1756,7 +1807,17 @@
                     description: 'مونتاج إعلان تجاري احترافي مع مؤثرات بصرية',
                     descriptionEn: 'Professional commercial video editing with visual effects',
                     media: [],
-                    videos: ['https://www.youtube.com/watch?v=dQw4w9WgXcQ']
+                    videos: ['youtube.com3']
+                },
+                 {
+                    id: 4,
+                    service: 'video-editing',
+                    title: 'فيديو ريلز عمودي',
+                    titleEn: 'Vertical Reel Video',
+                    description: 'مثال على فيديو عمودي',
+                    descriptionEn: 'Example of a vertical video',
+                    media: [],
+                    videos: ['youtube.com4']
                 },
                 {
                     id: 3,
@@ -2060,31 +2121,42 @@
             works.forEach(work => {
                 const workElement = document.createElement('div');
                 workElement.className = 'service-item';
-                workElement.onclick = () => showProjectDetail(work);
-                
-                // استخدام أول وسيط متاح
-                let mediaElement = '';
-                if (work.media && work.media.length > 0) {
-                    mediaElement = `<img src="${work.media[0]}" alt="${work.title}">`;
-                } else if (work.videos && work.videos.length > 0) {
-                    const videoUrl = work.videos[0];
-                    const embedUrl = convertToEmbedUrl(videoUrl);
-                    if (embedUrl) {
-                       mediaElement = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen style="width: 100%; height: 100%;"></iframe>`;
-                    } else {
-                        mediaElement = `<video controls playsinline webkit-playsinline style="width: 100%; height: 100%;">
-                            <source src="${videoUrl}" type="video/mp4">
-                        </video>`;
+                workElement.onclick = (e) => {
+                     if (!e.target.closest('.video-facade')) {
+                        showProjectDetail(work);
                     }
-                } else {
-                    mediaElement = `<div style="display: flex; align-items: center; justify-content: center; color: #666;">
-                        <i class="fas fa-image" style="font-size: 3rem;"></i>
-                    </div>`;
-                }
+                };
                 
+                let mediaHTML = '';
+                const firstMedia = work.media && work.media.length > 0 ? work.media[0] : null;
+                const firstVideo = work.videos && work.videos.length > 0 ? work.videos[0] : null;
+
+                let containerClass = 'service-item-media';
+                
+                if (firstVideo) {
+                    const videoDetails = parseVideoUrl(firstVideo);
+                    if (videoDetails && videoDetails.platform === 'youtube') {
+                        if(videoDetails.isVertical) {
+                            containerClass += ' is-vertical';
+                        }
+                        mediaHTML = `
+                            <div class="video-facade" data-video-id="${videoDetails.id}" data-platform="youtube">
+                                <img src="https://i.ytimg.com/vi/${videoDetails.id}/hqdefault.jpg" alt="${work.title}" loading="lazy">
+                                <i class="fas fa-play play-button"></i>
+                            </div>
+                        `;
+                    } else { // Direct video link
+                        mediaHTML = `<video playsinline webkit-playsinline muted loop><source src="${firstVideo}"></video>`;
+                    }
+                } else if (firstMedia) {
+                    mediaHTML = `<img src="${firstMedia}" alt="${work.title}" loading="lazy">`;
+                } else {
+                     mediaHTML = `<div style="display: flex; align-items: center; justify-content: center; color: #666;"><i class="fas fa-image" style="font-size: 3rem;"></i></div>`;
+                }
+
                 workElement.innerHTML = `
-                    <div class="service-item-media">
-                        ${mediaElement}
+                    <div class="${containerClass}">
+                        ${mediaHTML}
                     </div>
                     <div class="service-item-content">
                         <h3 class="service-item-title">${currentLanguage === 'ar' ? work.title : work.titleEn}</h3>
@@ -2137,51 +2209,37 @@
             gallery.innerHTML = '';
             indicators.innerHTML = '';
             
-            const allMedia = [];
-            
-            // إضافة الصور
-            if (work.media) {
-                work.media.forEach(media => {
-                    allMedia.push({type: 'image', src: media});
-                });
-            }
-            
-            // إضافة الفيديوهات
-            if (work.videos) {
-                work.videos.forEach(video => {
-                    allMedia.push({type: 'video', src: video});
-                });
-            }
+            const allMedia = [
+                ...(work.media || []).map(m => ({type: 'image', src: m})),
+                ...(work.videos || []).map(v => ({type: 'video', src: v}))
+            ];
             
             if (allMedia.length === 0) {
-                gallery.innerHTML = `
-                    <div class="gallery-slide" style="display: flex; align-items: center; justify-content: center; color: #666;">
-                        <div style="text-align: center;">
-                            <i class="fas fa-image" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-                            <p>لا توجد وسائط متاحة</p>
-                        </div>
-                    </div>
-                `;
+                gallery.innerHTML = `<div class="gallery-slide" style="display: flex; align-items: center; justify-content: center; color: #666;">...</div>`;
                 return;
             }
             
             allMedia.forEach((media, index) => {
                 const slide = document.createElement('div');
                 slide.className = 'gallery-slide';
-                
+                let mediaHTML = '';
+
                 if (media.type === 'image') {
-                    slide.innerHTML = `<img src="${media.src}" alt="Project Image">`;
-                } else {
-                    const embedUrl = convertToEmbedUrl(media.src);
-                    if (embedUrl) {
-                        slide.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allowfullscreen style="width: 100%; height: 100%;"></iframe>`;
+                    mediaHTML = `<img src="${media.src}" alt="Project Image" loading="lazy">`;
+                } else { // Video
+                    const videoDetails = parseVideoUrl(media.src);
+                    if (videoDetails && videoDetails.platform === 'youtube') {
+                        if(videoDetails.isVertical) slide.classList.add('is-vertical');
+                        mediaHTML = `
+                            <div class="video-facade" data-video-id="${videoDetails.id}" data-platform="youtube">
+                                <img src="https://i.ytimg.com/vi/${videoDetails.id}/hqdefault.jpg" alt="Video Thumbnail" loading="lazy">
+                                <i class="fas fa-play play-button"></i>
+                            </div>`;
                     } else {
-                        slide.innerHTML = `<video controls playsinline webkit-playsinline style="max-width: 100%; max-height: 100%;">
-                            <source src="${media.src}" type="video/mp4">
-                        </video>`;
+                        mediaHTML = `<video controls playsinline webkit-playsinline><source src="${media.src}"></video>`;
                     }
                 }
-                
+                slide.innerHTML = mediaHTML;
                 gallery.appendChild(slide);
                 
                 // إنشاء مؤشر
@@ -2196,21 +2254,21 @@
             updateGalleryDisplay();
         }
 
-        // تحويل رابط يوتيوب للـ embed
-        function convertToEmbedUrl(url) {
+        function parseVideoUrl(url) {
             if (!url) return null;
-            // Regular expression to find the YouTube video ID from various URL formats
             const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
             const match = url.match(youtubeRegex);
 
             if (match && match[1]) {
-                const videoId = match[1];
-                return `https://www.youtube.com/embed/${videoId}`;
+                return {
+                    platform: 'youtube',
+                    id: match[1],
+                    isVertical: url.includes('/shorts/'),
+                };
             }
-            
-            // If it's not a YouTube link, return null to handle it as a direct video file
-            return null;
+            return { platform: 'direct', id: url, isVertical: false }; // Direct link
         }
+
 
         // تغيير الشريحة
         function changeSlide(direction) {
@@ -2395,9 +2453,9 @@
                 data.services.forEach(service => {
                     const serviceElement = document.createElement('li');
                     serviceElement.innerHTML = `
-                        <a href="#" class="project-card" onclick="showService('${service.id}')">
+                        <a href="#" class="project-card" onclick="event.preventDefault(); showService('${service.id}')">
                             <div class="image-wrapper">
-                                <img src="${service.image}" alt="${service.name}" />
+                                <img src="${service.image}" alt="${service.name}" loading="lazy"/>
                             </div>
                             <p data-en="${service.nameEn}" data-ar="${service.name}">${currentLanguage === 'ar' ? service.name : service.nameEn}</p>
                         </a>
@@ -2450,6 +2508,7 @@
 
             updateMediaPreview(); // ملاحظة: لا يمكننا إعادة تحميل الصور من base64، سيحتاج المستخدم لإعادة تحديدها إذا أراد تغييرها
             alert('تم تحميل بيانات العمل في النموذج. لإضافة أو تغيير الصور، يرجى تحديدها مرة أخرى.');
+            document.getElementById('workFormTitle').scrollIntoView({ behavior: 'smooth' });
         }
 
         function cancelEditWork() {
@@ -2745,7 +2804,7 @@
                         mediaItem.className = 'media-item';
                         mediaItem.innerHTML = `
                             <img src="${e.target.result}" alt="Work Image">
-                            <button class="remove-media" onclick="removeImage(${index})">×</button>
+                            <button type="button" class="remove-media" onclick="removeImage(${index})">×</button>
                         `;
                         preview.appendChild(mediaItem);
                     };
@@ -2758,19 +2817,15 @@
                 const mediaItem = document.createElement('div');
                 mediaItem.className = 'media-item';
                 
-                const embedUrl = convertToEmbedUrl(link);
-                if (embedUrl) {
+                const videoDetails = parseVideoUrl(link);
+                if (videoDetails && videoDetails.platform === 'youtube') {
                     mediaItem.innerHTML = `
-                        <iframe src="${embedUrl}" frameborder="0" allowfullscreen style="width: 100%; height: 100%;"></iframe>
-                        <button class="remove-media" onclick="removeVideo(${index})">×</button>
-                    `;
+                        <img src="https://i.ytimg.com/vi/${videoDetails.id}/mqdefault.jpg" style="object-fit: contain;">
+                        <button type="button" class="remove-media" onclick="removeVideo(${index})">×</button>`;
                 } else {
                      mediaItem.innerHTML = `
-                        <video controls playsinline webkit-playsinline style="width: 100%; height: 100%;">
-                            <source src="${link}" type="video/mp4">
-                        </video>
-                        <button class="remove-media" onclick="removeVideo(${index})">×</button>
-                    `;
+                        <video style="width:100%; height:100%;"><source src="${link}"></video>
+                        <button type="button" class="remove-media" onclick="removeVideo(${index})">×</button>`;
                 }
                 preview.appendChild(mediaItem);
             });
@@ -3008,6 +3063,22 @@
         // تهيئة النظام عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', function() {
             initializeSystem();
+            
+            document.body.addEventListener('click', function(e) {
+                const facade = e.target.closest('.video-facade');
+                if (facade) {
+                    const videoId = facade.dataset.videoId;
+                    const platform = facade.dataset.platform;
+                    if (platform === 'youtube' && videoId) {
+                        const iframe = document.createElement('iframe');
+                        iframe.setAttribute('src', `youtube.com5&autoplay=1`);
+                        iframe.setAttribute('frameborder', '0');
+                        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+                        iframe.setAttribute('allowfullscreen', '');
+                        facade.replaceWith(iframe);
+                    }
+                }
+            });
             
             // التحقق من معاملات URL
             if (window.location.search.includes('submitted=true')) {
