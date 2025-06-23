@@ -2312,39 +2312,57 @@
             localStorage.setItem('cmaData', JSON.stringify(data));
         }
 
-        // التحقق من الوصول للداش بورد
+        // التحقق من الوصول للداش بورد - تم إصلاحه
         function checkDashboardAccess() {
             const path = window.location.pathname;
             const hash = window.location.hash;
             
-            if (path.endsWith('/XCMA') || hash === '#XCMA') {
+            // دعم الرابط الجديد
+            if (path.includes('/cmamarketing/xcma') || 
+                path.includes('/cmamarketing/XCMA') || 
+                path.endsWith('/xcma') || 
+                path.endsWith('/XCMA') || 
+                hash === '#XCMA' || 
+                hash === '#xcma') {
                 showLogin();
             }
         }
 
-        // تبديل اللغة
+        // تبديل اللغة - تم إصلاحه
         document.getElementById('langToggle').addEventListener('click', function () {
-            const isArabic = this.innerText === 'AR';
-            const elements = document.querySelectorAll('[data-en]');
+            const isCurrentlyEnglish = this.innerText === 'AR';
+            const elements = document.querySelectorAll('[data-en], [data-ar]');
         
             elements.forEach(el => {
-                const newText = isArabic ? el.getAttribute('data-ar') : el.getAttribute('data-en');
-                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                    const placeholderAr = el.getAttribute('data-placeholder-ar');
-                    const placeholderEn = el.getAttribute('data-placeholder-en');
-                    if (placeholderAr && placeholderEn) {
-                        el.placeholder = isArabic ? placeholderAr : placeholderEn;
+                // تحديث النصوص
+                if (el.hasAttribute('data-en') && el.hasAttribute('data-ar')) {
+                    const newText = isCurrentlyEnglish ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+                    
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        // تحديث placeholder
+                        const placeholderAr = el.getAttribute('data-placeholder-ar');
+                        const placeholderEn = el.getAttribute('data-placeholder-en');
+                        if (placeholderAr && placeholderEn) {
+                            el.placeholder = isCurrentlyEnglish ? placeholderAr : placeholderEn;
+                        }
+                    } else {
+                        // تحديث المحتوى النصي
+                        if (newText) {
+                            el.textContent = newText;
+                        }
                     }
-                } else {
-                    el.textContent = newText;
                 }
             });
         
-            this.innerText = isArabic ? 'EN' : 'AR';
-            document.documentElement.setAttribute("lang", isArabic ? "ar" : "en");
-            document.body.style.direction = isArabic ? "rtl" : "ltr";
-            currentLanguage = isArabic ? 'ar' : 'en';
+            // تحديث زر اللغة
+            this.innerText = isCurrentlyEnglish ? 'EN' : 'AR';
+            
+            // تحديث خصائص الصفحة
+            document.documentElement.setAttribute("lang", isCurrentlyEnglish ? "ar" : "en");
+            document.body.style.direction = isCurrentlyEnglish ? "rtl" : "ltr";
+            currentLanguage = isCurrentlyEnglish ? 'ar' : 'en';
 
+            // تحديث المحتوى الديناميكي
             updatePageTexts();
         });
 
@@ -2488,7 +2506,10 @@
         // إغلاق إشعار الاستشارة
         function closeConsultationPopup() {
             document.getElementById('consultationPopup').style.display = 'none';
-            document.getElementById('consultationForm').reset();
+            const form = document.getElementById('consultationForm');
+            if (form) {
+                form.reset();
+            }
         }
 
         // إغلاق إشعار الشكر
@@ -3066,4 +3087,10 @@
                             <p data-en="${service.nameEn}" data-ar="${service.name}">${currentLanguage === 'ar' ? service.name : service.nameEn}</p>
                         </a>
                     `;
-                    services
+                    servicesGrid.appendChild(serviceElement);
+                });
+            }
+            
+            // تحديث قوائم الخدمات في النماذج
+            if (workService) {
+                workService.innerHTML = '<option value="">اختر الخدمة
