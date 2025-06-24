@@ -358,7 +358,7 @@
 
         .image-wrapper {
             width: 100%;
-            height: 200px;
+            height: 200px; /* Keep fixed height for service cards */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -632,7 +632,7 @@
 
         .service-item-media {
             width: 100%;
-            height: 250px;
+            height: 250px; /* Keep fixed height for service item previews */
             overflow: hidden;
             background-color: #29292b;
             display: flex;
@@ -714,31 +714,40 @@
         .project-gallery-container {
             position: relative;
             margin-bottom: 2rem;
+            /* Remove fixed height, use aspect ratio of content */
+            background: #1c1c1e; /* Background for the container itself */
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex; /* Flexbox for centering slides */
+            align-items: center; /* Vertically center slides */
+            justify-content: center; /* Horizontally center slides */
         }
 
         .project-gallery {
             display: flex;
             overflow: hidden;
-            border-radius: 15px;
-            height: 400px;
-            background: #1c1c1e;
-        }
-
-        .gallery-slide {
-            min-width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 100%; /* Take full width of container */
+            /* Height will be determined by the content within embed-responsive */
             transition: transform 0.5s ease;
         }
 
-        .gallery-slide img, .gallery-slide video {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
+        /* The actual slide element, will contain the embed-responsive div */
+        .gallery-slide {
+            min-width: 100%; /* Each slide takes full width */
+            display: flex;
+            align-items: center; /* Center content within slide */
+            justify-content: center; /* Center content within slide */
         }
 
+        /* Ensure images and videos fill their responsive containers */
+        .gallery-slide img, 
+        .gallery-slide video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Contain to maintain aspect ratio within the embed-responsive frame */
+        }
+
+        /* Adjust the navigation buttons */
         .gallery-nav {
             position: absolute;
             top: 50%;
@@ -752,6 +761,7 @@
             font-size: 1.2rem;
             color: #000;
             transition: all 0.3s ease;
+            z-index: 10; /* Ensure buttons are above content */
         }
 
         .gallery-nav:hover {
@@ -1104,7 +1114,7 @@
 
         .media-item {
             position: relative;
-            aspect-ratio: 1;
+            aspect-ratio: 1; /* Default for dashboard preview */
             border-radius: 10px;
             overflow: hidden;
             background: #2a2a2a;
@@ -1150,13 +1160,17 @@
             cursor: pointer;
         }
         
-        /* Aspect Ratio Styles for Video Embeds */
+        /* Aspect Ratio Styles for Video Embeds and Project Gallery */
         .embed-responsive {
             position: relative;
             display: block;
             width: 100%;
             padding: 0;
             overflow: hidden;
+            /* Flex properties for centering content within the responsive container */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .embed-responsive::before {
@@ -1165,20 +1179,21 @@
         }
 
         .embed-responsive-16by9::before {
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            padding-top: 56.25%; /* 16:9 Aspect Ratio (height is 56.25% of width) */
         }
 
         .embed-responsive-9by16::before {
-            padding-top: 177.77%; /* 9:16 Aspect Ratio for Vertical Videos */
+            padding-top: 177.77%; /* 9:16 Aspect Ratio for Vertical Videos (height is 177.77% of width) */
         }
         
         .embed-responsive-1by1::before {
-            padding-top: 100%; /* 1:1 Aspect Ratio for Instagram Square */
+            padding-top: 100%; /* 1:1 Aspect Ratio for Instagram Square (height is 100% of width) */
         }
 
         .embed-responsive iframe,
         .embed-responsive blockquote,
-        .embed-responsive video {
+        .embed-responsive video,
+        .embed-responsive img { /* Also apply to images inside embed-responsive */
             position: absolute;
             top: 0;
             bottom: 0;
@@ -1186,6 +1201,7 @@
             width: 100%;
             height: 100%;
             border: 0;
+            object-fit: contain; /* Ensure content is contained within the aspect ratio frame */
         }
 
         /* TikTok specific style */
@@ -1640,6 +1656,16 @@
                         <textarea id="workDescription" name="workDescription" placeholder="وصف العمل" required></textarea>
                         <textarea id="workDescriptionEn" name="workDescriptionEn" placeholder="وصف العمل بالإنجليزية" required></textarea>
                         
+                        <!-- New Aspect Ratio Selector -->
+                        <div style="margin-bottom: 1rem;">
+                            <label for="aspectRatio" style="color: #dddddd; margin-bottom: 0.5rem; display: block;">نسبة العرض إلى الارتفاع للوسائط:</label>
+                            <select id="aspectRatio" name="aspectRatio" style="width: 100%; padding: 0.8rem; border-radius: 5px; border: 1px solid #444; background-color: #2a2a2a; color: #fff;">
+                                <option value="16by9">عريض (16:9)</option>
+                                <option value="9by16">ريلز / عمودي (9:16)</option>
+                                <option value="1by1">مربع (1:1)</option>
+                            </select>
+                        </div>
+
                         <div class="file-input">
                             <label>الصور:</label>
                             <input type="file" id="workImages" accept="image/*" multiple>
@@ -1779,7 +1805,7 @@
                     nameEn: 'Graphic Design',
                     description: 'حلول تصميم جرافيك إبداعية لعملك',
                     descriptionEn: 'Creative graphic design solutions for your business',
-                    image: 'sss/تעديل فيديو.svg'
+                    image: 'sss/تعديل فيديو.svg'
                 }
             ],
             works: [
@@ -1791,7 +1817,8 @@
                     description: 'تصوير احترافي للمنتجات التجارية بجودة عالية',
                     descriptionEn: 'Professional high-quality commercial product photography',
                     media: ['sss/تصوير.svg'],
-                    videos: []
+                    videos: [],
+                    aspectRatio: '16by9' // Default aspect ratio
                 },
                 {
                     id: 2,
@@ -1801,7 +1828,8 @@
                     description: 'مونتاج إعلان تجاري احترافي مع مؤثرات بصرية',
                     descriptionEn: 'Professional commercial video editing with visual effects',
                     media: [],
-                    videos: ['https://www.youtube.com/watch?v=dQw4w9WgXcQ']
+                    videos: ['https://www.youtube.com/watch?v=dQw4w9WgXcQ'],
+                    aspectRatio: '16by9' // Default aspect ratio
                 },
                 {
                     id: 3,
@@ -1811,7 +1839,8 @@
                     description: 'تصميم هوية بصرية متكاملة للشركات',
                     descriptionEn: 'Complete brand identity design for businesses',
                     media: ['sss/تعديل فيديو.svg'],
-                    videos: []
+                    videos: [],
+                    aspectRatio: '1by1' // Example of a square aspect ratio
                 }
             ],
             messages: [],
@@ -2067,8 +2096,25 @@
                     pageId = 'graphicDesignPage';
                     break;
                 default:
-                    // للخدمات المضافة حديثاً
-                    pageId = 'photographyPage'; // استخدام صفحة افتراضية
+                    // For newly added services, create a dynamic page if not one of the default three
+                    pageId = serviceId + 'Page';
+                    if (!document.getElementById(pageId)) {
+                        const newServicePage = document.createElement('div');
+                        newServicePage.id = pageId;
+                        newServicePage.className = 'service-page';
+                        newServicePage.innerHTML = `
+                            <a href="#" class="back-btn" onclick="backToHome()">
+                                <i class="fas fa-arrow-left"></i> <span data-en="Back to Home" data-ar="العودة للرئيسية">العودة للرئيسية</span>
+                            </a>
+                            <div class="service-header">
+                                <h1 data-en="${data.services.find(s => s.id === serviceId).nameEn}" data-ar="${data.services.find(s => s.id === serviceId).name}">${currentLanguage === 'ar' ? data.services.find(s => s.id === serviceId).name : data.services.find(s => s.id === serviceId).nameEn}</h1>
+                                <p data-en="${data.services.find(s => s.id === serviceId).descriptionEn}" data-ar="${data.services.find(s => s.id === serviceId).description}">${currentLanguage === 'ar' ? data.services.find(s => s.id === serviceId).description : data.services.find(s => s.id === serviceId).descriptionEn}</p>
+                            </div>
+                            <div class="service-gallery" id="${serviceId}Gallery">
+                            </div>
+                        `;
+                        document.body.appendChild(newServicePage);
+                    }
                     break;
             }
             
@@ -2093,7 +2139,7 @@
                     galleryId = 'graphicDesignGallery';
                     break;
                 default:
-                    galleryId = 'photographyGallery';
+                    galleryId = serviceId + 'Gallery'; // For dynamically created pages
                     break;
             }
             
@@ -2110,12 +2156,15 @@
                 // استخدام أول وسيط متاح
                 let mediaElement = '';
                 if (work.media && work.media.length > 0) {
-                    mediaElement = `<img src="${work.media[0]}" alt="${work.title}">`;
+                    // Wrap image in embed-responsive based on work's aspect ratio, default to 16by9
+                    const aspectRatioClass = work.aspectRatio ? `embed-responsive-${work.aspectRatio}` : 'embed-responsive-16by9';
+                    mediaElement = `<div class="embed-responsive ${aspectRatioClass}"><img src="${work.media[0]}" alt="${work.title}"></div>`;
                 } else if (work.videos && work.videos.length > 0) {
                     const videoUrl = work.videos[0];
-                    mediaElement = generateEmbedHtml(videoUrl);
+                    // Pass the work's aspect ratio to generateEmbedHtml
+                    mediaElement = generateEmbedHtml(videoUrl, work.aspectRatio);
                 } else {
-                    mediaElement = `<div style="display: flex; align-items: center; justify-content: center; color: #666;">
+                    mediaElement = `<div style="display: flex; align-items: center; justify-content: center; color: #666; width: 100%; height: 100%;">
                         <i class="fas fa-image" style="font-size: 3rem;"></i>
                     </div>`;
                 }
@@ -2163,12 +2212,13 @@
             document.getElementById('projectDetailDescription').textContent = 
                 currentLanguage === 'ar' ? work.description : work.descriptionEn;
             
-            // إنشاء معرض الصور والفيديوهات
+            // إنشاء معرض الصور والفيديوهات مع تطبيق نسبة العرض إلى الارتفاع
             createProjectGallery(work);
         }
 
         // إنشاء معرض المشروع
         function createProjectGallery(work) {
+            const galleryContainer = document.getElementById('projectGalleryContainer'); // The container that defines aspect ratio
             const gallery = document.getElementById('projectGallery');
             const indicators = document.getElementById('galleryIndicators');
             
@@ -2177,6 +2227,12 @@
             
             const allMedia = [];
             
+            // Set the aspect ratio class for the gallery container
+            const aspectRatioClass = work.aspectRatio ? `embed-responsive-${work.aspectRatio}` : 'embed-responsive-16by9';
+            // Remove previous aspect ratio classes and add the new one
+            galleryContainer.className = 'project-gallery-container'; // Reset classes
+            galleryContainer.classList.add('embed-responsive', aspectRatioClass); // Add responsive and specific aspect ratio
+
             // إضافة الصور
             if (work.media) {
                 work.media.forEach(media => {
@@ -2193,13 +2249,15 @@
             
             if (allMedia.length === 0) {
                 gallery.innerHTML = `
-                    <div class="gallery-slide" style="display: flex; align-items: center; justify-content: center; color: #666;">
+                    <div class="gallery-slide" style="display: flex; align-items: center; justify-content: center; color: #666; width: 100%; height: 100%;">
                         <div style="text-align: center;">
                             <i class="fas fa-image" style="font-size: 4rem; margin-bottom: 1rem;"></i>
                             <p>لا توجد وسائط متاحة</p>
                         </div>
                     </div>
                 `;
+                // If no media, remove the responsive class from the container
+                galleryContainer.classList.remove('embed-responsive', aspectRatioClass);
                 return;
             }
             
@@ -2208,9 +2266,11 @@
                 slide.className = 'gallery-slide';
                 
                 if (media.type === 'image') {
+                    // Images are directly placed in slide, and the embed-responsive rules for img will apply
                     slide.innerHTML = `<img src="${media.src}" alt="Project Image">`;
                 } else { // It's a video
-                    slide.innerHTML = generateEmbedHtml(media.src);
+                    // generateEmbedHtml already creates the embed-responsive wrapper
+                    slide.innerHTML = generateEmbedHtml(media.src, work.aspectRatio);
                 }
                 
                 gallery.appendChild(slide);
@@ -2238,19 +2298,24 @@
         }
     
         // New function to generate embed HTML for various platforms
-        function generateEmbedHtml(url) {
+        // Modified to accept an optional aspectRatio parameter for the wrapper
+        function generateEmbedHtml(url, aspectRatio = '16by9') {
             let embedHtml = '';
-    
+            let finalAspectRatioClass = `embed-responsive-${aspectRatio}`; // Use provided aspect ratio
+
             // YouTube
             const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
             const youtubeMatch = url.match(youtubeRegex);
             if (youtubeMatch && youtubeMatch[1]) {
                 const videoId = youtubeMatch[1];
+                // If it's a YouTube Short, override aspect ratio to 9:16 regardless of input
                 const isShort = url.includes('/shorts/');
-                const aspectRatioClass = isShort ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
+                if (isShort) {
+                    finalAspectRatioClass = 'embed-responsive-9by16';
+                }
                 embedHtml = `
-                    <div class="embed-responsive ${aspectRatioClass}">
-                        <iframe src="https://www.youtube.com/embed/$${videoId}" 
+                    <div class="embed-responsive ${finalAspectRatioClass}">
+                        <iframe src="https://www.youtube.com/embed/${videoId}" 
                                 frameborder="0" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen>
@@ -2265,10 +2330,18 @@
             if (instagramMatch && instagramMatch[2]) {
                 const shortcode = instagramMatch[2];
                 const isReel = instagramMatch[1] === 'reel';
-                const aspectRatioClass = isReel ? 'embed-responsive-9by16' : 'embed-responsive-1by1';
+                // If it's an Instagram Reel, override aspect ratio to 9:16
+                if (isReel) {
+                    finalAspectRatioClass = 'embed-responsive-9by16';
+                } else if (aspectRatio === '1by1') { // Instagram posts are typically square
+                     finalAspectRatioClass = 'embed-responsive-1by1';
+                } else {
+                     finalAspectRatioClass = 'embed-responsive-16by9'; // Default for other Instagram if not reel or square
+                }
+
                 loadScript('//www.instagram.com/embed.js', 'instagram-embed-script');
                 embedHtml = `
-                    <div class="embed-responsive ${aspectRatioClass}">
+                    <div class="embed-responsive ${finalAspectRatioClass}">
                          <blockquote class="instagram-media"
                                      data-instgrm-permalink="https://www.instagram.com/p/${shortcode}/?utm_source=ig_embed"
                                      data-instgrm-version="14"
@@ -2284,10 +2357,12 @@
             const tiktokMatch = url.match(tiktokRegex);
             if (tiktokMatch && tiktokMatch[1]) {
                 const videoId = tiktokMatch[1];
+                // TikToks are almost always 9:16
+                finalAspectRatioClass = 'embed-responsive-9by16';
                 loadScript('https://www.tiktok.com/embed.js', 'tiktok-embed-script');
                 // TikTok blockquote is responsive by nature but we wrap it for consistency and to control aspect ratio.
                 embedHtml = `
-                    <div class="embed-responsive embed-responsive-9by16">
+                    <div class="embed-responsive ${finalAspectRatioClass}">
                         <blockquote class="tiktok-embed"
                                     cite="${url}"
                                     data-video-id="${videoId}"
@@ -2303,9 +2378,15 @@
             if (facebookMatch) {
                 const encodedUrl = encodeURIComponent(url);
                 const isReel = url.includes('/reel/');
-                const aspectRatioClass = isReel ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
+                // If it's a Facebook Reel, override aspect ratio to 9:16
+                if (isReel) {
+                    finalAspectRatioClass = 'embed-responsive-9by16';
+                } else {
+                    finalAspectRatioClass = 'embed-responsive-16by9'; // Default for other Facebook videos
+                }
+
                 embedHtml = `
-                    <div class="embed-responsive ${aspectRatioClass}" style="overflow: auto;">
+                    <div class="embed-responsive ${finalAspectRatioClass}" style="overflow: auto;">
                         <iframe src="https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&width=560" 
                                 style="border:none;overflow:hidden" 
                                 scrolling="no" 
@@ -2317,9 +2398,10 @@
                 return embedHtml;
             }
     
-            // Fallback for direct video links
+            // Fallback for direct video links or images that are not handled by specific embeds
+            // Apply the chosen aspect ratio from the form
             embedHtml = `
-                <div class="embed-responsive embed-responsive-16by9">
+                <div class="embed-responsive ${finalAspectRatioClass}">
                     <video controls playsinline webkit-playsinline>
                         <source src="${url}" type="video/mp4">
                         Your browser does not support the video tag.
@@ -2327,6 +2409,7 @@
                 </div>`;
             return embedHtml;
         }
+
 
         // تغيير الشريحة
         function changeSlide(direction) {
@@ -2449,7 +2532,13 @@
             document.getElementById(section + 'Section').classList.add('active');
             
             // تفعيل الزر المحدد
-            event.target.classList.add('active');
+            // Note: event is automatically passed by browser for event handlers.
+            // When calling directly, `this` context might be `window`.
+            // Let's refine this to target the correct button.
+            const targetButton = document.querySelector(`.dashboard-nav button[onclick="showDashboardSection('${section}')"]`);
+            if (targetButton) {
+                targetButton.classList.add('active');
+            }
         }
 
         // تحديث الإحصائيات
@@ -2557,6 +2646,7 @@
             document.getElementById('workTitleEn').value = work.titleEn;
             document.getElementById('workDescription').value = work.description;
             document.getElementById('workDescriptionEn').value = work.descriptionEn;
+            document.getElementById('aspectRatio').value = work.aspectRatio || '16by9'; // Set selected aspect ratio
             videoLinks = [...(work.videos || [])];
             
             // تحديث واجهة المستخدم لوضع التعديل
@@ -2565,14 +2655,17 @@
             document.getElementById('cancelEditButton').style.display = 'inline-block';
 
             updateMediaPreview(); // ملاحظة: لا يمكننا إعادة تحميل الصور من base64، سيحتاج المستخدم لإعادة تحديدها إذا أراد تغييرها
+            // A more user-friendly approach for images in edit mode would be to show placeholders or the current image,
+            // but the base64 data makes direct "pre-filling" of file inputs difficult.
+            // For now, this alert clarifies the behavior.
             alert('تم تحميل بيانات العمل في النموذج. لإضافة أو تغيير الصور، يرجى تحديدها مرة أخرى.');
         }
 
         function cancelEditWork() {
             currentlyEditingWorkId = null;
             document.getElementById('addWorkForm').reset();
-            videoLinks = [];
-            updateMediaPreview();
+            videoLinks = []; // Clear video links
+            updateMediaPreview(); // Clear media preview
             document.getElementById('workFormTitle').textContent = 'إضافة عمل جديد';
             document.getElementById('addWorkButton').textContent = 'إضافة العمل';
             document.getElementById('cancelEditButton').style.display = 'none';
@@ -2613,6 +2706,7 @@
                             <strong>${work.title}</strong>
                             <p style="color: #666; font-size: 0.9rem;">الخدمة: ${service ? service.name : 'غير محدد'}</p>
                             <p style="color: #666; font-size: 0.9rem;">عدد الوسائط: ${mediaCount}</p>
+                            <p style="color: #666; font-size: 0.9rem;">نسبة العرض: ${work.aspectRatio || '16by9'}</p>
                             <p style="color: #666; font-size: 0.9rem;">${work.description}</p>
                         </div>
                         <div class="list-item-actions">
@@ -2851,6 +2945,8 @@
             const preview = document.getElementById('mediaPreview');
             preview.innerHTML = '';
             
+            const aspectRatio = document.getElementById('aspectRatio').value; // Get selected aspect ratio for preview
+
             // عرض الصور المختارة
             const fileInput = document.getElementById('workImages');
             if (fileInput.files) {
@@ -2859,8 +2955,11 @@
                     reader.onload = function(e) {
                         const mediaItem = document.createElement('div');
                         mediaItem.className = 'media-item';
+                        // Apply embed-responsive class to preview images
                         mediaItem.innerHTML = `
-                            <img src="${e.target.result}" alt="Work Image">
+                            <div class="embed-responsive embed-responsive-${aspectRatio}">
+                                <img src="${e.target.result}" alt="Work Image">
+                            </div>
                             <button class="remove-media" onclick="removeImage(${index})">×</button>
                         `;
                         preview.appendChild(mediaItem);
@@ -2874,8 +2973,9 @@
                 const mediaItem = document.createElement('div');
                 mediaItem.className = 'media-item';
                 
+                // Use generateEmbedHtml with the selected aspect ratio for video previews
                 mediaItem.innerHTML = `
-                    ${generateEmbedHtml(link)}
+                    ${generateEmbedHtml(link, aspectRatio)}
                     <button class="remove-media" onclick="removeVideo(${index})">×</button>
                 `;
                 preview.appendChild(mediaItem);
@@ -2947,7 +3047,8 @@
                 titleEn: formData.get('workTitleEn'),
                 description: formData.get('workDescription'),
                 descriptionEn: formData.get('workDescriptionEn'),
-                videos: [...videoLinks]
+                videos: [...videoLinks],
+                aspectRatio: formData.get('aspectRatio') // Save the selected aspect ratio
             };
 
             const processAndSave = (imageUrls) => {
@@ -3037,6 +3138,9 @@
 
         // مراقبة تغيير الملفات
         document.getElementById('workImages').addEventListener('change', updateMediaPreview);
+        // Also update preview when aspect ratio changes
+        document.getElementById('aspectRatio').addEventListener('change', updateMediaPreview);
+
 
         // وظائف الحذف والتعديل
         function deleteService(serviceId) {
