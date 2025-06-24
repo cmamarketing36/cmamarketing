@@ -645,7 +645,7 @@
         .service-item-media video {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* Changed to cover for previews */
             transition: transform 0.4s ease;
         }
 
@@ -714,37 +714,41 @@
         .project-gallery-container {
             position: relative;
             margin-bottom: 2rem;
-            /* Remove fixed height, use aspect ratio of content */
             background: #1c1c1e; /* Background for the container itself */
             border-radius: 15px;
             overflow: hidden;
-            display: flex; /* Flexbox for centering slides */
-            align-items: center; /* Vertically center slides */
-            justify-content: center; /* Horizontally center slides */
+            /* This element will dynamically get embed-responsive class via JS */
         }
 
         .project-gallery {
             display: flex;
             overflow: hidden;
-            width: 100%; /* Take full width of container */
-            /* Height will be determined by the content within embed-responsive */
+            width: 100%;
+            height: 100%; /* Fill the absolutely positioned parent */
+            position: absolute; /* Position relative to .project-gallery-container's padding-top area */
+            top: 0;
+            left: 0;
             transition: transform 0.5s ease;
         }
 
-        /* The actual slide element, will contain the embed-responsive div */
         .gallery-slide {
             min-width: 100%; /* Each slide takes full width */
-            display: flex;
-            align-items: center; /* Center content within slide */
-            justify-content: center; /* Center content within slide */
+            height: 100%; /* Fill the absolutely positioned parent */
+            flex-shrink: 0; /* Prevent shrinking in flex container */
+            display: flex; /* Flexbox for centering content within the slide */
+            align-items: center; /* Vertically center content */
+            justify-content: center; /* Horizontally center content */
+            background-color: #29292b; /* Background for slides */
         }
-
-        /* Ensure images and videos fill their responsive containers */
-        .gallery-slide img, 
-        .gallery-slide video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* Contain to maintain aspect ratio within the embed-responsive frame */
+        
+        /* Styles for media elements inside gallery slides */
+        .gallery-slide img,
+        .gallery-slide video,
+        .gallery-slide iframe,
+        .gallery-slide blockquote {
+            max-width: 100%; /* Ensure content doesn't overflow */
+            max-height: 100%; /* Ensure content doesn't overflow */
+            object-fit: contain; /* Important: ensures entire media is visible */
         }
 
         /* Adjust the navigation buttons */
@@ -1160,17 +1164,13 @@
             cursor: pointer;
         }
         
-        /* Aspect Ratio Styles for Video Embeds and Project Gallery */
+        /* Aspect Ratio Styles using padding-top hack */
         .embed-responsive {
             position: relative;
             display: block;
             width: 100%;
             padding: 0;
             overflow: hidden;
-            /* Flex properties for centering content within the responsive container */
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .embed-responsive::before {
@@ -1189,20 +1189,9 @@
         .embed-responsive-1by1::before {
             padding-top: 100%; /* 1:1 Aspect Ratio for Instagram Square (height is 100% of width) */
         }
+        /* These global embed-responsive styles are for any element that needs to enforce an aspect ratio.
+           The project-gallery-container will use these. */
 
-        .embed-responsive iframe,
-        .embed-responsive blockquote,
-        .embed-responsive video,
-        .embed-responsive img { /* Also apply to images inside embed-responsive */
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-            object-fit: contain; /* Ensure content is contained within the aspect ratio frame */
-        }
 
         /* TikTok specific style */
         .tiktok-embed {
@@ -1516,7 +1505,7 @@
             <h1 id="projectDetailTitle">Project Title</h1>
         </div>
 
-        <div class="project-gallery-container">
+        <div class="project-gallery-container" id="projectGalleryContainer">
             <div class="project-gallery" id="projectGallery">
                 </div>
             <button class="gallery-nav prev" onclick="changeSlide(-1)">
@@ -2085,37 +2074,33 @@
             
             currentServicePage = serviceId;
             let pageId;
-            switch(serviceId) {
-                case 'photography':
-                    pageId = 'photographyPage';
-                    break;
-                case 'video-editing':
-                    pageId = 'videoEditingPage';
-                    break;
-                case 'graphic-design':
-                    pageId = 'graphicDesignPage';
-                    break;
-                default:
-                    // For newly added services, create a dynamic page if not one of the default three
-                    pageId = serviceId + 'Page';
-                    if (!document.getElementById(pageId)) {
-                        const newServicePage = document.createElement('div');
-                        newServicePage.id = pageId;
-                        newServicePage.className = 'service-page';
-                        newServicePage.innerHTML = `
-                            <a href="#" class="back-btn" onclick="backToHome()">
-                                <i class="fas fa-arrow-left"></i> <span data-en="Back to Home" data-ar="العودة للرئيسية">العودة للرئيسية</span>
-                            </a>
-                            <div class="service-header">
-                                <h1 data-en="${data.services.find(s => s.id === serviceId).nameEn}" data-ar="${data.services.find(s => s.id === serviceId).name}">${currentLanguage === 'ar' ? data.services.find(s => s.id === serviceId).name : data.services.find(s => s.id === serviceId).nameEn}</h1>
-                                <p data-en="${data.services.find(s => s.id === serviceId).descriptionEn}" data-ar="${data.services.find(s => s.id === serviceId).description}">${currentLanguage === 'ar' ? data.services.find(s => s.id === serviceId).description : data.services.find(s => s.id === serviceId).descriptionEn}</p>
-                            </div>
-                            <div class="service-gallery" id="${serviceId}Gallery">
-                            </div>
-                        `;
-                        document.body.appendChild(newServicePage);
-                    }
-                    break;
+            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const serviceData = data.services.find(s => s.id === serviceId);
+
+            if (serviceData) {
+                pageId = serviceId + 'Page';
+                if (!document.getElementById(pageId)) {
+                    // Create dynamic service page if it doesn't exist
+                    const newServicePage = document.createElement('div');
+                    newServicePage.id = pageId;
+                    newServicePage.className = 'service-page';
+                    newServicePage.innerHTML = `
+                        <a href="#" class="back-btn" onclick="backToHome()">
+                            <i class="fas fa-arrow-left"></i> <span data-en="Back to Home" data-ar="العودة للرئيسية">العودة للرئيسية</span>
+                        </a>
+                        <div class="service-header">
+                            <h1 data-en="${serviceData.nameEn}" data-ar="${serviceData.name}">${currentLanguage === 'ar' ? serviceData.name : serviceData.nameEn}</h1>
+                            <p data-en="${serviceData.descriptionEn}" data-ar="${serviceData.description}">${currentLanguage === 'ar' ? serviceData.description : serviceData.descriptionEn}</p>
+                        </div>
+                        <div class="service-gallery" id="${serviceId}Gallery">
+                        </div>
+                    `;
+                    document.body.appendChild(newServicePage);
+                }
+            } else {
+                // Fallback if service data is not found (shouldn't happen if services are loaded correctly)
+                pageId = 'photographyPage'; 
+                console.warn(`Service with ID ${serviceId} not found. Defaulting to photographyPage.`);
             }
             
             document.getElementById(pageId).classList.add('active');
@@ -2153,16 +2138,19 @@
                 workElement.className = 'service-item';
                 workElement.onclick = () => showProjectDetail(work);
                 
-                // استخدام أول وسيط متاح
+                // Using the first available media (image or video) for the preview
                 let mediaElement = '';
                 if (work.media && work.media.length > 0) {
-                    // Wrap image in embed-responsive based on work's aspect ratio, default to 16by9
-                    const aspectRatioClass = work.aspectRatio ? `embed-responsive-${work.aspectRatio}` : 'embed-responsive-16by9';
-                    mediaElement = `<div class="embed-responsive ${aspectRatioClass}"><img src="${work.media[0]}" alt="${work.title}"></div>`;
+                    // For service item previews, object-fit:cover is used in CSS for fixed height image-wrapper
+                    mediaElement = `<img src="${work.media[0]}" alt="${work.title}">`;
                 } else if (work.videos && work.videos.length > 0) {
-                    const videoUrl = work.videos[0];
-                    // Pass the work's aspect ratio to generateEmbedHtml
-                    mediaElement = generateEmbedHtml(videoUrl, work.aspectRatio);
+                    // For video previews, still use object-fit:cover as well for the thumbnail effect
+                    mediaElement = `
+                        <video controls preload="metadata" style="width: 100%; height: 100%; object-fit: cover;">
+                            <source src="${work.videos[0]}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    `;
                 } else {
                     mediaElement = `<div style="display: flex; align-items: center; justify-content: center; color: #666; width: 100%; height: 100%;">
                         <i class="fas fa-image" style="font-size: 3rem;"></i>
@@ -2216,77 +2204,6 @@
             createProjectGallery(work);
         }
 
-        // إنشاء معرض المشروع
-        function createProjectGallery(work) {
-            const galleryContainer = document.getElementById('projectGalleryContainer'); // The container that defines aspect ratio
-            const gallery = document.getElementById('projectGallery');
-            const indicators = document.getElementById('galleryIndicators');
-            
-            gallery.innerHTML = '';
-            indicators.innerHTML = '';
-            
-            const allMedia = [];
-            
-            // Set the aspect ratio class for the gallery container
-            const aspectRatioClass = work.aspectRatio ? `embed-responsive-${work.aspectRatio}` : 'embed-responsive-16by9';
-            // Remove previous aspect ratio classes and add the new one
-            galleryContainer.className = 'project-gallery-container'; // Reset classes
-            galleryContainer.classList.add('embed-responsive', aspectRatioClass); // Add responsive and specific aspect ratio
-
-            // إضافة الصور
-            if (work.media) {
-                work.media.forEach(media => {
-                    allMedia.push({type: 'image', src: media});
-                });
-            }
-            
-            // إضافة الفيديوهات
-            if (work.videos) {
-                work.videos.forEach(video => {
-                    allMedia.push({type: 'video', src: video});
-                });
-            }
-            
-            if (allMedia.length === 0) {
-                gallery.innerHTML = `
-                    <div class="gallery-slide" style="display: flex; align-items: center; justify-content: center; color: #666; width: 100%; height: 100%;">
-                        <div style="text-align: center;">
-                            <i class="fas fa-image" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-                            <p>لا توجد وسائط متاحة</p>
-                        </div>
-                    </div>
-                `;
-                // If no media, remove the responsive class from the container
-                galleryContainer.classList.remove('embed-responsive', aspectRatioClass);
-                return;
-            }
-            
-            allMedia.forEach((media, index) => {
-                const slide = document.createElement('div');
-                slide.className = 'gallery-slide';
-                
-                if (media.type === 'image') {
-                    // Images are directly placed in slide, and the embed-responsive rules for img will apply
-                    slide.innerHTML = `<img src="${media.src}" alt="Project Image">`;
-                } else { // It's a video
-                    // generateEmbedHtml already creates the embed-responsive wrapper
-                    slide.innerHTML = generateEmbedHtml(media.src, work.aspectRatio);
-                }
-                
-                gallery.appendChild(slide);
-                
-                // إنشاء مؤشر
-                const indicator = document.createElement('div');
-                indicator.className = 'gallery-indicator';
-                if (index === 0) indicator.classList.add('active');
-                indicator.onclick = () => goToSlide(index);
-                indicators.appendChild(indicator);
-            });
-            
-            currentSlide = 0;
-            updateGalleryDisplay();
-        }
-
         // Helper function to load external scripts
         function loadScript(src, id) {
             if (document.getElementById(id)) return; // Script already loaded
@@ -2297,31 +2214,22 @@
             document.head.appendChild(script);
         }
     
-        // New function to generate embed HTML for various platforms
-        // Modified to accept an optional aspectRatio parameter for the wrapper
-        function generateEmbedHtml(url, aspectRatio = '16by9') {
-            let embedHtml = '';
-            let finalAspectRatioClass = `embed-responsive-${aspectRatio}`; // Use provided aspect ratio
+        // New function to generate raw embed HTML for various platforms (no outer embed-responsive div or internal sizing styles)
+        function generateRawEmbedHtml(url) {
+            let embedContent = '';
 
             // YouTube
             const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
             const youtubeMatch = url.match(youtubeRegex);
             if (youtubeMatch && youtubeMatch[1]) {
                 const videoId = youtubeMatch[1];
-                // If it's a YouTube Short, override aspect ratio to 9:16 regardless of input
-                const isShort = url.includes('/shorts/');
-                if (isShort) {
-                    finalAspectRatioClass = 'embed-responsive-9by16';
-                }
-                embedHtml = `
-                    <div class="embed-responsive ${finalAspectRatioClass}">
-                        <iframe src="https://www.youtube.com/embed/${videoId}" 
-                                frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen>
-                        </iframe>
-                    </div>`;
-                return embedHtml;
+                embedContent = `
+                    <iframe src="https://www.youtube.com/embed/${videoId}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>`;
+                return embedContent;
             }
     
             // Instagram
@@ -2329,27 +2237,14 @@
             const instagramMatch = url.match(instagramRegex);
             if (instagramMatch && instagramMatch[2]) {
                 const shortcode = instagramMatch[2];
-                const isReel = instagramMatch[1] === 'reel';
-                // If it's an Instagram Reel, override aspect ratio to 9:16
-                if (isReel) {
-                    finalAspectRatioClass = 'embed-responsive-9by16';
-                } else if (aspectRatio === '1by1') { // Instagram posts are typically square
-                     finalAspectRatioClass = 'embed-responsive-1by1';
-                } else {
-                     finalAspectRatioClass = 'embed-responsive-16by9'; // Default for other Instagram if not reel or square
-                }
-
                 loadScript('//www.instagram.com/embed.js', 'instagram-embed-script');
-                embedHtml = `
-                    <div class="embed-responsive ${finalAspectRatioClass}">
-                         <blockquote class="instagram-media"
-                                     data-instgrm-permalink="https://www.instagram.com/p/${shortcode}/?utm_source=ig_embed"
-                                     data-instgrm-version="14"
-                                     style="width: 100%; height: 100%; margin: 0;">
-                         </blockquote>
-                    </div>`;
-                 // Instagram's script will handle the content loading.
-                return embedHtml;
+                embedContent = `
+                    <blockquote class="instagram-media"
+                                data-instgrm-permalink="https://www.instagram.com/p/${shortcode}/?utm_source=ig_embed"
+                                data-instgrm-version="14"
+                                style="margin: 0; width: 100%; height: 100%; min-width: 0;">
+                    </blockquote>`; // Instagram's own JS handles its sizing, but margin: 0 is safe. min-width:0 for flexbox.
+                return embedContent;
             }
     
             // TikTok
@@ -2357,19 +2252,14 @@
             const tiktokMatch = url.match(tiktokRegex);
             if (tiktokMatch && tiktokMatch[1]) {
                 const videoId = tiktokMatch[1];
-                // TikToks are almost always 9:16
-                finalAspectRatioClass = 'embed-responsive-9by16';
                 loadScript('https://www.tiktok.com/embed.js', 'tiktok-embed-script');
-                // TikTok blockquote is responsive by nature but we wrap it for consistency and to control aspect ratio.
-                embedHtml = `
-                    <div class="embed-responsive ${finalAspectRatioClass}">
-                        <blockquote class="tiktok-embed"
-                                    cite="${url}"
-                                    data-video-id="${videoId}"
-                                    style="width: 100%; height: 100%; margin: 0;">
-                        </blockquote>
-                    </div>`;
-                return embedHtml;
+                embedContent = `
+                    <blockquote class="tiktok-embed"
+                                cite="${url}"
+                                data-video-id="${videoId}"
+                                style="margin: 0; width: 100%; height: 100%; min-width: 0;">
+                    </blockquote>`; // TikTok's own JS handles its sizing. min-width:0 for flexbox.
+                return embedContent;
             }
     
             // Facebook
@@ -2377,39 +2267,96 @@
             const facebookMatch = url.match(facebookRegex);
             if (facebookMatch) {
                 const encodedUrl = encodeURIComponent(url);
-                const isReel = url.includes('/reel/');
-                // If it's a Facebook Reel, override aspect ratio to 9:16
-                if (isReel) {
-                    finalAspectRatioClass = 'embed-responsive-9by16';
-                } else {
-                    finalAspectRatioClass = 'embed-responsive-16by9'; // Default for other Facebook videos
-                }
-
-                embedHtml = `
-                    <div class="embed-responsive ${finalAspectRatioClass}" style="overflow: auto;">
-                        <iframe src="https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&width=560" 
-                                style="border:none;overflow:hidden" 
-                                scrolling="no" 
-                                frameborder="0" 
-                                allowfullscreen="true" 
-                                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
-                        </iframe>
-                    </div>`;
-                return embedHtml;
+                embedContent = `
+                    <iframe src="https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&width=560" 
+                            style="border:none;overflow:hidden; width: 100%; height: 100%;" 
+                            scrolling="no" 
+                            frameborder="0" 
+                            allowfullscreen="true" 
+                            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+                    </iframe>`;
+                return embedContent;
             }
     
-            // Fallback for direct video links or images that are not handled by specific embeds
-            // Apply the chosen aspect ratio from the form
-            embedHtml = `
-                <div class="embed-responsive ${finalAspectRatioClass}">
-                    <video controls playsinline webkit-playsinline>
-                        <source src="${url}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>`;
-            return embedHtml;
+            // Fallback for direct video links (mp4, webm, etc.)
+            embedContent = `
+                <video controls playsinline webkit-playsinline style="width: 100%; height: 100%;">
+                    <source src="${url}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>`;
+            return embedContent;
         }
 
+        // إنشاء معرض المشروع
+        function createProjectGallery(work) {
+            const galleryContainer = document.getElementById('projectGalleryContainer'); 
+            const gallery = document.getElementById('projectGallery');
+            const indicators = document.getElementById('galleryIndicators');
+            
+            gallery.innerHTML = '';
+            indicators.innerHTML = '';
+            
+            const allMedia = [];
+            
+            // Add images
+            if (work.media) {
+                work.media.forEach(mediaSrc => {
+                    allMedia.push({type: 'image', src: mediaSrc});
+                });
+            }
+            
+            // Add videos
+            if (work.videos) {
+                work.videos.forEach(videoSrc => {
+                    allMedia.push({type: 'video', src: videoSrc});
+                });
+            }
+            
+            if (allMedia.length === 0) {
+                // If no media, ensure the container doesn't have an aspect ratio
+                galleryContainer.classList.remove('embed-responsive', 'embed-responsive-16by9', 'embed-responsive-9by16', 'embed-responsive-1by1');
+                gallery.innerHTML = `
+                    <div class="gallery-slide">
+                        <div style="text-align: center; color: #666;">
+                            <i class="fas fa-image" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                            <p>لا توجد وسائط متاحة</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Apply the aspect ratio to the main gallery container
+            const aspectRatioClass = `embed-responsive-${work.aspectRatio || '16by9'}`;
+            // Remove all existing embed-responsive classes and add the correct one
+            galleryContainer.classList.remove('embed-responsive-16by9', 'embed-responsive-9by16', 'embed-responsive-1by1'); 
+            galleryContainer.classList.add('embed-responsive', aspectRatioClass); // Add 'embed-responsive' base class and specific ratio
+
+            allMedia.forEach((media, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'gallery-slide'; 
+
+                let mediaHtml = '';
+                if (media.type === 'image') {
+                    mediaHtml = `<img src="${media.src}" alt="Project Image">`; 
+                } else { // It's a video
+                    mediaHtml = generateRawEmbedHtml(media.src); 
+                }
+                
+                slide.innerHTML = mediaHtml; 
+                gallery.appendChild(slide);
+                
+                // Create indicator
+                const indicator = document.createElement('div');
+                indicator.className = 'gallery-indicator';
+                if (index === 0) indicator.classList.add('active');
+                indicator.onclick = () => goToSlide(index);
+                indicators.appendChild(indicator);
+            });
+            
+            currentSlide = 0;
+            updateGalleryDisplay();
+        }
 
         // تغيير الشريحة
         function changeSlide(direction) {
@@ -2654,10 +2601,7 @@
             document.getElementById('addWorkButton').textContent = 'تحديث العمل';
             document.getElementById('cancelEditButton').style.display = 'inline-block';
 
-            updateMediaPreview(); // ملاحظة: لا يمكننا إعادة تحميل الصور من base64، سيحتاج المستخدم لإعادة تحديدها إذا أراد تغييرها
-            // A more user-friendly approach for images in edit mode would be to show placeholders or the current image,
-            // but the base64 data makes direct "pre-filling" of file inputs difficult.
-            // For now, this alert clarifies the behavior.
+            updateMediaPreview(); 
             alert('تم تحميل بيانات العمل في النموذج. لإضافة أو تغيير الصور، يرجى تحديدها مرة أخرى.');
         }
 
@@ -2958,7 +2902,7 @@
                         // Apply embed-responsive class to preview images
                         mediaItem.innerHTML = `
                             <div class="embed-responsive embed-responsive-${aspectRatio}">
-                                <img src="${e.target.result}" alt="Work Image">
+                                <img src="${e.target.result}" alt="Work Image" style="object-fit: contain;">
                             </div>
                             <button class="remove-media" onclick="removeImage(${index})">×</button>
                         `;
@@ -2973,9 +2917,11 @@
                 const mediaItem = document.createElement('div');
                 mediaItem.className = 'media-item';
                 
-                // Use generateEmbedHtml with the selected aspect ratio for video previews
+                // Use generateRawEmbedHtml with the selected aspect ratio for video previews
                 mediaItem.innerHTML = `
-                    ${generateEmbedHtml(link, aspectRatio)}
+                    <div class="embed-responsive embed-responsive-${aspectRatio}">
+                        ${generateRawEmbedHtml(link)}
+                    </div>
                     <button class="remove-media" onclick="removeVideo(${index})">×</button>
                 `;
                 preview.appendChild(mediaItem);
