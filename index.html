@@ -371,7 +371,7 @@
         .image-wrapper img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Changed to cover for previews in service item */
+            object-fit: contain;
             transition: transform 0.4s ease;
         }
 
@@ -641,24 +641,16 @@
             position: relative;
         }
 
-        .service-item-media img { /* Only apply object-fit: cover to images here */
+        .service-item-media img,
+        .service-item-media video {
             width: 100%;
             height: 100%;
-            object-fit: cover; 
+            object-fit: cover;
             transition: transform 0.4s ease;
         }
-        
-        .service-item-media .embed-responsive { /* Container for videos/embeds in service preview */
-            width: 100%;
-            height: 100%;
-            position: absolute; /* To cover the service-item-media div */
-            top: 0;
-            left: 0;
-        }
-
 
         .service-item:hover .service-item-media img,
-        .service-item:hover .service-item-media .embed-responsive > * { /* Apply hover scale to direct children of embed-responsive as well */
+        .service-item:hover .service-item-media video {
             transform: scale(1.05);
         }
 
@@ -722,6 +714,7 @@
         .project-gallery-container {
             position: relative;
             margin-bottom: 2rem;
+            /* Remove fixed height, use aspect ratio of content */
             background: #1c1c1e; /* Background for the container itself */
             border-radius: 15px;
             overflow: hidden;
@@ -734,23 +727,24 @@
             display: flex;
             overflow: hidden;
             width: 100%; /* Take full width of container */
+            /* Height will be determined by the content within embed-responsive */
             transition: transform 0.5s ease;
         }
 
-        /* The actual slide element, will contain the embed-responsive div or image */
+        /* The actual slide element, will contain the embed-responsive div */
         .gallery-slide {
             min-width: 100%; /* Each slide takes full width */
             display: flex;
             align-items: center; /* Center content within slide */
-            justify-content: center; /* Horizontally center content */
+            justify-content: center; /* Center content within slide */
         }
-        
-        /* Specific styling for images inside gallery slides (not wrapped in embed-responsive) */
-        .gallery-slide img {
-            max-width: 100%;
-            height: auto; /* Allow height to adjust naturally */
-            display: block; /* Remove extra space below image */
-            object-fit: contain; /* Ensure image fits while maintaining aspect ratio */
+
+        /* Ensure images and videos fill their responsive containers */
+        .gallery-slide img, 
+        .gallery-slide video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Contain to maintain aspect ratio within the embed-responsive frame */
         }
 
         /* Adjust the navigation buttons */
@@ -1196,10 +1190,10 @@
             padding-top: 100%; /* 1:1 Aspect Ratio for Instagram Square (height is 100% of width) */
         }
 
-        /* Specific styles for iframes, blockquotes, and videos within embed-responsive */
         .embed-responsive iframe,
         .embed-responsive blockquote,
-        .embed-responsive video {
+        .embed-responsive video,
+        .embed-responsive img { /* Also apply to images inside embed-responsive */
             position: absolute;
             top: 0;
             bottom: 0;
@@ -1209,7 +1203,7 @@
             border: 0;
             object-fit: contain; /* Ensure content is contained within the aspect ratio frame */
         }
-        
+
         /* TikTok specific style */
         .tiktok-embed {
             max-width: 100% !important;
@@ -1522,7 +1516,7 @@
             <h1 id="projectDetailTitle">Project Title</h1>
         </div>
 
-        <div class="project-gallery-container" id="projectGalleryContainer">
+        <div class="project-gallery-container">
             <div class="project-gallery" id="projectGallery">
                 </div>
             <button class="gallery-nav prev" onclick="changeSlide(-1)">
@@ -2091,33 +2085,37 @@
             
             currentServicePage = serviceId;
             let pageId;
-            const data = JSON.parse(localStorage.getItem('cmaData'));
-            const serviceData = data.services.find(s => s.id === serviceId);
-
-            if (serviceData) {
-                pageId = serviceId + 'Page';
-                if (!document.getElementById(pageId)) {
-                    // Create dynamic service page if it doesn't exist
-                    const newServicePage = document.createElement('div');
-                    newServicePage.id = pageId;
-                    newServicePage.className = 'service-page';
-                    newServicePage.innerHTML = `
-                        <a href="#" class="back-btn" onclick="backToHome()">
-                            <i class="fas fa-arrow-left"></i> <span data-en="Back to Home" data-ar="العودة للرئيسية">العودة للرئيسية</span>
-                        </a>
-                        <div class="service-header">
-                            <h1 data-en="${serviceData.nameEn}" data-ar="${serviceData.name}">${currentLanguage === 'ar' ? serviceData.name : serviceData.nameEn}</h1>
-                            <p data-en="${serviceData.descriptionEn}" data-ar="${serviceData.description}">${currentLanguage === 'ar' ? serviceData.description : serviceData.descriptionEn}</p>
-                        </div>
-                        <div class="service-gallery" id="${serviceId}Gallery">
-                        </div>
-                    `;
-                    document.body.appendChild(newServicePage);
-                }
-            } else {
-                // Fallback if service data is not found (shouldn't happen if services are loaded correctly)
-                pageId = 'photographyPage'; 
-                console.warn(`Service with ID ${serviceId} not found. Defaulting to photographyPage.`);
+            switch(serviceId) {
+                case 'photography':
+                    pageId = 'photographyPage';
+                    break;
+                case 'video-editing':
+                    pageId = 'videoEditingPage';
+                    break;
+                case 'graphic-design':
+                    pageId = 'graphicDesignPage';
+                    break;
+                default:
+                    // For newly added services, create a dynamic page if not one of the default three
+                    pageId = serviceId + 'Page';
+                    if (!document.getElementById(pageId)) {
+                        const newServicePage = document.createElement('div');
+                        newServicePage.id = pageId;
+                        newServicePage.className = 'service-page';
+                        newServicePage.innerHTML = `
+                            <a href="#" class="back-btn" onclick="backToHome()">
+                                <i class="fas fa-arrow-left"></i> <span data-en="Back to Home" data-ar="العودة للرئيسية">العودة للرئيسية</span>
+                            </a>
+                            <div class="service-header">
+                                <h1 data-en="${data.services.find(s => s.id === serviceId).nameEn}" data-ar="${data.services.find(s => s.id === serviceId).name}">${currentLanguage === 'ar' ? data.services.find(s => s.id === serviceId).name : data.services.find(s => s.id === serviceId).nameEn}</h1>
+                                <p data-en="${data.services.find(s => s.id === serviceId).descriptionEn}" data-ar="${data.services.find(s => s.id === serviceId).description}">${currentLanguage === 'ar' ? data.services.find(s => s.id === serviceId).description : data.services.find(s => s.id === serviceId).descriptionEn}</p>
+                            </div>
+                            <div class="service-gallery" id="${serviceId}Gallery">
+                            </div>
+                        `;
+                        document.body.appendChild(newServicePage);
+                    }
+                    break;
             }
             
             document.getElementById(pageId).classList.add('active');
@@ -2158,11 +2156,13 @@
                 // استخدام أول وسيط متاح
                 let mediaElement = '';
                 if (work.media && work.media.length > 0) {
-                    // For service item previews, object-fit:cover is used in CSS for fixed height image-wrapper
-                    mediaElement = `<img src="${work.media[0]}" alt="${work.title}">`;
+                    // Wrap image in embed-responsive based on work's aspect ratio, default to 16by9
+                    const aspectRatioClass = work.aspectRatio ? `embed-responsive-${work.aspectRatio}` : 'embed-responsive-16by9';
+                    mediaElement = `<div class="embed-responsive ${aspectRatioClass}"><img src="${work.media[0]}" alt="${work.title}"></div>`;
                 } else if (work.videos && work.videos.length > 0) {
-                    // For video previews, we use generateEmbedHtml which creates the embed-responsive wrapper
-                    mediaElement = generateEmbedHtml(work.videos[0], work.aspectRatio);
+                    const videoUrl = work.videos[0];
+                    // Pass the work's aspect ratio to generateEmbedHtml
+                    mediaElement = generateEmbedHtml(videoUrl, work.aspectRatio);
                 } else {
                     mediaElement = `<div style="display: flex; align-items: center; justify-content: center; color: #666; width: 100%; height: 100%;">
                         <i class="fas fa-image" style="font-size: 3rem;"></i>
@@ -2214,6 +2214,77 @@
             
             // إنشاء معرض الصور والفيديوهات مع تطبيق نسبة العرض إلى الارتفاع
             createProjectGallery(work);
+        }
+
+        // إنشاء معرض المشروع
+        function createProjectGallery(work) {
+            const galleryContainer = document.getElementById('projectGalleryContainer'); // The container that defines aspect ratio
+            const gallery = document.getElementById('projectGallery');
+            const indicators = document.getElementById('galleryIndicators');
+            
+            gallery.innerHTML = '';
+            indicators.innerHTML = '';
+            
+            const allMedia = [];
+            
+            // Set the aspect ratio class for the gallery container
+            const aspectRatioClass = work.aspectRatio ? `embed-responsive-${work.aspectRatio}` : 'embed-responsive-16by9';
+            // Remove previous aspect ratio classes and add the new one
+            galleryContainer.className = 'project-gallery-container'; // Reset classes
+            galleryContainer.classList.add('embed-responsive', aspectRatioClass); // Add responsive and specific aspect ratio
+
+            // إضافة الصور
+            if (work.media) {
+                work.media.forEach(media => {
+                    allMedia.push({type: 'image', src: media});
+                });
+            }
+            
+            // إضافة الفيديوهات
+            if (work.videos) {
+                work.videos.forEach(video => {
+                    allMedia.push({type: 'video', src: video});
+                });
+            }
+            
+            if (allMedia.length === 0) {
+                gallery.innerHTML = `
+                    <div class="gallery-slide" style="display: flex; align-items: center; justify-content: center; color: #666; width: 100%; height: 100%;">
+                        <div style="text-align: center;">
+                            <i class="fas fa-image" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                            <p>لا توجد وسائط متاحة</p>
+                        </div>
+                    </div>
+                `;
+                // If no media, remove the responsive class from the container
+                galleryContainer.classList.remove('embed-responsive', aspectRatioClass);
+                return;
+            }
+            
+            allMedia.forEach((media, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'gallery-slide';
+                
+                if (media.type === 'image') {
+                    // Images are directly placed in slide, and the embed-responsive rules for img will apply
+                    slide.innerHTML = `<img src="${media.src}" alt="Project Image">`;
+                } else { // It's a video
+                    // generateEmbedHtml already creates the embed-responsive wrapper
+                    slide.innerHTML = generateEmbedHtml(media.src, work.aspectRatio);
+                }
+                
+                gallery.appendChild(slide);
+                
+                // إنشاء مؤشر
+                const indicator = document.createElement('div');
+                indicator.className = 'gallery-indicator';
+                if (index === 0) indicator.classList.add('active');
+                indicator.onclick = () => goToSlide(index);
+                indicators.appendChild(indicator);
+            });
+            
+            currentSlide = 0;
+            updateGalleryDisplay();
         }
 
         // Helper function to load external scripts
@@ -2339,77 +2410,6 @@
             return embedHtml;
         }
 
-
-        // إنشاء معرض المشروع
-        function createProjectGallery(work) {
-            const galleryContainer = document.getElementById('projectGalleryContainer'); // The container that defines aspect ratio
-            const gallery = document.getElementById('projectGallery');
-            const indicators = document.getElementById('galleryIndicators');
-            
-            gallery.innerHTML = '';
-            indicators.innerHTML = '';
-            
-            const allMedia = [];
-            
-            // Set the aspect ratio class for the gallery container
-            const aspectRatioClass = work.aspectRatio ? `embed-responsive-${work.aspectRatio}` : 'embed-responsive-16by9';
-            // Remove previous aspect ratio classes and add the new one
-            galleryContainer.className = 'project-gallery-container'; // Reset classes
-            galleryContainer.classList.add('embed-responsive', aspectRatioClass); // Add responsive and specific aspect ratio
-
-            // إضافة الصور
-            if (work.media) {
-                work.media.forEach(media => {
-                    allMedia.push({type: 'image', src: media});
-                });
-            }
-            
-            // إضافة الفيديوهات
-            if (work.videos) {
-                work.videos.forEach(video => {
-                    allMedia.push({type: 'video', src: video});
-                });
-            }
-            
-            if (allMedia.length === 0) {
-                gallery.innerHTML = `
-                    <div class="gallery-slide" style="display: flex; align-items: center; justify-content: center; color: #666; width: 100%; height: 100%;">
-                        <div style="text-align: center;">
-                            <i class="fas fa-image" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-                            <p>لا توجد وسائط متاحة</p>
-                        </div>
-                    </div>
-                `;
-                // If no media, remove the responsive class from the container
-                galleryContainer.classList.remove('embed-responsive', aspectRatioClass);
-                return;
-            }
-            
-            allMedia.forEach((media, index) => {
-                const slide = document.createElement('div');
-                slide.className = 'gallery-slide';
-                
-                if (media.type === 'image') {
-                    // Images are directly placed in slide, and their max-width/height will handle sizing
-                    slide.innerHTML = `<img src="${media.src}" alt="Project Image">`;
-                } else { // It's a video
-                    // generateEmbedHtml already creates the embed-responsive wrapper
-                    slide.innerHTML = generateEmbedHtml(media.src, work.aspectRatio);
-                }
-                
-                gallery.appendChild(slide);
-                
-                // إنشاء مؤشر
-                const indicator = document.createElement('div');
-                indicator.className = 'gallery-indicator';
-                if (index === 0) indicator.classList.add('active');
-                indicator.onclick = () => goToSlide(index);
-                indicators.appendChild(indicator);
-            });
-            
-            currentSlide = 0;
-            updateGalleryDisplay();
-        }
 
         // تغيير الشريحة
         function changeSlide(direction) {
@@ -2654,7 +2654,10 @@
             document.getElementById('addWorkButton').textContent = 'تحديث العمل';
             document.getElementById('cancelEditButton').style.display = 'inline-block';
 
-            updateMediaPreview(); 
+            updateMediaPreview(); // ملاحظة: لا يمكننا إعادة تحميل الصور من base64، سيحتاج المستخدم لإعادة تحديدها إذا أراد تغييرها
+            // A more user-friendly approach for images in edit mode would be to show placeholders or the current image,
+            // but the base64 data makes direct "pre-filling" of file inputs difficult.
+            // For now, this alert clarifies the behavior.
             alert('تم تحميل بيانات العمل في النموذج. لإضافة أو تغيير الصور، يرجى تحديدها مرة أخرى.');
         }
 
