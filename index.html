@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMA Marketing Agency - Digital Services Enhanced</title>
+    <title>CMA Marketing Agency - Enhanced Video Portfolio</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -366,6 +366,7 @@
             border-radius: 10px;
             margin-bottom: 1rem;
             background-color: #29292b;
+            position: relative;
         }
 
         .image-wrapper img {
@@ -496,126 +497,121 @@
             color: black;
         }
 
-        /* أنماط إشعار الشكر */
-        .thank-you-popup, .consultation-popup {
-            display: none;
-            position: fixed;
+        /* Enhanced Video Styles */
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 2;
+        }
+
+        .video-container:hover .video-overlay {
+            opacity: 1;
+        }
+
+        .video-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .video-btn {
+            background: rgba(255, 215, 0, 0.9);
+            border: none;
+            color: #000;
+            padding: 0.8rem;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-btn:hover {
+            background: #ffd700;
+            transform: scale(1.1);
+        }
+
+        .video-thumbnail {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 10000;
-            justify-content: center;
-            align-items: center;
+            object-fit: cover;
+            z-index: 1;
         }
-        
-        .thank-you-content, .consultation-content {
-            background: linear-gradient(135deg, #1c1c1e, #2a2a2a);
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            animation: popup-appear 0.6s ease-out;
-            position: relative;
-            border: 2px solid #ffd700;
-        }
-        
-        @keyframes popup-appear {
-            0% { opacity: 0; transform: scale(0.7) translateY(-50px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        
-        .thank-you-icon, .consultation-icon {
-            font-size: 80px;
-            color: #ffd700;
-            margin-bottom: 20px;
-            animation: bounce 2s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-20px); }
-            60% { transform: translateY(-10px); }
-        }
-        
-        .thank-you-title, .consultation-title {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #ffd700;
-        }
-        
-        .thank-you-message, .consultation-message {
-            font-size: 18px;
-            color: #dddddd;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
-        
-        .thank-you-close, .consultation-btn {
-            display: inline-block;
-            background: linear-gradient(90deg, #d4af37, #ffd700, #fff8dc);
-            color: #000;
-            padding: 12px 30px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 215, 0, 0.9);
             border: none;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+            color: #000;
             cursor: pointer;
-            font-size: 16px;
-            margin: 0 5px;
-        }
-        
-        .thank-you-close:hover, .consultation-btn:hover {
-            background: linear-gradient(90deg, #ffcc00, #ffd700, #ffb300);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 3;
         }
 
-        /* أنماط صفحة الخدمة */
-        .service-page {
-            display: none;
-            padding: 4rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
+        .play-button:hover {
+            background: #ffd700;
+            transform: translate(-50%, -50%) scale(1.1);
         }
 
-        .service-page.active {
-            display: block;
+        .video-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 2rem 1rem 1rem;
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
         }
 
-        .service-header {
-            text-align: center;
-            margin-bottom: 3rem;
+        .video-container:hover .video-info {
+            transform: translateY(0);
         }
 
-        .service-header h1 {
-            font-size: 3rem;
-            color: #ffffff;
-            background: linear-gradient(90deg, #d4af37, #ffd700, #fff8dc, #ffd700, #d4af37);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
+        .video-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
         }
 
-        .service-header p {
-            font-size: 1.2rem;
-            color: #dddddd;
-            max-width: 600px;
-            margin: 0 auto;
+        .video-duration {
+            font-size: 0.9rem;
+            opacity: 0.8;
         }
 
-        .service-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
+        /* Enhanced Service Item Styles */
         .service-item {
             background: #1c1c1e;
             border-radius: 15px;
@@ -623,6 +619,7 @@
             box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
+            position: relative;
         }
 
         .service-item:hover {
@@ -671,6 +668,165 @@
             line-height: 1.5;
         }
 
+        .media-type-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 215, 0, 0.9);
+            color: #000;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .download-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 215, 0, 0.9);
+            border: none;
+            color: #000;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            opacity: 0;
+            z-index: 2;
+        }
+
+        .service-item:hover .download-btn {
+            opacity: 1;
+        }
+
+        .download-btn:hover {
+            background: #ffd700;
+            transform: scale(1.1);
+        }
+
+        /* Video Modal Styles */
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .video-modal.active {
+            display: flex;
+        }
+
+        .video-modal-content {
+            background: #1c1c1e;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow: auto;
+            position: relative;
+        }
+
+        .video-modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ffd700;
+            border: none;
+            color: #000;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            z-index: 10001;
+        }
+
+        .video-modal-header {
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .video-modal-title {
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .modal-btn {
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(90deg, #d4af37, #ffd700, #fff8dc);
+            color: #000;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-btn:hover {
+            background: linear-gradient(90deg, #ffcc00, #ffd700, #ffb300);
+            transform: translateY(-2px);
+        }
+
+        /* Service Page Styles */
+        .service-page {
+            display: none;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .service-page.active {
+            display: block;
+        }
+
+        .service-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .service-header h1 {
+            font-size: 3rem;
+            color: #ffffff;
+            background: linear-gradient(90deg, #d4af37, #ffd700, #fff8dc, #ffd700, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .service-header p {
+            font-size: 1.2rem;
+            color: #dddddd;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .service-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
         .back-btn {
             display: inline-block;
             margin-bottom: 2rem;
@@ -688,7 +844,7 @@
             transform: translateY(-2px);
         }
 
-        /* أنماط صفحة تفاصيل المشروع */
+        /* Project Detail Page Styles */
         .project-detail-page {
             display: none;
             padding: 2rem;
@@ -731,6 +887,7 @@
             align-items: center;
             justify-content: center;
             transition: transform 0.5s ease;
+            position: relative;
         }
 
         .gallery-slide img, .gallery-slide video {
@@ -825,6 +982,86 @@
         .contact-btn:hover {
             background: linear-gradient(90deg, #ffcc00, #ffd700, #ffb300);
             transform: translateY(-2px);
+        }
+
+        /* أنماط إشعار الشكر */
+        .thank-you-popup, .consultation-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .thank-you-content, .consultation-content {
+            background: linear-gradient(135deg, #1c1c1e, #2a2a2a);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: popup-appear 0.6s ease-out;
+            position: relative;
+            border: 2px solid #ffd700;
+        }
+        
+        @keyframes popup-appear {
+            0% { opacity: 0; transform: scale(0.7) translateY(-50px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        
+        .thank-you-icon, .consultation-icon {
+            font-size: 80px;
+            color: #ffd700;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+        
+        .thank-you-title, .consultation-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+        
+        .thank-you-message, .consultation-message {
+            font-size: 18px;
+            color: #dddddd;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .thank-you-close, .consultation-btn {
+            display: inline-block;
+            background: linear-gradient(90deg, #d4af37, #ffd700, #fff8dc);
+            color: #000;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 5px;
+        }
+        
+        .thank-you-close:hover, .consultation-btn:hover {
+            background: linear-gradient(90deg, #ffcc00, #ffd700, #ffb300);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
         }
 
         /* أنماط الداش بورد */
@@ -1194,6 +1431,63 @@
             min-width: unset !important;
         }
 
+        /* Enhanced Video Player Controls */
+        .custom-video-player {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        .custom-video-player video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .video-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .video-progress-bar {
+            height: 100%;
+            background: #ffd700;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        .video-buffer-bar {
+            position: absolute;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            width: 0%;
+        }
+
+        /* Loading Animation */
+        .video-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffd700;
+            font-size: 2rem;
+            z-index: 5;
+        }
+
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* وسائط استعلام للشاشات المختلفة */
         @media (max-width: 767px) {
             .container {
@@ -1327,6 +1621,28 @@
             .gallery-nav.next {
                 right: 10px;
             }
+
+            .video-modal-content {
+                padding: 1rem;
+                margin: 1rem;
+            }
+
+            .video-modal-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .play-button {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .video-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
         }
 
         /* تحسين الاستجابة للشاشات الصغيرة جداً */
@@ -1343,13 +1659,21 @@
             .consultation-message, .thank-you-message {
                 font-size: 16px;
             }
+
+            .service-gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .media-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
         }
     </style>
 </head>
 <body>
     <div id="mainSite">
         <header>
-            <img class="cmalogoh" src="SVG/asdgfArtboard 1.svg" alt="cma logo" />
+            <img class="cmalogoh" src="https://page1.genspark.site/get_upload_url/e19db0f4e0d56b12493cc84f9547f172e8ec9fe1cd2d6229538832a8eb5b9a40/default/SVG/asdgfArtboard%201.svg" alt="cma logo" />
             <nav class="navigation">
                 <ul>
                     <li><a href="#about" data-en="About" data-ar="من نحن">About</a></li>
@@ -1370,13 +1694,13 @@
                     <a class="Contactus" href="https://wa.me/201004435408" target="_blank" data-en="Contact us" data-ar="تواصل معنا">Contact us</a>
                 </div>
             </div>
-            <img class="plan" src="sss/cmaaa.svg" alt="logocma2" />
+            <img class="plan" src="https://page1.genspark.site/get_upload_url/e19db0f4e0d56b12493cc84f9547f172e8ec9fe1cd2d6229538832a8eb5b9a40/default/sss/cmaaa.svg" alt="logocma2" />
         </section>
 
         <section class="about" id="about">
             <div class="about-container">
                 <div class="about-image">
-                    <img src="sss/people-taking-part-business-event (1).svg" alt="About CMA" width="600" height="400">
+                    <img src="https://page1.genspark.site/get_upload_url/e19db0f4e0d56b12493cc84f9547f172e8ec9fe1cd2d6229538832a8eb5b9a40/default/sss/people-taking-part-business-event%20(1).svg" alt="About CMA" width="600" height="400">
                 </div>
                 <div class="about-text">
                     <h2 data-en="About CMA" data-ar="من نحن">About CMA</h2>
@@ -1407,7 +1731,7 @@
                 </div>
 
                 <ul class="projects" id="servicesGrid">
-                    </ul>
+                </ul>
             </div>
         </section>
 
@@ -1464,7 +1788,7 @@
             <p data-en="Professional photography services for all your needs" data-ar="خدمات تصوير احترافية لجميع احتياجاتك">Professional photography services for all your needs</p>
         </div>
         <div class="service-gallery" id="photographyGallery">
-            </div>
+        </div>
     </div>
 
     <div id="videoEditingPage" class="service-page">
@@ -1476,7 +1800,7 @@
             <p data-en="Professional video editing and motion graphics" data-ar="مونتاج فيديو احترافي وجرافيك متحرك">Professional video editing and motion graphics</p>
         </div>
         <div class="service-gallery" id="videoEditingGallery">
-            </div>
+        </div>
     </div>
 
     <div id="graphicDesignPage" class="service-page">
@@ -1488,7 +1812,7 @@
             <p data-en="Creative graphic design solutions for your business" data-ar="حلول تصميم جرافيك إبداعية لعملك">Creative graphic design solutions for your business</p>
         </div>
         <div class="service-gallery" id="graphicDesignGallery">
-            </div>
+        </div>
     </div>
 
     <div id="projectDetailPage" class="project-detail-page">
@@ -1502,7 +1826,7 @@
 
         <div class="project-gallery-container">
             <div class="project-gallery" id="projectGallery">
-                </div>
+            </div>
             <button class="gallery-nav prev" onclick="changeSlide(-1)">
                 <i class="fas fa-chevron-left"></i>
             </button>
@@ -1510,7 +1834,7 @@
                 <i class="fas fa-chevron-right"></i>
             </button>
             <div class="gallery-indicators" id="galleryIndicators">
-                </div>
+            </div>
         </div>
 
         <div class="project-info">
@@ -1530,6 +1854,33 @@
                     <i class="fas fa-envelope"></i>
                     <span data-en="Email" data-ar="إيميل">إيميل</span>
                 </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Modal -->
+    <div id="videoModal" class="video-modal">
+        <div class="video-modal-content">
+            <button class="video-modal-close" onclick="closeVideoModal()">×</button>
+            <div class="video-modal-header">
+                <h3 class="video-modal-title" id="videoModalTitle">Video Title</h3>
+            </div>
+            <div id="videoModalPlayer">
+                <!-- Video content will be inserted here -->
+            </div>
+            <div class="video-modal-actions">
+                <a href="#" class="modal-btn" id="downloadVideoBtn" download>
+                    <i class="fas fa-download"></i>
+                    <span data-en="Download Video" data-ar="تحميل الفيديو">تحميل الفيديو</span>
+                </a>
+                <a href="#" class="modal-btn" id="shareVideoBtn" target="_blank">
+                    <i class="fas fa-share"></i>
+                    <span data-en="Share Video" data-ar="مشاركة الفيديو">مشاركة الفيديو</span>
+                </a>
+                <button class="modal-btn" onclick="requestVideoFile()">
+                    <i class="fas fa-file-video"></i>
+                    <span data-en="Request Video File" data-ar="طلب ملف الفيديو">طلب ملف الفيديو</span>
+                </button>
             </div>
         </div>
     </div>
@@ -1624,7 +1975,7 @@
                 <div class="services-list">
                     <h3>الخدمات الحالية</h3>
                     <div id="servicesList">
-                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1651,7 +2002,7 @@
                         </div>
                         
                         <div id="mediaPreview" class="media-grid">
-                            </div>
+                        </div>
                         
                         <button type="submit" id="addWorkButton">إضافة العمل</button>
                         <button type="button" id="cancelEditButton" style="display: none; background: #666;" onclick="cancelEditWork()">إلغاء التعديل</button>
@@ -1662,7 +2013,7 @@
                     <h3>الأعمال الحالية</h3>
                     <input type="text" id="workFilterInput" placeholder="بحث في الأعمال..." style="margin-bottom: 1rem;">
                     <div id="worksList">
-                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1670,7 +2021,7 @@
                 <div class="messages-list">
                     <h3>رسائل العملاء</h3>
                     <div id="messagesList">
-                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1678,7 +2029,7 @@
                 <div class="consultations-list">
                     <h3>طلبات الاستشارة التسويقية</h3>
                     <div id="consultationsList">
-                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1686,7 +2037,7 @@
                 <div class="visitors-list">
                     <h3>تفاصيل الزوار</h3>
                     <div id="visitorsList">
-                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1753,6 +2104,7 @@
         let currentSlide = 0;
         let videoLinks = [];
         let currentlyEditingWorkId = null;
+        let currentVideoModal = null;
 
         // بيانات افتراضية للنظام
         const defaultData = {
@@ -1763,7 +2115,7 @@
                     nameEn: 'Photography',
                     description: 'خدمات تصوير احترافية لجميع احتياجاتك',
                     descriptionEn: 'Professional photography services for all your needs',
-                    image: 'sss/Content Management IM.svg'
+                    image: 'https://page1.genspark.site/get_upload_url/e19db0f4e0d56b12493cc84f9547f172e8ec9fe1cd2d6229538832a8eb5b9a40/default/sss/Content%20Management%20IM.svg'
                 },
                 {
                     id: 'video-editing',
@@ -1771,7 +2123,7 @@
                     nameEn: 'Video Editing',
                     description: 'مونتاج فيديو احترافي وجرافيك متحرك',
                     descriptionEn: 'Professional video editing and motion graphics',
-                    image: 'sss/social-media-concept-with-smartphone.svg'
+                    image: 'https://page1.genspark.site/get_upload_url/e19db0f4e0d56b12493cc84f9547f172e8ec9fe1cd2d6229538832a8eb5b9a40/default/sss/social-media-concept-with-smartphone.svg'
                 },
                 {
                     id: 'graphic-design',
@@ -1779,7 +2131,7 @@
                     nameEn: 'Graphic Design',
                     description: 'حلول تصميم جرافيك إبداعية لعملك',
                     descriptionEn: 'Creative graphic design solutions for your business',
-                    image: 'sss/تעديل فيديو.svg'
+                    image: 'https://page1.genspark.site/get_upload_url/e19db0f4e0d56b12493cc84f9547f172e8ec9fe1cd2d6229538832a8eb5b9a40/default/sss/تعديل%20فيديو.svg'
                 }
             ],
             works: [
@@ -1790,7 +2142,7 @@
                     titleEn: 'Commercial Product Photography',
                     description: 'تصوير احترافي للمنتجات التجارية بجودة عالية',
                     descriptionEn: 'Professional high-quality commercial product photography',
-                    media: ['sss/تصوير.svg'],
+                    media: ['https://page1.genspark.site/get_upload_url/e19db0f4e0d56b12493cc84f9547f172e8ec9fe1cd2d6229538832a8eb5b9a40/default/sss/تصوير.svg'],
                     videos: []
                 },
                 {
@@ -1810,7 +2162,7 @@
                     titleEn: 'Brand Identity Design',
                     description: 'تصميم هوية بصرية متكاملة للشركات',
                     descriptionEn: 'Complete brand identity design for businesses',
-                    media: ['sss/تعديل فيديو.svg'],
+                    media: ['https://page1.genspark.site/get_upload_url/e19db0f4e0d56b12493cc84f9547f172e8ec9fe1cd2d6229538832a8eb5b9a40/default/sss/تعديل%20فيديو.svg'],
                     videos: []
                 }
             ],
@@ -2109,20 +2461,32 @@
                 
                 // استخدام أول وسيط متاح
                 let mediaElement = '';
+                let mediaType = '';
+                let downloadable = false;
+                
                 if (work.media && work.media.length > 0) {
-                    mediaElement = `<img src="${work.media[0]}" alt="${work.title}">`;
+                    mediaElement = `<img src="${work.media[0]}" alt="${work.title}" loading="lazy">`;
+                    mediaType = 'صورة';
+                    downloadable = true;
                 } else if (work.videos && work.videos.length > 0) {
                     const videoUrl = work.videos[0];
                     mediaElement = generateEmbedHtml(videoUrl);
+                    mediaType = 'فيديو';
+                    downloadable = false; // External videos can't be downloaded directly
                 } else {
                     mediaElement = `<div style="display: flex; align-items: center; justify-content: center; color: #666;">
                         <i class="fas fa-image" style="font-size: 3rem;"></i>
                     </div>`;
+                    mediaType = 'محتوى';
+                    downloadable = false;
                 }
                 
                 workElement.innerHTML = `
                     <div class="service-item-media">
                         ${mediaElement}
+                        <div class="media-type-badge">${mediaType}</div>
+                        ${downloadable ? `<button class="download-btn" onclick="event.stopPropagation(); downloadMedia('${work.media ? work.media[0] : ''}', '${work.title}')" title="تحميل"><i class="fas fa-download"></i></button>` : ''}
+                        ${work.videos && work.videos.length > 0 ? `<button class="play-button" onclick="event.stopPropagation(); openVideoModal('${work.videos[0]}', '${work.title}')"><i class="fas fa-play"></i></button>` : ''}
                     </div>
                     <div class="service-item-content">
                         <h3 class="service-item-title">${currentLanguage === 'ar' ? work.title : work.titleEn}</h3>
@@ -2140,6 +2504,63 @@
                         <p>${currentLanguage === 'ar' ? 'لا توجد أعمال متاحة في هذه الخدمة حالياً' : 'No works available in this service currently'}</p>
                     </div>
                 `;
+            }
+        }
+
+        // فتح نافذة الفيديو
+        function openVideoModal(videoUrl, title) {
+            const modal = document.getElementById('videoModal');
+            const modalTitle = document.getElementById('videoModalTitle');
+            const modalPlayer = document.getElementById('videoModalPlayer');
+            const downloadBtn = document.getElementById('downloadVideoBtn');
+            const shareBtn = document.getElementById('shareVideoBtn');
+            
+            currentVideoModal = { url: videoUrl, title: title };
+            
+            modalTitle.textContent = title;
+            modalPlayer.innerHTML = generateEmbedHtml(videoUrl);
+            
+            // Update download and share buttons
+            shareBtn.href = videoUrl;
+            downloadBtn.style.display = 'none'; // Hide download for external videos
+            
+            modal.classList.add('active');
+        }
+
+        // إغلاق نافذة الفيديو
+        function closeVideoModal() {
+            const modal = document.getElementById('videoModal');
+            const modalPlayer = document.getElementById('videoModalPlayer');
+            
+            modal.classList.remove('active');
+            modalPlayer.innerHTML = '';
+            currentVideoModal = null;
+        }
+
+        // طلب ملف الفيديو
+        function requestVideoFile() {
+            if (!currentVideoModal) return;
+            
+            const message = `أرغب في الحصول على ملف الفيديو: ${currentVideoModal.title}\nرابط الفيديو: ${currentVideoModal.url}`;
+            const whatsappUrl = `https://wa.me/201004435408?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // تحميل الوسائط
+        function downloadMedia(url, filename) {
+            if (!url) return;
+            
+            // For base64 images, create download link
+            if (url.startsWith('data:')) {
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename + '.jpg';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                // For external URLs, open in new tab
+                window.open(url, '_blank');
             }
         }
 
@@ -2208,9 +2629,32 @@
                 slide.className = 'gallery-slide';
                 
                 if (media.type === 'image') {
-                    slide.innerHTML = `<img src="${media.src}" alt="Project Image">`;
+                    slide.innerHTML = `
+                        <img src="${media.src}" alt="Project Image" loading="lazy">
+                        <div class="video-overlay">
+                            <div class="video-controls">
+                                <button class="video-btn" onclick="downloadMedia('${media.src}', 'project-image')" title="تحميل الصورة">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
                 } else { // It's a video
-                    slide.innerHTML = generateEmbedHtml(media.src);
+                    slide.innerHTML = `
+                        <div class="video-container">
+                            ${generateEmbedHtml(media.src)}
+                            <div class="video-overlay">
+                                <div class="video-controls">
+                                    <button class="video-btn" onclick="openVideoModal('${media.src}', '${work.title}')" title="فتح الفيديو">
+                                        <i class="fas fa-expand"></i>
+                                    </button>
+                                    <button class="video-btn" onclick="requestVideoFile(); currentVideoModal = {url: '${media.src}', title: '${work.title}'}" title="طلب ملف الفيديو">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                 }
                 
                 gallery.appendChild(slide);
@@ -2250,7 +2694,7 @@
                 const aspectRatioClass = isShort ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
                 embedHtml = `
                     <div class="embed-responsive ${aspectRatioClass}">
-                        <iframe src="https://www.youtube.com/embed/$${videoId}" 
+                        <iframe src="https://www.youtube.com/embed/${videoId}?enablejsapi=1&controls=1&modestbranding=1&rel=0" 
                                 frameborder="0" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen>
@@ -2320,9 +2764,9 @@
             // Fallback for direct video links
             embedHtml = `
                 <div class="embed-responsive embed-responsive-16by9">
-                    <video controls playsinline webkit-playsinline>
+                    <video controls playsinline webkit-playsinline preload="metadata">
                         <source src="${url}" type="video/mp4">
-                        Your browser does not support the video tag.
+                        <p>Your browser does not support the video tag. <a href="${url}" target="_blank">Click here to view the video externally</a></p>
                     </video>
                 </div>`;
             return embedHtml;
@@ -2370,17 +2814,20 @@
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('dashboardContainer').classList.remove('active');
             document.getElementById('projectDetailPage').classList.remove('active');
+            document.getElementById('videoModal').classList.remove('active');
             
             const pages = document.querySelectorAll('.service-page');
             pages.forEach(page => page.classList.remove('active'));
             
             currentServicePage = '';
             currentProjectDetail = null;
+            currentVideoModal = null;
         }
 
         // العودة للخدمة
         function backToService() {
             document.getElementById('projectDetailPage').classList.remove('active');
+            document.getElementById('videoModal').classList.remove('active');
             if (currentServicePage) {
                 showService(currentServicePage);
             } else if (isLoggedIn) {
@@ -2513,7 +2960,7 @@
                     serviceElement.innerHTML = `
                         <a href="#" class="project-card" onclick="showService('${service.id}')">
                             <div class="image-wrapper">
-                                <img src="${service.image}" alt="${service.name}" />
+                                <img src="${service.image}" alt="${service.name}" loading="lazy" />
                             </div>
                             <p data-en="${service.nameEn}" data-ar="${service.name}">${currentLanguage === 'ar' ? service.name : service.nameEn}</p>
                         </a>
@@ -2642,565 +3089,4 @@
                             <strong>${message.name}</strong>
                             <p style="color: #666; font-size: 0.9rem;">الهاتف: ${message.phone} | البريد: ${message.email}</p>
                             <p style="color: #ddd; margin-top: 0.5rem;">${message.message}</p>
-                            <p style="color: #666; font-size: 0.8rem; margin-top: 0.5rem;">${new Date(message.date).toLocaleString('ar-EG')}</p>
-                        </div>
-                        <div class="list-item-actions">
-                            <button class="${message.read ? 'edit-btn' : 'delete-btn'}" onclick="toggleMessageRead(${message.id})">
-                                ${message.read ? 'مقروءة' : 'وضع كمقروءة'}
-                            </button>
-                            <button class="delete-btn" onclick="deleteMessage(${message.id})">حذف</button>
-                        </div>
-                    `;
-                    messagesList.appendChild(messageElement);
-                });
-            }
-        }
-
-        // تحميل طلبات الاستشارة
-        function loadConsultations() {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
-            const consultationsList = document.getElementById('consultationsList');
-            
-            if (consultationsList) {
-                consultationsList.innerHTML = '';
-                data.consultations.forEach(consultation => {
-                    const consultationElement = document.createElement('div');
-                    consultationElement.className = 'list-item';
-                    consultationElement.innerHTML = `
-                        <div>
-                            <strong>${consultation.name}</strong>
-                            <p style="color: #666; font-size: 0.9rem;">الهاتف: ${consultation.phone} | البريد: ${consultation.email}</p>
-                            <p style="color: #ddd; margin-top: 0.5rem;">الحالة: ${consultation.status}</p>
-                            <p style="color: #666; font-size: 0.8rem; margin-top: 0.5rem;">${new Date(consultation.date).toLocaleString('ar-EG')}</p>
-                        </div>
-                        <div class="list-item-actions">
-                            <button class="edit-btn" onclick="updateConsultationStatus(${consultation.id}, 'تم التواصل')">تم التواصل</button>
-                            <button class="view-btn" onclick="updateConsultationStatus(${consultation.id}, 'مكتمل')">مكتمل</button>
-                            <button class="delete-btn" onclick="deleteConsultation(${consultation.id})">حذف</button>
-                        </div>
-                    `;
-                    consultationsList.appendChild(consultationElement);
-                });
-            }
-        }
-
-        // تحميل بيانات الزوار
-        function loadVisitors() {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
-            const visitorsList = document.getElementById('visitorsList');
-            
-            if (visitorsList) {
-                visitorsList.innerHTML = '';
-                data.visitors.forEach(visitor => {
-                    const visitorElement = document.createElement('div');
-                    visitorElement.className = 'list-item';
-                    visitorElement.innerHTML = `
-                        <div>
-                            <strong>تاريخ: ${visitor.date}</strong>
-                            <p style="color: #666; font-size: 0.9rem;">عدد الزيارات: ${visitor.count}</p>
-                            <p style="color: #666; font-size: 0.9rem;">آخر زيارة: ${new Date(visitor.lastVisit).toLocaleString('ar-EG')}</p>
-                            <p style="color: #666; font-size: 0.8rem;">اللغة: ${visitor.language}</p>
-                        </div>
-                    `;
-                    visitorsList.appendChild(visitorElement);
-                });
-            }
-        }
-
-        // إنشاء الرسوم البيانية
-        function createCharts() {
-            createWorksChart();
-            createVisitorsChart();
-        }
-
-        // إنشاء رسم بياني للأعمال
-        function createWorksChart() {
-            const ctx = document.getElementById('worksChart');
-            if (ctx && !worksChart) {
-                const data = JSON.parse(localStorage.getItem('cmaData'));
-                const servicesData = data.services.map(service => ({
-                    service: service.name,
-                    count: data.works.filter(work => work.service === service.id).length
-                }));
-                
-                worksChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: servicesData.map(s => s.service),
-                        datasets: [{
-                            data: servicesData.map(s => s.count),
-                            backgroundColor: [
-                                '#ffd700',
-                                '#d4af37',
-                                '#fff8dc',
-                                '#ffcc00',
-                                '#ffb300',
-                                '#f0c040',
-                                '#e6b800'
-                            ],
-                            borderWidth: 2,
-                            borderColor: '#1c1c1e'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                labels: {
-                                    color: '#ffffff',
-                                    font: {
-                                        family: 'Poppins',
-                                        size: 14
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-        }
-
-        // إنشاء رسم بياني للزوار
-        function createVisitorsChart() {
-            const ctx = document.getElementById('visitorsChart');
-            if (ctx && !visitorsChart) {
-                const data = JSON.parse(localStorage.getItem('cmaData'));
-                
-                // إنشاء بيانات آخر 7 أيام
-                const last7Days = [];
-                const visitorCounts = [];
-                
-                for (let i = 6; i >= 0; i--) {
-                    const date = new Date();
-                    date.setDate(date.getDate() - i);
-                    const dateString = date.toDateString();
-                    
-                    last7Days.push(date.toLocaleDateString('ar-EG', { weekday: 'short', day: 'numeric' }));
-                    
-                    const visitor = data.visitors.find(v => v.date === dateString);
-                    visitorCounts.push(visitor ? visitor.count : 0);
-                }
-                
-                visitorsChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: last7Days,
-                        datasets: [{
-                            label: 'الزوار',
-                            data: visitorCounts,
-                            borderColor: '#ffd700',
-                            backgroundColor: 'rgba(255, 215, 0, 0.1)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                labels: {
-                                    color: '#ffffff',
-                                    font: {
-                                        family: 'Poppins',
-                                        size: 14
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    color: '#ffffff'
-                                },
-                                grid: {
-                                    color: 'rgba(255, 255, 255, 0.1)'
-                                }
-                            },
-                            x: {
-                                ticks: {
-                                    color: '#ffffff'
-                                },
-                                grid: {
-                                    color: 'rgba(255, 255, 255, 0.1)'
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-        }
-
-        // إضافة رابط فيديو
-        function addVideoLink() {
-            const input = document.getElementById('videoLinkInput');
-            const url = input.value.trim();
-            
-            if (url) {
-                videoLinks.push(url);
-                input.value = '';
-                updateMediaPreview();
-            }
-        }
-
-        // تحديث معاينة الوسائط
-        function updateMediaPreview() {
-            const preview = document.getElementById('mediaPreview');
-            preview.innerHTML = '';
-            
-            // عرض الصور المختارة
-            const fileInput = document.getElementById('workImages');
-            if (fileInput.files) {
-                Array.from(fileInput.files).forEach((file, index) => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const mediaItem = document.createElement('div');
-                        mediaItem.className = 'media-item';
-                        mediaItem.innerHTML = `
-                            <img src="${e.target.result}" alt="Work Image">
-                            <button class="remove-media" onclick="removeImage(${index})">×</button>
-                        `;
-                        preview.appendChild(mediaItem);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-            
-            // عرض روابط الفيديو
-            videoLinks.forEach((link, index) => {
-                const mediaItem = document.createElement('div');
-                mediaItem.className = 'media-item';
-                
-                mediaItem.innerHTML = `
-                    ${generateEmbedHtml(link)}
-                    <button class="remove-media" onclick="removeVideo(${index})">×</button>
-                `;
-                preview.appendChild(mediaItem);
-            });
-        }
-
-        // إزالة صورة
-        function removeImage(index) {
-            const fileInput = document.getElementById('workImages');
-            const dt = new DataTransfer();
-            
-            Array.from(fileInput.files).forEach((file, i) => {
-                if (i !== index) {
-                    dt.items.add(file);
-                }
-            });
-            
-            fileInput.files = dt.files;
-            updateMediaPreview();
-        }
-
-        // إزالة فيديو
-        function removeVideo(index) {
-            videoLinks.splice(index, 1);
-            updateMediaPreview();
-        }
-
-        // معالجة نماذج الداش بورد
-        document.getElementById('addServiceForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const serviceImage = document.getElementById('serviceImage').files[0];
-            
-            if (serviceImage) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const service = {
-                        id: 'service-' + Date.now(),
-                        name: formData.get('serviceName'),
-                        nameEn: formData.get('serviceNameEn'),
-                        description: formData.get('serviceDescription'),
-                        descriptionEn: formData.get('serviceDescriptionEn'),
-                        image: e.target.result
-                    };
-                    
-                    const data = JSON.parse(localStorage.getItem('cmaData'));
-                    data.services.push(service);
-                    localStorage.setItem('cmaData', JSON.stringify(data));
-                    
-                    loadServices();
-                    updateStats();
-                    document.getElementById('addServiceForm').reset();
-                    alert('تم إضافة الخدمة بنجاح');
-                };
-                reader.readAsDataURL(serviceImage);
-            }
-        });
-
-        document.getElementById('addWorkForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const workImages = document.getElementById('workImages').files;
-            
-            const workData = {
-                service: formData.get('workService'),
-                title: formData.get('workTitle'),
-                titleEn: formData.get('workTitleEn'),
-                description: formData.get('workDescription'),
-                descriptionEn: formData.get('workDescriptionEn'),
-                videos: [...videoLinks]
-            };
-
-            const processAndSave = (imageUrls) => {
-                const data = JSON.parse(localStorage.getItem('cmaData'));
-
-                if(currentlyEditingWorkId) {
-                    // وضع التعديل
-                    const workIndex = data.works.findIndex(w => w.id === currentlyEditingWorkId);
-                    if(workIndex !== -1) {
-                        const existingWork = data.works[workIndex];
-                        data.works[workIndex] = {
-                            ...existingWork,
-                            ...workData,
-                            media: imageUrls.length > 0 ? imageUrls : existingWork.media // الاحتفاظ بالصور القديمة إذا لم يتم تحديد صور جديدة
-                        };
-                        alert('تم تحديث العمل بنجاح');
-                    }
-                } else {
-                    // وضع الإضافة
-                    const newWork = {
-                        ...workData,
-                        id: Date.now(),
-                        media: imageUrls,
-                    };
-                    data.works.push(newWork);
-                    alert('تم إضافة العمل بنجاح');
-                }
-                
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                
-                loadWorks();
-                updateStats();
-                cancelEditWork(); // لإعادة تعيين النموذج
-                
-                if (worksChart) {
-                    worksChart.destroy();
-                    worksChart = null;
-                    createWorksChart();
-                }
-            };
-
-            if (workImages.length > 0) {
-                let processedImages = 0;
-                let imageUrls = [];
-                Array.from(workImages).forEach(image => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imageUrls.push(e.target.result);
-                        processedImages++;
-                        if (processedImages === workImages.length) {
-                            processAndSave(imageUrls);
-                        }
-                    };
-                    reader.readAsDataURL(image);
-                });
-            } else {
-                processAndSave([]);
-            }
-        });
-        
-        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (currentPassword !== currentUser.password) {
-                alert('كلمة المرور الحالية غير صحيحة');
-                return;
-            }
-            
-            if (newPassword !== confirmPassword) {
-                alert('كلمة المرور الجديدة غير متطابقة');
-                return;
-            }
-            
-            const data = JSON.parse(localStorage.getItem('cmaData'));
-            const userIndex = data.users.findIndex(u => u.username === currentUser.username);
-            data.users[userIndex].password = newPassword;
-            localStorage.setItem('cmaData', JSON.stringify(data));
-            
-            currentUser.password = newPassword;
-            document.getElementById('changePasswordForm').reset();
-            alert('تم تغيير كلمة المرور بنجاح');
-        });
-
-        // مراقبة تغيير الملفات
-        document.getElementById('workImages').addEventListener('change', updateMediaPreview);
-
-        // وظائف الحذف والتعديل
-        function deleteService(serviceId) {
-            if (confirm('هل أنت متأكد من حذف هذه الخدمة؟ سيتم حذف جميع الأعمال المرتبطة بها.')) {
-                const data = JSON.parse(localStorage.getItem('cmaData'));
-                data.services = data.services.filter(s => s.id !== serviceId);
-                data.works = data.works.filter(w => w.service !== serviceId);
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                
-                loadServices();
-                loadWorks();
-                updateStats();
-            }
-        }
-
-        function deleteWork(workId) {
-            if (confirm('هل أنت متأكد من حذف هذا العمل؟')) {
-                const data = JSON.parse(localStorage.getItem('cmaData'));
-                data.works = data.works.filter(w => w.id !== workId);
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                
-                loadWorks();
-                updateStats();
-                if (worksChart) {
-                    worksChart.destroy();
-                    worksChart = null;
-                    createWorksChart();
-                }
-            }
-        }
-
-        function deleteMessage(messageId) {
-            if (confirm('هل أنت متأكد من حذف هذه الرسالة؟')) {
-                const data = JSON.parse(localStorage.getItem('cmaData'));
-                data.messages = data.messages.filter(m => m.id !== messageId);
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                
-                loadMessages();
-                updateStats();
-            }
-        }
-
-        function deleteConsultation(consultationId) {
-            if (confirm('هل أنت متأكد من حذف طلب الاستشارة؟')) {
-                const data = JSON.parse(localStorage.getItem('cmaData'));
-                data.consultations = data.consultations.filter(c => c.id !== consultationId);
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                
-                loadConsultations();
-                updateStats();
-            }
-        }
-
-        function toggleMessageRead(messageId) {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
-            const message = data.messages.find(m => m.id === messageId);
-            if (message) {
-                message.read = !message.read;
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                loadMessages();
-                updateStats();
-            }
-        }
-
-        function updateConsultationStatus(consultationId, newStatus) {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
-            const consultation = data.consultations.find(c => c.id === consultationId);
-            if (consultation) {
-                consultation.status = newStatus;
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                loadConsultations();
-            }
-        }
-
-        // تهيئة النظام عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeSystem();
-            
-            // التحقق من معاملات URL
-            if (window.location.search.includes('submitted=true')) {
-                document.getElementById('thankYouPopup').style.display = 'flex';
-                const url = new URL(window.location);
-                url.searchParams.delete('submitted');
-                window.history.replaceState({}, document.title, url.toString());
-            }
-
-            // معالج نموذج الاستشارة
-            const consultationForm = document.getElementById('consultationForm');
-            if (consultationForm) {
-                consultationForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const form = e.target;
-                    const name = form.elements.consultationName.value;
-                    const phone = form.elements.consultationPhone.value;
-                    const email = form.elements.consultationEmail.value;
-
-                    if (name && phone && email) {
-                        const consultation = {
-                            id: Date.now(),
-                            name: name,
-                            phone: phone,
-                            email: email,
-                            date: new Date().toISOString(),
-                            status: 'جديد'
-                        };
-
-                        const data = JSON.parse(localStorage.getItem('cmaData'));
-                        data.consultations.push(consultation);
-                        localStorage.setItem('cmaData', JSON.stringify(data));
-
-                        sendConsultationEmail(consultation);
-
-                        localStorage.setItem('consultationRequested', 'true');
-                        closeConsultationPopup();
-
-                        alert(currentLanguage === 'ar' ?
-                            'تم طلب الاستشارة بنجاح! سنتواصل معك قريباً.' :
-                            'Consultation requested successfully! We will contact you soon.');
-
-                        updateStats();
-                        form.reset();
-                    }
-                });
-            }
-        });
-
-        // معالجة أحداث لوحة المفاتيح للمعرض
-        document.addEventListener('keydown', function(e) {
-            if (document.getElementById('projectDetailPage').classList.contains('active')) {
-                if (e.key === 'ArrowLeft') {
-                    changeSlide(-1);
-                } else if (e.key === 'ArrowRight') {
-                    changeSlide(1);
-                } else if (e.key === 'Escape') {
-                    backToService();
-                }
-            }
-        });
-
-        // دعم التمرير باللمس للمعرض
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        document.getElementById('projectGallery').addEventListener('touchstart', function(e) {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-
-        document.getElementById('projectGallery').addEventListener('touchend', function(e) {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        });
-
-        function handleSwipe() {
-            const swipeThreshold = 50;
-            const diff = touchStartX - touchEndX;
-            
-            if (Math.abs(diff) > swipeThreshold) {
-                if (diff > 0) {
-                    changeSlide(1); // تمرير لليسار
-                } else {
-                    changeSlide(-1); // تمرير لليمين
-                }
-            }
-        }
-    </script>
-</body>
-</html>
+                            <p style="color: #666; font-size: 0.8rem; margin-top: 0.5rem;">${new Date(message.date).toLocaleString('ar-EG
