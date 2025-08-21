@@ -1370,13 +1370,13 @@
                     <a class="Contactus" href="https://wa.me/201004435408" target="_blank" data-en="Contact us" data-ar="تواصل معنا">Contact us</a>
                 </div>
             </div>
-            <img class="plan" src="sss/cmaaa.svg" alt="logocma2" />
+            <img class="plan" src="sss/cmaaa.svg" alt="logocma2" loading="lazy" />
         </section>
 
         <section class="about" id="about">
             <div class="about-container">
                 <div class="about-image">
-                    <img src="sss/people-taking-part-business-event (1).svg" alt="About CMA" width="600" height="400">
+                    <img src="sss/people-taking-part-business-event (1).svg" alt="About CMA" width="600" height="400" loading="lazy">
                 </div>
                 <div class="about-text">
                     <h2 data-en="About CMA" data-ar="من نحن">About CMA</h2>
@@ -2110,7 +2110,7 @@
                 // استخدام أول وسيط متاح
                 let mediaElement = '';
                 if (work.media && work.media.length > 0) {
-                    mediaElement = `<img src="${work.media[0]}" alt="${work.title}">`;
+                    mediaElement = `<img src="${work.media[0]}" alt="${work.title}" loading="lazy">`;
                 } else if (work.videos && work.videos.length > 0) {
                     const videoUrl = work.videos[0];
                     mediaElement = generateEmbedHtml(videoUrl);
@@ -2208,7 +2208,7 @@
                 slide.className = 'gallery-slide';
                 
                 if (media.type === 'image') {
-                    slide.innerHTML = `<img src="${media.src}" alt="Project Image">`;
+                    slide.innerHTML = `<img src="${media.src}" alt="Project Image" loading="lazy">`;
                 } else { // It's a video
                     slide.innerHTML = generateEmbedHtml(media.src);
                 }
@@ -2250,7 +2250,7 @@
                 const aspectRatioClass = isShort ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
                 embedHtml = `
                     <div class="embed-responsive ${aspectRatioClass}">
-                        <iframe src="https://www.youtube.com/embed/$${videoId}" 
+                        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1" 
                                 frameborder="0" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen>
@@ -2513,7 +2513,7 @@
                     serviceElement.innerHTML = `
                         <a href="#" class="project-card" onclick="showService('${service.id}')">
                             <div class="image-wrapper">
-                                <img src="${service.image}" alt="${service.name}" />
+                                <img src="${service.image}" alt="${service.name}" loading="lazy" />
                             </div>
                             <p data-en="${service.nameEn}" data-ar="${service.name}">${currentLanguage === 'ar' ? service.name : service.nameEn}</p>
                         </a>
@@ -2860,7 +2860,7 @@
                         const mediaItem = document.createElement('div');
                         mediaItem.className = 'media-item';
                         mediaItem.innerHTML = `
-                            <img src="${e.target.result}" alt="Work Image">
+                            <img src="${e.target.result}" alt="Work Image" loading="lazy">
                             <button class="remove-media" onclick="removeImage(${index})">×</button>
                         `;
                         preview.appendChild(mediaItem);
