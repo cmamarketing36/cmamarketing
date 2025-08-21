@@ -1753,6 +1753,7 @@
         let currentSlide = 0;
         let videoLinks = [];
         let currentlyEditingWorkId = null;
+        let currentWorkImages = []; // لتخزين الصور المحولة لـ Base64 مؤقتًا عند إضافة/تعديل عمل
 
         // بيانات افتراضية للنظام
         const defaultData = {
@@ -2558,13 +2559,14 @@
             document.getElementById('workDescription').value = work.description;
             document.getElementById('workDescriptionEn').value = work.descriptionEn;
             videoLinks = [...(work.videos || [])];
-            
+            currentWorkImages = [...(work.media || [])]; // تحميل الصور الموجودة بالفعل
+
             // تحديث واجهة المستخدم لوضع التعديل
             document.getElementById('workFormTitle').textContent = 'تعديل العمل';
             document.getElementById('addWorkButton').textContent = 'تحديث العمل';
             document.getElementById('cancelEditButton').style.display = 'inline-block';
 
-            updateMediaPreview(); // ملاحظة: لا يمكننا إعادة تحميل الصور من base64، سيحتاج المستخدم لإعادة تحديدها إذا أراد تغييرها
+            updateMediaPreview(); 
             alert('تم تحميل بيانات العمل في النموذج. لإضافة أو تغيير الصور، يرجى تحديدها مرة أخرى.');
         }
 
@@ -2572,6 +2574,7 @@
             currentlyEditingWorkId = null;
             document.getElementById('addWorkForm').reset();
             videoLinks = [];
+            currentWorkImages = []; // مسح الصور المؤقتة
             updateMediaPreview();
             document.getElementById('workFormTitle').textContent = 'إضافة عمل جديد';
             document.getElementById('addWorkButton').textContent = 'إضافة العمل';
@@ -2851,24 +2854,17 @@
             const preview = document.getElementById('mediaPreview');
             preview.innerHTML = '';
             
-            // عرض الصور المختارة
-            const fileInput = document.getElementById('workImages');
-            if (fileInput.files) {
-                Array.from(fileInput.files).forEach((file, index) => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const mediaItem = document.createElement('div');
-                        mediaItem.className = 'media-item';
-                        mediaItem.innerHTML = `
-                            <img src="${e.target.result}" alt="Work Image" loading="lazy">
-                            <button class="remove-media" onclick="removeImage(${index})">×</button>
-                        `;
-                        preview.appendChild(mediaItem);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-            
+            // عرض الصور الموجودة بالفعل (من currentWorkImages)
+            currentWorkImages.forEach((src, index) => {
+                const mediaItem = document.createElement('div');
+                mediaItem.className = 'media-item';
+                mediaItem.innerHTML = `
+                    <img src="${src}" alt="Work Image" loading="lazy">
+                    <button class="remove-media" onclick="removeExistingImage(${index})">×</button>
+                `;
+                preview.appendChild(mediaItem);
+            });
+
             // عرض روابط الفيديو
             videoLinks.forEach((link, index) => {
                 const mediaItem = document.createElement('div');
@@ -2882,18 +2878,9 @@
             });
         }
 
-        // إزالة صورة
-        function removeImage(index) {
-            const fileInput = document.getElementById('workImages');
-            const dt = new DataTransfer();
-            
-            Array.from(fileInput.files).forEach((file, i) => {
-                if (i !== index) {
-                    dt.items.add(file);
-                }
-            });
-            
-            fileInput.files = dt.files;
+        // إزالة صورة موجودة (من currentWorkImages)
+        function removeExistingImage(index) {
+            currentWorkImages.splice(index, 1);
             updateMediaPreview();
         }
 
@@ -2908,9 +2895,9 @@
             e.preventDefault();
             
             const formData = new FormData(this);
-            const serviceImage = document.getElementById('serviceImage').files[0];
+            const serviceImageFile = document.getElementById('serviceImage').files[0];
             
-            if (serviceImage) {
+            if (serviceImageFile) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const service = {
@@ -2919,7 +2906,7 @@
                         nameEn: formData.get('serviceNameEn'),
                         description: formData.get('serviceDescription'),
                         descriptionEn: formData.get('serviceDescriptionEn'),
-                        image: e.target.result
+                        image: e.target.result // الصورة كـ Base64
                     };
                     
                     const data = JSON.parse(localStorage.getItem('cmaData'));
@@ -2931,7 +2918,9 @@
                     document.getElementById('addServiceForm').reset();
                     alert('تم إضافة الخدمة بنجاح');
                 };
-                reader.readAsDataURL(serviceImage);
+                reader.readAsDataURL(serviceImageFile);
+            } else {
+                alert('الرجاء اختيار صورة للخدمة.');
             }
         });
 
@@ -2939,7 +2928,7 @@
             e.preventDefault();
             
             const formData = new FormData(this);
-            const workImages = document.getElementById('workImages').files;
+            const workImageFiles = document.getElementById('workImages').files;
             
             const workData = {
                 service: formData.get('workService'),
@@ -2950,7 +2939,20 @@
                 videos: [...videoLinks]
             };
 
-            const processAndSave = (imageUrls) => {
+            const readImageFiles = (files) => {
+                return Promise.all(Array.from(files).map(file => {
+                    return new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                }));
+            };
+
+            readImageFiles(workImageFiles).then(newImageUrls => {
+                // دمج الصور الجديدة مع الصور الموجودة بالفعل (إذا كان وضع التعديل)
+                const finalImageUrls = [...currentWorkImages, ...newImageUrls];
+
                 const data = JSON.parse(localStorage.getItem('cmaData'));
 
                 if(currentlyEditingWorkId) {
@@ -2961,7 +2963,7 @@
                         data.works[workIndex] = {
                             ...existingWork,
                             ...workData,
-                            media: imageUrls.length > 0 ? imageUrls : existingWork.media // الاحتفاظ بالصور القديمة إذا لم يتم تحديد صور جديدة
+                            media: finalImageUrls // استخدام الصور المدمجة
                         };
                         alert('تم تحديث العمل بنجاح');
                     }
@@ -2970,7 +2972,7 @@
                     const newWork = {
                         ...workData,
                         id: Date.now(),
-                        media: imageUrls,
+                        media: finalImageUrls, // استخدام الصور المدمجة
                     };
                     data.works.push(newWork);
                     alert('تم إضافة العمل بنجاح');
@@ -2987,25 +2989,7 @@
                     worksChart = null;
                     createWorksChart();
                 }
-            };
-
-            if (workImages.length > 0) {
-                let processedImages = 0;
-                let imageUrls = [];
-                Array.from(workImages).forEach(image => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imageUrls.push(e.target.result);
-                        processedImages++;
-                        if (processedImages === workImages.length) {
-                            processAndSave(imageUrls);
-                        }
-                    };
-                    reader.readAsDataURL(image);
-                });
-            } else {
-                processAndSave([]);
-            }
+            });
         });
         
         document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
@@ -3036,7 +3020,11 @@
         });
 
         // مراقبة تغيير الملفات
-        document.getElementById('workImages').addEventListener('change', updateMediaPreview);
+        document.getElementById('workImages').addEventListener('change', function() {
+            // عند اختيار ملفات جديدة، لا نقوم بمسح currentWorkImages مباشرة
+            // بل يتم دمجها في finalImageUrls عند الإرسال
+            updateMediaPreview(); 
+        });
 
         // وظائف الحذف والتعديل
         function deleteService(serviceId) {
