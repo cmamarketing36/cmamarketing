@@ -1194,7 +1194,7 @@
             min-width: unset !important;
         }
 
-        /* وسائط استعلام للشاشات المختلفة - إصلاح مشكلة عرض الخدمات على الموبايل */
+        /* وسائط استعلام للشاشات المختلفة */
         @media (max-width: 767px) {
             .container {
                 max-width: 100%;
@@ -1265,34 +1265,13 @@
                 font-size: 2.2rem;
             }
             
-            /* إصلاح مشكلة عرض الخدمات على الموبايل */
             .projects {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
-                padding: 0 10px;
-                width: 100%;
             }
             
             .project-card {
                 max-width: 100%;
-                width: 100%;
-                min-width: unset;
-            }
-
-            /* إصلاح عرض معرض الخدمات على الموبايل */
-            .service-gallery {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-                padding: 0 10px;
-            }
-
-            .service-item {
-                width: 100%;
-                max-width: 100%;
-            }
-
-            .service-item-media {
-                height: 200px;
             }
             
             .contact-form {
@@ -1363,15 +1342,6 @@
 
             .consultation-message, .thank-you-message {
                 font-size: 16px;
-            }
-
-            /* تحسين إضافي للخدمات على الشاشات الصغيرة جداً */
-            .projects {
-                padding: 0 5px;
-            }
-
-            .service-gallery {
-                padding: 0 5px;
             }
         }
     </style>
@@ -1809,7 +1779,7 @@
                     nameEn: 'Graphic Design',
                     description: 'حلول تصميم جرافيك إبداعية لعملك',
                     descriptionEn: 'Creative graphic design solutions for your business',
-                    image: 'sss/تعديل فيديو.svg'
+                    image: 'sss/تעديل فيديو.svg'
                 }
             ],
             works: [
@@ -2267,11 +2237,11 @@
             document.head.appendChild(script);
         }
     
-        // إصلاح دالة generateEmbedHtml - إصلاح مشكلة روابط اليوتيوب
+        // New function to generate embed HTML for various platforms
         function generateEmbedHtml(url) {
             let embedHtml = '';
     
-            // YouTube - إصلاح template string
+            // YouTube
             const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
             const youtubeMatch = url.match(youtubeRegex);
             if (youtubeMatch && youtubeMatch[1]) {
@@ -2280,7 +2250,7 @@
                 const aspectRatioClass = isShort ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
                 embedHtml = `
                     <div class="embed-responsive ${aspectRatioClass}">
-                        <iframe src="https://www.youtube.com/embed/${videoId}" 
+                        <iframe src="https://www.youtube.com/embed/$${videoId}" 
                                 frameborder="0" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen>
@@ -3071,4 +3041,166 @@
         // وظائف الحذف والتعديل
         function deleteService(serviceId) {
             if (confirm('هل أنت متأكد من حذف هذه الخدمة؟ سيتم حذف جميع الأعمال المرتبطة بها.')) {
-                const
+                const data = JSON.parse(localStorage.getItem('cmaData'));
+                data.services = data.services.filter(s => s.id !== serviceId);
+                data.works = data.works.filter(w => w.service !== serviceId);
+                localStorage.setItem('cmaData', JSON.stringify(data));
+                
+                loadServices();
+                loadWorks();
+                updateStats();
+            }
+        }
+
+        function deleteWork(workId) {
+            if (confirm('هل أنت متأكد من حذف هذا العمل؟')) {
+                const data = JSON.parse(localStorage.getItem('cmaData'));
+                data.works = data.works.filter(w => w.id !== workId);
+                localStorage.setItem('cmaData', JSON.stringify(data));
+                
+                loadWorks();
+                updateStats();
+                if (worksChart) {
+                    worksChart.destroy();
+                    worksChart = null;
+                    createWorksChart();
+                }
+            }
+        }
+
+        function deleteMessage(messageId) {
+            if (confirm('هل أنت متأكد من حذف هذه الرسالة؟')) {
+                const data = JSON.parse(localStorage.getItem('cmaData'));
+                data.messages = data.messages.filter(m => m.id !== messageId);
+                localStorage.setItem('cmaData', JSON.stringify(data));
+                
+                loadMessages();
+                updateStats();
+            }
+        }
+
+        function deleteConsultation(consultationId) {
+            if (confirm('هل أنت متأكد من حذف طلب الاستشارة؟')) {
+                const data = JSON.parse(localStorage.getItem('cmaData'));
+                data.consultations = data.consultations.filter(c => c.id !== consultationId);
+                localStorage.setItem('cmaData', JSON.stringify(data));
+                
+                loadConsultations();
+                updateStats();
+            }
+        }
+
+        function toggleMessageRead(messageId) {
+            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const message = data.messages.find(m => m.id === messageId);
+            if (message) {
+                message.read = !message.read;
+                localStorage.setItem('cmaData', JSON.stringify(data));
+                loadMessages();
+                updateStats();
+            }
+        }
+
+        function updateConsultationStatus(consultationId, newStatus) {
+            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const consultation = data.consultations.find(c => c.id === consultationId);
+            if (consultation) {
+                consultation.status = newStatus;
+                localStorage.setItem('cmaData', JSON.stringify(data));
+                loadConsultations();
+            }
+        }
+
+        // تهيئة النظام عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSystem();
+            
+            // التحقق من معاملات URL
+            if (window.location.search.includes('submitted=true')) {
+                document.getElementById('thankYouPopup').style.display = 'flex';
+                const url = new URL(window.location);
+                url.searchParams.delete('submitted');
+                window.history.replaceState({}, document.title, url.toString());
+            }
+
+            // معالج نموذج الاستشارة
+            const consultationForm = document.getElementById('consultationForm');
+            if (consultationForm) {
+                consultationForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const form = e.target;
+                    const name = form.elements.consultationName.value;
+                    const phone = form.elements.consultationPhone.value;
+                    const email = form.elements.consultationEmail.value;
+
+                    if (name && phone && email) {
+                        const consultation = {
+                            id: Date.now(),
+                            name: name,
+                            phone: phone,
+                            email: email,
+                            date: new Date().toISOString(),
+                            status: 'جديد'
+                        };
+
+                        const data = JSON.parse(localStorage.getItem('cmaData'));
+                        data.consultations.push(consultation);
+                        localStorage.setItem('cmaData', JSON.stringify(data));
+
+                        sendConsultationEmail(consultation);
+
+                        localStorage.setItem('consultationRequested', 'true');
+                        closeConsultationPopup();
+
+                        alert(currentLanguage === 'ar' ?
+                            'تم طلب الاستشارة بنجاح! سنتواصل معك قريباً.' :
+                            'Consultation requested successfully! We will contact you soon.');
+
+                        updateStats();
+                        form.reset();
+                    }
+                });
+            }
+        });
+
+        // معالجة أحداث لوحة المفاتيح للمعرض
+        document.addEventListener('keydown', function(e) {
+            if (document.getElementById('projectDetailPage').classList.contains('active')) {
+                if (e.key === 'ArrowLeft') {
+                    changeSlide(-1);
+                } else if (e.key === 'ArrowRight') {
+                    changeSlide(1);
+                } else if (e.key === 'Escape') {
+                    backToService();
+                }
+            }
+        });
+
+        // دعم التمرير باللمس للمعرض
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.getElementById('projectGallery').addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.getElementById('projectGallery').addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    changeSlide(1); // تمرير لليسار
+                } else {
+                    changeSlide(-1); // تمرير لليمين
+                }
+            }
+        }
+    </script>
+</body>
+</html>
