@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
-
+        /* تم نقل استيراد الخطوط إلى <link> في قسم <head> لتحسين الأداء */
         * {
             margin: 0;
             padding: 0;
@@ -1370,7 +1369,7 @@
                     <a class="Contactus" href="https://wa.me/201004435408" target="_blank" data-en="Contact us" data-ar="تواصل معنا">Contact us</a>
                 </div>
             </div>
-            <img class="plan" src="sss/cmaaa.svg" alt="logocma2" loading="lazy" />
+            <img class="plan" src="sss/cmaaa.svg" alt="logocma2" />
         </section>
 
         <section class="about" id="about">
@@ -1753,7 +1752,7 @@
         let currentSlide = 0;
         let videoLinks = [];
         let currentlyEditingWorkId = null;
-        let currentWorkImages = []; // لتخزين الصور المحولة لـ Base64 مؤقتًا عند إضافة/تعديل عمل
+        let currentWorkImages = []; // لتخزين صور العمل الحالية (Base64)
 
         // بيانات افتراضية للنظام
         const defaultData = {
@@ -1780,7 +1779,7 @@
                     nameEn: 'Graphic Design',
                     description: 'حلول تصميم جرافيك إبداعية لعملك',
                     descriptionEn: 'Creative graphic design solutions for your business',
-                    image: 'sss/تעديل فيديو.svg'
+                    image: 'sss/تعديل فيديو.svg'
                 }
             ],
             works: [
@@ -2251,7 +2250,7 @@
                 const aspectRatioClass = isShort ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
                 embedHtml = `
                     <div class="embed-responsive ${aspectRatioClass}">
-                        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1" 
+                        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1" 
                                 frameborder="0" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen>
@@ -2307,7 +2306,7 @@
                 const aspectRatioClass = isReel ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
                 embedHtml = `
                     <div class="embed-responsive ${aspectRatioClass}" style="overflow: auto;">
-                        <iframe src="https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&width=560" 
+                        <iframe src="https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&width=560&autoplay=1&playsinline=1" 
                                 style="border:none;overflow:hidden" 
                                 scrolling="no" 
                                 frameborder="0" 
@@ -2558,8 +2557,9 @@
             document.getElementById('workTitleEn').value = work.titleEn;
             document.getElementById('workDescription').value = work.description;
             document.getElementById('workDescriptionEn').value = work.descriptionEn;
+            
             videoLinks = [...(work.videos || [])];
-            currentWorkImages = [...(work.media || [])]; // تحميل الصور الموجودة بالفعل
+            currentWorkImages = [...(work.media || [])]; // حفظ الصور الموجودة
 
             // تحديث واجهة المستخدم لوضع التعديل
             document.getElementById('workFormTitle').textContent = 'تعديل العمل';
@@ -2567,7 +2567,6 @@
             document.getElementById('cancelEditButton').style.display = 'inline-block';
 
             updateMediaPreview(); 
-            alert('تم تحميل بيانات العمل في النموذج. لإضافة أو تغيير الصور، يرجى تحديدها مرة أخرى.');
         }
 
         function cancelEditWork() {
@@ -2575,6 +2574,7 @@
             document.getElementById('addWorkForm').reset();
             videoLinks = [];
             currentWorkImages = []; // مسح الصور المؤقتة
+            document.getElementById('workImages').value = ''; // مسح الملفات المختارة
             updateMediaPreview();
             document.getElementById('workFormTitle').textContent = 'إضافة عمل جديد';
             document.getElementById('addWorkButton').textContent = 'إضافة العمل';
@@ -2854,17 +2854,35 @@
             const preview = document.getElementById('mediaPreview');
             preview.innerHTML = '';
             
-            // عرض الصور الموجودة بالفعل (من currentWorkImages)
-            currentWorkImages.forEach((src, index) => {
+            // عرض الصور الموجودة (إذا كنا في وضع التعديل)
+            currentWorkImages.forEach((imgSrc, index) => {
                 const mediaItem = document.createElement('div');
                 mediaItem.className = 'media-item';
                 mediaItem.innerHTML = `
-                    <img src="${src}" alt="Work Image" loading="lazy">
+                    <img src="${imgSrc}" alt="Work Image" loading="lazy">
                     <button class="remove-media" onclick="removeExistingImage(${index})">×</button>
                 `;
                 preview.appendChild(mediaItem);
             });
 
+            // عرض الصور المختارة حديثًا
+            const fileInput = document.getElementById('workImages');
+            if (fileInput.files) {
+                Array.from(fileInput.files).forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const mediaItem = document.createElement('div');
+                        mediaItem.className = 'media-item';
+                        mediaItem.innerHTML = `
+                            <img src="${e.target.result}" alt="Work Image" loading="lazy">
+                            <button class="remove-media" onclick="removeNewImage(${index})">×</button>
+                        `;
+                        preview.appendChild(mediaItem);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+            
             // عرض روابط الفيديو
             videoLinks.forEach((link, index) => {
                 const mediaItem = document.createElement('div');
@@ -2878,9 +2896,24 @@
             });
         }
 
-        // إزالة صورة موجودة (من currentWorkImages)
+        // إزالة صورة موجودة (من العمل المحفوظ)
         function removeExistingImage(index) {
             currentWorkImages.splice(index, 1);
+            updateMediaPreview();
+        }
+
+        // إزالة صورة جديدة (تم اختيارها للتو)
+        function removeNewImage(index) {
+            const fileInput = document.getElementById('workImages');
+            const dt = new DataTransfer();
+            
+            Array.from(fileInput.files).forEach((file, i) => {
+                if (i !== index) {
+                    dt.items.add(file);
+                }
+            });
+            
+            fileInput.files = dt.files;
             updateMediaPreview();
         }
 
@@ -2906,7 +2939,7 @@
                         nameEn: formData.get('serviceNameEn'),
                         description: formData.get('serviceDescription'),
                         descriptionEn: formData.get('serviceDescriptionEn'),
-                        image: e.target.result // الصورة كـ Base64
+                        image: e.target.result // Base64 string
                     };
                     
                     const data = JSON.parse(localStorage.getItem('cmaData'));
@@ -2924,11 +2957,11 @@
             }
         });
 
-        document.getElementById('addWorkForm').addEventListener('submit', function(e) {
+        document.getElementById('addWorkForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const formData = new FormData(this);
-            const workImageFiles = document.getElementById('workImages').files;
+            const workImagesFiles = document.getElementById('workImages').files;
             
             const workData = {
                 service: formData.get('workService'),
@@ -2939,57 +2972,56 @@
                 videos: [...videoLinks]
             };
 
-            const readImageFiles = (files) => {
-                return Promise.all(Array.from(files).map(file => {
+            // تحويل الصور الجديدة إلى Base64
+            const newImageUrls = await Promise.all(
+                Array.from(workImagesFiles).map(file => {
                     return new Promise((resolve) => {
                         const reader = new FileReader();
                         reader.onload = (e) => resolve(e.target.result);
                         reader.readAsDataURL(file);
                     });
-                }));
-            };
+                })
+            );
 
-            readImageFiles(workImageFiles).then(newImageUrls => {
-                // دمج الصور الجديدة مع الصور الموجودة بالفعل (إذا كان وضع التعديل)
-                const finalImageUrls = [...currentWorkImages, ...newImageUrls];
+            // دمج الصور الموجودة مع الصور الجديدة
+            const allImageUrls = [...currentWorkImages, ...newImageUrls];
 
-                const data = JSON.parse(localStorage.getItem('cmaData'));
+            const data = JSON.parse(localStorage.getItem('cmaData'));
 
-                if(currentlyEditingWorkId) {
-                    // وضع التعديل
-                    const workIndex = data.works.findIndex(w => w.id === currentlyEditingWorkId);
-                    if(workIndex !== -1) {
-                        const existingWork = data.works[workIndex];
-                        data.works[workIndex] = {
-                            ...existingWork,
-                            ...workData,
-                            media: finalImageUrls // استخدام الصور المدمجة
-                        };
-                        alert('تم تحديث العمل بنجاح');
-                    }
-                } else {
-                    // وضع الإضافة
-                    const newWork = {
+            if(currentlyEditingWorkId) {
+                // وضع التعديل
+                const workIndex = data.works.findIndex(w => w.id === currentlyEditingWorkId);
+                if(workIndex !== -1) {
+                    const existingWork = data.works[workIndex];
+                    data.works[workIndex] = {
+                        ...existingWork,
                         ...workData,
-                        id: Date.now(),
-                        media: finalImageUrls, // استخدام الصور المدمجة
+                        media: allImageUrls // استخدام جميع الصور المدمجة
                     };
-                    data.works.push(newWork);
-                    alert('تم إضافة العمل بنجاح');
+                    alert('تم تحديث العمل بنجاح');
                 }
-                
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                
-                loadWorks();
-                updateStats();
-                cancelEditWork(); // لإعادة تعيين النموذج
-                
-                if (worksChart) {
-                    worksChart.destroy();
-                    worksChart = null;
-                    createWorksChart();
-                }
-            });
+            } else {
+                // وضع الإضافة
+                const newWork = {
+                    ...workData,
+                    id: Date.now(),
+                    media: allImageUrls, // استخدام جميع الصور المدمجة
+                };
+                data.works.push(newWork);
+                alert('تم إضافة العمل بنجاح');
+            }
+            
+            localStorage.setItem('cmaData', JSON.stringify(data));
+            
+            loadWorks();
+            updateStats();
+            cancelEditWork(); // لإعادة تعيين النموذج
+            
+            if (worksChart) {
+                worksChart.destroy();
+                worksChart = null;
+                createWorksChart();
+            }
         });
         
         document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
@@ -3020,11 +3052,7 @@
         });
 
         // مراقبة تغيير الملفات
-        document.getElementById('workImages').addEventListener('change', function() {
-            // عند اختيار ملفات جديدة، لا نقوم بمسح currentWorkImages مباشرة
-            // بل يتم دمجها في finalImageUrls عند الإرسال
-            updateMediaPreview(); 
-        });
+        document.getElementById('workImages').addEventListener('change', updateMediaPreview);
 
         // وظائف الحذف والتعديل
         function deleteService(serviceId) {
