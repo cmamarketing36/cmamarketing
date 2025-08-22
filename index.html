@@ -547,7 +547,7 @@
             color: #ffd700;
         }
         
-        .thank-you-message, .consultation-message {
+.thank-you-message, .consultation-message {
             font-size: 18px;
             color: #dddddd;
             margin-bottom: 25px;
@@ -1909,22 +1909,6 @@
             updatePageTexts();
         });
 
-        // تحديث النصوص في الصفحات
-        function updatePageTexts() {
-            // تحديث نصوص الخدمات
-            loadServices();
-            
-            // تحديث نصوص الأعمال إذا كانت مفتوحة
-            if (currentServicePage) {
-                loadServiceWorks(currentServicePage);
-            }
-            
-            // تحديث نصوص تفاصيل المشروع إذا كانت مفتوحة
-            if (currentProjectDetail) {
-                showProjectDetail(currentProjectDetail);
-            }
-        }
-
         // معالجة إرسال النموذج
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -2110,10 +2094,25 @@
                 // استخدام أول وسيط متاح
                 let mediaElement = '';
                 if (work.media && work.media.length > 0) {
-                    mediaElement = `<img src="${work.media[0]}" alt="${work.title}" loading="lazy">`;
+                    mediaElement = `<img src="${work.media[0]}" alt="${currentLanguage === 'ar' ? work.title : work.titleEn}" loading="lazy">`;
                 } else if (work.videos && work.videos.length > 0) {
+                    // لضمان عدم التشغيل التلقائي في المعرض الرئيسي، نستخدم صورة مصغرة أو أيقونة
+                    // ويمكننا إضافة زر تشغيل يفتح التفاصيل
                     const videoUrl = work.videos[0];
-                    mediaElement = generateEmbedHtml(videoUrl);
+                    // يمكننا محاولة استخراج صورة مصغرة لليوتيوب مثلاً
+                    const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
+                    const youtubeMatch = videoUrl.match(youtubeRegex);
+                    let thumbnailUrl = '';
+                    if (youtubeMatch && youtubeMatch[1]) {
+                        thumbnailUrl = `https://img.youtube.com/vi/${youtubeMatch[1]}/hqdefault.jpg`;
+                    }
+                    
+                    mediaElement = `
+                        <div style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #000;">
+                            <img src="${thumbnailUrl || 'https://via.placeholder.com/250x250?text=Video'}" alt="Video Thumbnail" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+                            <i class="fas fa-play-circle" style="position: absolute; font-size: 3rem; color: rgba(255, 255, 255, 0.8); cursor: pointer;"></i>
+                        </div>
+                    `;
                 } else {
                     mediaElement = `<div style="display: flex; align-items: center; justify-content: center; color: #666;">
                         <i class="fas fa-image" style="font-size: 3rem;"></i>
@@ -2210,7 +2209,7 @@
                 if (media.type === 'image') {
                     slide.innerHTML = `<img src="${media.src}" alt="Project Image" loading="lazy">`;
                 } else { // It's a video
-                    slide.innerHTML = generateEmbedHtml(media.src);
+                    slide.innerHTML = generateEmbedHtml(media.src, true); // تمرير true لـ isDetailPage
                 }
                 
                 gallery.appendChild(slide);
@@ -2238,9 +2237,15 @@
         }
     
         // New function to generate embed HTML for various platforms
-        function generateEmbedHtml(url) {
+        function generateEmbedHtml(url, isDetailPage = false) {
             let embedHtml = '';
-    
+            const autoplayParam = isDetailPage ? 'autoplay=1' : 'autoplay=0'; // تشغيل تلقائي فقط في صفحة التفاصيل
+            const playsinlineParam = 'playsinline=1'; // للحفاظ على التشغيل داخل المتصفح على iOS
+            const muteParam = isDetailPage ? '' : '&mute=1'; // كتم الصوت إذا لم يكن في صفحة التفاصيل
+            const controlsParam = 'controls=1'; // إظهار أزرار التحكم
+            const modestbrandingParam = 'modestbranding=1'; // إزالة شعار يوتيوب الكبير
+            const relParam = 'rel=0'; // عدم عرض فيديوهات ذات صلة بعد انتهاء الفيديو
+
             // YouTube
             const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
             const youtubeMatch = url.match(youtubeRegex);
@@ -2250,9 +2255,9 @@
                 const aspectRatioClass = isShort ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
                 embedHtml = `
                     <div class="embed-responsive ${aspectRatioClass}">
-                        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1" 
+                        <iframe src="https://www.youtube.com/embed/${videoId}?${autoplayParam}&${playsinlineParam}&${controlsParam}&${modestbrandingParam}&${relParam}${muteParam}" 
                                 frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allow="accelerometer; ${autoplayParam.replace('=', '')}; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen>
                         </iframe>
                     </div>`;
@@ -2306,7 +2311,7 @@
                 const aspectRatioClass = isReel ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
                 embedHtml = `
                     <div class="embed-responsive ${aspectRatioClass}" style="overflow: auto;">
-                        <iframe src="https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&width=560&autoplay=1&playsinline=1" 
+                        <iframe src="https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&width=560&${autoplayParam}&${playsinlineParam}" 
                                 style="border:none;overflow:hidden" 
                                 scrolling="no" 
                                 frameborder="0" 
@@ -2320,7 +2325,7 @@
             // Fallback for direct video links
             embedHtml = `
                 <div class="embed-responsive embed-responsive-16by9">
-                    <video controls playsinline webkit-playsinline>
+                    <video controls ${isDetailPage ? 'autoplay' : ''} playsinline webkit-playsinline>
                         <source src="${url}" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
