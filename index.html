@@ -367,14 +367,14 @@
             background-color: #29292b;
         }
 
-        .image-wrapper img {
+        .image-wrapper img, .image-wrapper video {
             width: 100%;
             height: 100%;
             object-fit: contain;
             transition: transform 0.4s ease;
         }
 
-        .image-wrapper:hover img {
+        .image-wrapper:hover img, .image-wrapper:hover video {
             transform: scale(1.08);
         }
 
@@ -547,7 +547,7 @@
             color: #ffd700;
         }
         
-.thank-you-message, .consultation-message {
+        .thank-you-message, .consultation-message {
             font-size: 18px;
             color: #dddddd;
             margin-bottom: 25px;
@@ -732,7 +732,7 @@
             transition: transform 0.5s ease;
         }
 
-        .gallery-slide img, .gallery-slide video {
+        .gallery-slide img, .gallery-slide video, .gallery-slide .embed-responsive {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
@@ -1348,7 +1348,7 @@
 <body>
     <div id="mainSite">
         <header>
-            <img class="cmalogoh" src="SVG/asdgfArtboard 1.svg" alt="cma logo" />
+            <img class="cmalogoh" src="SVG/asdgfArtboard 1.svg" alt="cma logo" loading="lazy" />
             <nav class="navigation">
                 <ul>
                     <li><a href="#about" data-en="About" data-ar="من نحن">About</a></li>
@@ -1369,7 +1369,7 @@
                     <a class="Contactus" href="https://wa.me/201004435408" target="_blank" data-en="Contact us" data-ar="تواصل معنا">Contact us</a>
                 </div>
             </div>
-            <img class="plan" src="sss/cmaaa.svg" alt="logocma2" />
+            <img class="plan" src="sss/cmaaa.svg" alt="logocma2" loading="lazy" />
         </section>
 
         <section class="about" id="about">
@@ -1450,7 +1450,7 @@
            class="whatsapp-fixed"
            target="_blank"
            title="Chat with us on WhatsApp">
-           <img src="https://img.icons8.com/ios-filled/50/ffffff/whatsapp--v1.png" alt="WhatsApp" />
+           <img src="https://img.icons8.com/ios-filled/50/ffffff/whatsapp--v1.png" alt="WhatsApp" loading="lazy" />
         </a>
     </div>
 
@@ -1753,6 +1753,7 @@
         let videoLinks = [];
         let currentlyEditingWorkId = null;
         let currentWorkImages = []; // لتخزين صور العمل الحالية (Base64)
+        let youtubePlayers = {}; // لتخزين كائنات مشغلات YouTube API
 
         // بيانات افتراضية للنظام
         const defaultData = {
@@ -1844,6 +1845,9 @@
 
             // التحقق من URL للداش بورد
             checkDashboardAccess();
+
+            // تحميل YouTube IFrame API
+            loadScript('https://www.youtube.com/iframe_api', 'youtube-iframe-api');
         }
 
         // تتبع الزوار
@@ -2091,15 +2095,13 @@
                 workElement.className = 'service-item';
                 workElement.onclick = () => showProjectDetail(work);
                 
-                // استخدام أول وسيط متاح
+                // استخدام أول وسيط متاح (صورة أو صورة مصغرة للفيديو)
                 let mediaElement = '';
                 if (work.media && work.media.length > 0) {
                     mediaElement = `<img src="${work.media[0]}" alt="${currentLanguage === 'ar' ? work.title : work.titleEn}" loading="lazy">`;
                 } else if (work.videos && work.videos.length > 0) {
-                    // لضمان عدم التشغيل التلقائي في المعرض الرئيسي، نستخدم صورة مصغرة أو أيقونة
-                    // ويمكننا إضافة زر تشغيل يفتح التفاصيل
+                    // عرض صورة مصغرة للفيديو مع أيقونة تشغيل
                     const videoUrl = work.videos[0];
-                    // يمكننا محاولة استخراج صورة مصغرة لليوتيوب مثلاً
                     const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
                     const youtubeMatch = videoUrl.match(youtubeRegex);
                     let thumbnailUrl = '';
@@ -2173,6 +2175,7 @@
             
             gallery.innerHTML = '';
             indicators.innerHTML = '';
+            youtubePlayers = {}; // إعادة تعيين مشغلات YouTube عند إنشاء معرض جديد
             
             const allMedia = [];
             
@@ -2185,8 +2188,8 @@
             
             // إضافة الفيديوهات
             if (work.videos) {
-                work.videos.forEach(video => {
-                    allMedia.push({type: 'video', src: video});
+                work.videos.forEach((video, index) => {
+                    allMedia.push({type: 'video', src: video, id: `youtube-player-${work.id}-${index}`});
                 });
             }
             
@@ -2209,7 +2212,7 @@
                 if (media.type === 'image') {
                     slide.innerHTML = `<img src="${media.src}" alt="Project Image" loading="lazy">`;
                 } else { // It's a video
-                    slide.innerHTML = generateEmbedHtml(media.src, true); // تمرير true لـ isDetailPage
+                    slide.innerHTML = generateEmbedHtml(media.src, true, media.id); // تمرير true لـ isDetailPage ومعرف المشغل
                 }
                 
                 gallery.appendChild(slide);
@@ -2235,16 +2238,22 @@
             script.async = true;
             document.head.appendChild(script);
         }
+
+        // دالة يتم استدعاؤها بواسطة YouTube IFrame API عند التحميل
+        function onYouTubeIframeAPIReady() {
+            // هذه الدالة يجب أن تكون موجودة عالمياً
+            // لا تفعل شيئاً هنا، سيتم إنشاء المشغلات عند الحاجة في createProjectGallery
+        }
     
         // New function to generate embed HTML for various platforms
-        function generateEmbedHtml(url, isDetailPage = false) {
+        function generateEmbedHtml(url, isDetailPage = false, playerId = null) {
             let embedHtml = '';
-            const autoplayParam = isDetailPage ? 'autoplay=1' : 'autoplay=0'; // تشغيل تلقائي فقط في صفحة التفاصيل
             const playsinlineParam = 'playsinline=1'; // للحفاظ على التشغيل داخل المتصفح على iOS
-            const muteParam = isDetailPage ? '' : '&mute=1'; // كتم الصوت إذا لم يكن في صفحة التفاصيل
             const controlsParam = 'controls=1'; // إظهار أزرار التحكم
             const modestbrandingParam = 'modestbranding=1'; // إزالة شعار يوتيوب الكبير
             const relParam = 'rel=0'; // عدم عرض فيديوهات ذات صلة بعد انتهاء الفيديو
+            const enablejsapiParam = 'enablejsapi=1'; // لتمكين التحكم عبر JavaScript
+            const originParam = `origin=${window.location.origin}`; // لتحديد النطاق الذي يستضيف المشغل
 
             // YouTube
             const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
@@ -2253,14 +2262,38 @@
                 const videoId = youtubeMatch[1];
                 const isShort = url.includes('/shorts/');
                 const aspectRatioClass = isShort ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
+                
+                // استخدام div بدلاً من iframe مباشرة لإنشاء المشغل لاحقاً بواسطة YouTube API
                 embedHtml = `
                     <div class="embed-responsive ${aspectRatioClass}">
-                        <iframe src="https://www.youtube.com/embed/${videoId}?${autoplayParam}&${playsinlineParam}&${controlsParam}&${modestbrandingParam}&${relParam}${muteParam}" 
-                                frameborder="0" 
-                                allow="accelerometer; ${autoplayParam.replace('=', '')}; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen>
-                        </iframe>
+                        <div id="${playerId}" class="youtube-player-placeholder"></div>
                     </div>`;
+                
+                // إنشاء المشغل بعد تحميل الـ API وتضمين الـ div
+                if (isDetailPage && typeof YT !== 'undefined' && YT.Player) {
+                    setTimeout(() => { // تأخير بسيط لضمان أن الـ div موجود في DOM
+                        youtubePlayers[playerId] = new YT.Player(playerId, {
+                            videoId: videoId,
+                            playerVars: {
+                                'controls': 1,
+                                'modestbranding': 1,
+                                'rel': 0,
+                                'enablejsapi': 1,
+                                'origin': window.location.origin,
+                                'playsinline': 1,
+                                'autoplay': 0 // تأكيد عدم التشغيل التلقائي
+                            },
+                            events: {
+                                'onReady': (event) => {
+                                    // يمكنك إضافة منطق هنا عند جاهزية المشغل
+                                },
+                                'onStateChange': (event) => {
+                                    // يمكنك إضافة منطق هنا لتتبع حالة التشغيل
+                                }
+                            }
+                        });
+                    }, 100);
+                }
                 return embedHtml;
             }
     
@@ -2311,12 +2344,12 @@
                 const aspectRatioClass = isReel ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
                 embedHtml = `
                     <div class="embed-responsive ${aspectRatioClass}" style="overflow: auto;">
-                        <iframe src="https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&width=560&${autoplayParam}&${playsinlineParam}" 
+                        <iframe src="https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&width=560&${playsinlineParam}" 
                                 style="border:none;overflow:hidden" 
                                 scrolling="no" 
                                 frameborder="0" 
                                 allowfullscreen="true" 
-                                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+                                allow="clipboard-write; encrypted-media; picture-in-picture; web-share">
                         </iframe>
                     </div>`;
                 return embedHtml;
@@ -2325,7 +2358,7 @@
             // Fallback for direct video links
             embedHtml = `
                 <div class="embed-responsive embed-responsive-16by9">
-                    <video controls ${isDetailPage ? 'autoplay' : ''} playsinline webkit-playsinline>
+                    <video controls playsinline webkit-playsinline loading="lazy">
                         <source src="${url}" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
@@ -2338,6 +2371,9 @@
             const slides = document.querySelectorAll('.gallery-slide');
             if (slides.length === 0) return;
             
+            // إيقاف أي فيديو يعمل حالياً قبل تغيير الشريحة
+            stopAllVideoPlayers();
+
             currentSlide += direction;
             
             if (currentSlide >= slides.length) {
@@ -2351,6 +2387,8 @@
 
         // الذهاب لشريحة محددة
         function goToSlide(index) {
+            // إيقاف أي فيديو يعمل حالياً قبل تغيير الشريحة
+            stopAllVideoPlayers();
             currentSlide = index;
             updateGalleryDisplay();
         }
@@ -2369,6 +2407,21 @@
             });
         }
 
+        // إيقاف جميع مشغلات الفيديو (خاصة YouTube)
+        function stopAllVideoPlayers() {
+            for (const playerId in youtubePlayers) {
+                if (youtubePlayers[playerId] && typeof youtubePlayers[playerId].pauseVideo === 'function') {
+                    youtubePlayers[playerId].pauseVideo();
+                }
+            }
+            // إيقاف عناصر <video> المباشرة
+            document.querySelectorAll('.project-gallery video').forEach(video => {
+                if (!video.paused) {
+                    video.pause();
+                }
+            });
+        }
+
         // العودة للصفحة الرئيسية
         function backToHome() {
             document.getElementById('mainSite').style.display = 'block';
@@ -2381,11 +2434,13 @@
             
             currentServicePage = '';
             currentProjectDetail = null;
+            stopAllVideoPlayers(); // إيقاف الفيديوهات عند العودة للصفحة الرئيسية
         }
 
         // العودة للخدمة
         function backToService() {
             document.getElementById('projectDetailPage').classList.remove('active');
+            stopAllVideoPlayers(); // إيقاف الفيديوهات عند العودة لصفحة الخدمة
             if (currentServicePage) {
                 showService(currentServicePage);
             } else if (isLoggedIn) {
@@ -2912,6 +2967,7 @@
             const fileInput = document.getElementById('workImages');
             const dt = new DataTransfer();
             
+            // إعادة بناء FileList بدون الملف المحذوف
             Array.from(fileInput.files).forEach((file, i) => {
                 if (i !== index) {
                     dt.items.add(file);
