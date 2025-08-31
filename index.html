@@ -1756,6 +1756,7 @@
         let videoLinks = [];
         let currentlyEditingWorkId = null;
         let currentWorkImages = []; // لتخزين صور العمل الحالية (Base64)
+        let newlySelectedImages = []; // NEW: لتخزين الصور الجديدة التي تم اختيارها للتو
         let youtubePlayers = {}; // لتخزين كائنات مشغلات YouTube API
         let currentlyEditingServiceId = null; // New variable for service editing
 
@@ -2705,6 +2706,7 @@
             
             videoLinks = [...(work.videos || [])];
             currentWorkImages = [...(work.media || [])]; // حفظ الصور الموجودة
+            newlySelectedImages = []; // NEW: Clear newly selected images when editing
 
             // تحديث واجهة المستخدم لوضع التعديل
             document.getElementById('workFormTitle').textContent = 'تعديل العمل';
@@ -2719,6 +2721,7 @@
             document.getElementById('addWorkForm').reset();
             videoLinks = [];
             currentWorkImages = []; // مسح الصور المؤقتة
+            newlySelectedImages = []; // NEW: Clear newly selected images
             document.getElementById('workImages').value = ''; // مسح الملفات المختارة
             updateMediaPreview();
             document.getElementById('workFormTitle').textContent = 'إضافة عمل جديد';
@@ -2964,7 +2967,7 @@
                             label: 'الزوار',
                             data: visitorCounts,
                             borderColor: '#ffd700',
-                            backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                            backgroundColor: 'rgba(255, 255, 0, 0.1)',
                             borderWidth: 3,
                             fill: true,
                             tension: 0.4
@@ -3025,7 +3028,7 @@
             const preview = document.getElementById('mediaPreview');
             preview.innerHTML = '';
             
-            // عرض الصور الموجودة (إذا كنا في وضع التعديل)
+            // عرض الصور الموجودة (من العمل المحفوظ)
             currentWorkImages.forEach((imgSrc, index) => {
                 const mediaItem = document.createElement('div');
                 mediaItem.className = 'media-item';
@@ -3036,23 +3039,20 @@
                 preview.appendChild(mediaItem);
             });
 
-            // عرض الصور المختارة حديثًا
-            const fileInput = document.getElementById('workImages');
-            if (fileInput.files) {
-                Array.from(fileInput.files).forEach((file, index) => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const mediaItem = document.createElement('div');
-                        mediaItem.className = 'media-item';
-                        mediaItem.innerHTML = `
-                            <img src="${e.target.result}" alt="Work Image" loading="lazy">
-                            <button class="remove-media" onclick="removeNewImage(${index})">×</button>
-                        `;
-                        preview.appendChild(mediaItem);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
+            // عرض الصور الجديدة التي تم اختيارها للتو
+            newlySelectedImages.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const mediaItem = document.createElement('div');
+                    mediaItem.className = 'media-item';
+                    mediaItem.innerHTML = `
+                        <img src="${e.target.result}" alt="New Work Image" loading="lazy">
+                        <button class="remove-media" onclick="removeNewlySelectedImage(${index})">×</button>
+                    `;
+                    preview.appendChild(mediaItem);
+                };
+                reader.readAsDataURL(file);
+            });
             
             // عرض روابط الفيديو
             videoLinks.forEach((link, index) => {
@@ -3073,18 +3073,13 @@
             updateMediaPreview();
         }
 
-        // إزالة صورة جديدة (تم اختيارها للتو)
-        function removeNewImage(index) {
+        // NEW: إزالة صورة جديدة (تم اختيارها للتو)
+        function removeNewlySelectedImage(index) {
+            newlySelectedImages.splice(index, 1);
+            // Update the file input's FileList as well
             const fileInput = document.getElementById('workImages');
             const dt = new DataTransfer();
-            
-            // إعادة بناء FileList بدون الملف المحذوف
-            Array.from(fileInput.files).forEach((file, i) => {
-                if (i !== index) {
-                    dt.items.add(file);
-                }
-            });
-            
+            newlySelectedImages.forEach(file => dt.items.add(file));
             fileInput.files = dt.files;
             updateMediaPreview();
         }
@@ -3159,7 +3154,6 @@
             e.preventDefault();
             
             const formData = new FormData(this);
-            const workImagesFiles = document.getElementById('workImages').files;
             
             const workData = {
                 service: formData.get('workService'),
@@ -3170,9 +3164,9 @@
                 videos: [...videoLinks]
             };
 
-            // تحويل الصور الجديدة إلى Base64
+            // تحويل الصور الجديدة التي تم اختيارها للتو إلى Base64
             const newImageUrls = await Promise.all(
-                Array.from(workImagesFiles).map(file => {
+                newlySelectedImages.map(file => { // Use newlySelectedImages here
                     return new Promise((resolve) => {
                         const reader = new FileReader();
                         reader.onload = (e) => resolve(e.target.result);
@@ -3250,7 +3244,10 @@
         });
 
         // مراقبة تغيير الملفات
-        document.getElementById('workImages').addEventListener('change', updateMediaPreview);
+        document.getElementById('workImages').addEventListener('change', function() {
+            newlySelectedImages = Array.from(this.files); // NEW: Store newly selected files
+            updateMediaPreview();
+        });
         document.getElementById('serviceImage').addEventListener('change', function() {
             const currentServiceImage = document.getElementById('currentServiceImage');
             if (this.files && this.files[0]) {
@@ -3437,3 +3434,4 @@
     </script>
 </body>
 </html>
+
