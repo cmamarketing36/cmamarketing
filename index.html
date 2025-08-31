@@ -1758,6 +1758,7 @@
         let currentWorkImages = []; // لتخزين صور العمل الحالية (Base64)
         let youtubePlayers = {}; // لتخزين كائنات مشغلات YouTube API
         let currentlyEditingServiceId = null; // New variable for service editing
+        let allProjectMedia = []; // لتخزين جميع الوسائط (صور وفيديوهات) للمشروع الحالي
 
         // بيانات افتراضية للنظام
         const defaultData = {
@@ -1795,8 +1796,8 @@
                     titleEn: 'Commercial Product Photography',
                     description: 'تصوير احترافي للمنتجات التجارية بجودة عالية',
                     descriptionEn: 'Professional high-quality commercial product photography',
-                    media: ['sss/تصوير.svg'],
-                    videos: []
+                    media: ['sss/تصوير.svg', 'https://via.placeholder.com/600x400/FF0000/FFFFFF?text=Image+2', 'https://via.placeholder.com/600x400/00FF00/000000?text=Image+3'],
+                    videos: ['https://www.youtube.com/watch?v=dQw4w9WgXcQ']
                 },
                 {
                     id: 2,
@@ -1806,7 +1807,7 @@
                     description: 'مونتاج إعلان تجاري احترافي مع مؤثرات بصرية',
                     descriptionEn: 'Professional commercial video editing with visual effects',
                     media: [],
-                    videos: ['https://www.youtube.com/watch?v=dQw4w9WgXcQ']
+                    videos: ['https://www.youtube.com/watch?v=M7lc1UVf-VE', 'https://www.youtube.com/watch?v=21X5lGlDOfg']
                 },
                 {
                     id: 3,
@@ -1815,7 +1816,7 @@
                     titleEn: 'Brand Identity Design',
                     description: 'تصميم هوية بصرية متكاملة للشركات',
                     descriptionEn: 'Complete brand identity design for businesses',
-                    media: ['sss/تعديل فيديو.svg'],
+                    media: ['sss/تعديل فيديو.svg', 'https://via.placeholder.com/600x400/0000FF/FFFFFF?text=Design+2'],
                     videos: []
                 }
             ],
@@ -2220,23 +2221,23 @@
             indicators.innerHTML = '';
             youtubePlayers = {}; // إعادة تعيين مشغلات YouTube عند إنشاء معرض جديد
             
-            const allMedia = [];
+            allProjectMedia = []; // إعادة تعيين مصفوفة الوسائط للمشروع الحالي
             
             // إضافة الصور
             if (work.media) {
                 work.media.forEach(media => {
-                    allMedia.push({type: 'image', src: media});
+                    allProjectMedia.push({type: 'image', src: media});
                 });
             }
             
             // إضافة الفيديوهات
             if (work.videos) {
                 work.videos.forEach((video, index) => {
-                    allMedia.push({type: 'video', src: video, id: `youtube-player-${work.id}-${index}`});
+                    allProjectMedia.push({type: 'video', src: video, id: `youtube-player-${work.id}-${index}`});
                 });
             }
             
-            if (allMedia.length === 0) {
+            if (allProjectMedia.length === 0) {
                 gallery.innerHTML = `
                     <div class="gallery-slide" style="display: flex; align-items: center; justify-content: center; color: #666;">
                         <div style="text-align: center;">
@@ -2248,14 +2249,15 @@
                 return;
             }
             
-            allMedia.forEach((media, index) => {
+            allProjectMedia.forEach((media, index) => {
                 const slide = document.createElement('div');
                 slide.className = 'gallery-slide';
                 
                 if (media.type === 'image') {
                     slide.innerHTML = `<img src="${media.src}" alt="Project Image" loading="lazy">`;
                 } else { // It's a video
-                    slide.innerHTML = generateEmbedHtml(media.src, true, media.id); // تمرير true لـ isDetailPage ومعرف المشغل
+                    // نضع فقط placeholder لـ YouTube iframe، وسيتم إنشاء المشغل عند عرض الشريحة
+                    slide.innerHTML = generateEmbedHtml(media.src, media.id);
                 }
                 
                 gallery.appendChild(slide);
@@ -2284,13 +2286,13 @@
 
         // دالة يتم استدعاؤها بواسطة YouTube IFrame API عند التحميل
         function onYouTubeIframeAPIReady() {
-            // This function is called by the YouTube API when it's ready.
-            // We don't need to do anything specific here, as players are created dynamically.
-            // However, it's good practice to have it defined globally.
+            // يتم استدعاء هذه الدالة تلقائيًا بواسطة YouTube API
+            // يمكننا هنا التأكد من تهيئة المشغل للشريحة الأولى إذا كانت فيديو
+            updateGalleryDisplay(); 
         }
     
         // New function to generate embed HTML for various platforms
-        function generateEmbedHtml(url, isDetailPage = false, playerId = null) {
+        function generateEmbedHtml(url, playerId = null) {
             let embedHtml = '';
             const playsinlineParam = 'playsinline=1'; // للحفاظ على التشغيل داخل المتصفح على iOS
             const controlsParam = 'controls=1'; // إظهار أزرار التحكم
@@ -2307,37 +2309,11 @@
                 const isShort = url.includes('/shorts/');
                 const aspectRatioClass = isShort ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
                 
-                // استخدام div بدلاً من iframe مباشرة لإنشاء المشغل لاحقاً بواسطة YouTube API
+                // نضع فقط div placeholder لـ YouTube iframe
                 embedHtml = `
                     <div class="embed-responsive ${aspectRatioClass}">
                         <div id="${playerId}" class="youtube-player-placeholder"></div>
                     </div>`;
-                
-                // إنشاء المشغل بعد تحميل الـ API وتضمين الـ div
-                if (isDetailPage && typeof YT !== 'undefined' && YT.Player) {
-                    setTimeout(() => { // تأخير بسيط لضمان أن الـ div موجود في DOM
-                        youtubePlayers[playerId] = new YT.Player(playerId, {
-                            videoId: videoId,
-                            playerVars: {
-                                'controls': 1,
-                                'modestbranding': 1,
-                                'rel': 0,
-                                'enablejsapi': 1,
-                                'origin': window.location.origin,
-                                'playsinline': 1,
-                                'autoplay': 0 // تأكيد عدم التشغيل التلقائي
-                            },
-                            events: {
-                                'onReady': (event) => {
-                                    // يمكنك إضافة منطق هنا عند جاهزية المشغل
-                                },
-                                'onStateChange': (event) => {
-                                    // يمكنك إضافة منطق هنا لتتبع حالة التشغيل
-                                }
-                            }
-                        });
-                    }, 100);
-                }
                 return embedHtml;
             }
     
@@ -2404,7 +2380,7 @@
                 <div class="embed-responsive embed-responsive-16by9">
                     <video controls playsinline webkit-playsinline loading="lazy">
                         <source src="${url}" type="video/mp4">
-                        Your browser does not support the video tag.
+                        Your browser does-not support the video tag.
                     </video>
                 </div>`;
             return embedHtml;
@@ -2441,6 +2417,7 @@
         function updateGalleryDisplay() {
             const gallery = document.getElementById('projectGallery');
             const indicators = document.querySelectorAll('.gallery-indicator');
+            const slides = document.querySelectorAll('.gallery-slide');
             
             if (gallery) {
                 gallery.style.transform = `translateX(-${currentSlide * 100}%)`;
@@ -2449,6 +2426,52 @@
             indicators.forEach((indicator, index) => {
                 indicator.classList.toggle('active', index === currentSlide);
             });
+
+            // تهيئة وتشغيل الفيديو في الشريحة الحالية إذا كان موجودًا
+            if (allProjectMedia[currentSlide] && allProjectMedia[currentSlide].type === 'video') {
+                const media = allProjectMedia[currentSlide];
+                const videoUrl = media.src;
+                const playerId = media.id;
+
+                const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
+                const youtubeMatch = videoUrl.match(youtubeRegex);
+
+                if (youtubeMatch && youtubeMatch[1]) {
+                    const videoId = youtubeMatch[1];
+                    // إذا لم يكن المشغل موجودًا بعد، قم بإنشائه
+                    if (!youtubePlayers[playerId] && typeof YT !== 'undefined' && YT.Player) {
+                        youtubePlayers[playerId] = new YT.Player(playerId, {
+                            videoId: videoId,
+                            playerVars: {
+                                'controls': 1,
+                                'modestbranding': 1,
+                                'rel': 0,
+                                'enablejsapi': 1,
+                                'origin': window.location.origin,
+                                'playsinline': 1,
+                                'autoplay': 1 // تشغيل تلقائي عند عرض الشريحة
+                            },
+                            events: {
+                                'onReady': (event) => {
+                                    event.target.playVideo();
+                                },
+                                'onStateChange': (event) => {
+                                    // يمكنك إضافة منطق هنا لتتبع حالة التشغيل
+                                }
+                            }
+                        });
+                    } else if (youtubePlayers[playerId]) {
+                        // إذا كان المشغل موجودًا، قم بتشغيله
+                        youtubePlayers[playerId].playVideo();
+                    }
+                } else {
+                    // للأنواع الأخرى من الفيديوهات (مثل <video> المباشر)
+                    const videoElement = slides[currentSlide].querySelector('video');
+                    if (videoElement) {
+                        videoElement.play();
+                    }
+                }
+            }
         }
 
         // إيقاف جميع مشغلات الفيديو (خاصة YouTube)
@@ -3059,8 +3082,19 @@
                 const mediaItem = document.createElement('div');
                 mediaItem.className = 'media-item';
                 
+                // لا نستخدم generateEmbedHtml هنا لأننا لا نريد تهيئة المشغل في المعاينة
+                // فقط نعرض صورة مصغرة أو أيقونة
+                let thumbnailHtml = '';
+                const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
+                const youtubeMatch = link.match(youtubeRegex);
+                if (youtubeMatch && youtubeMatch[1]) {
+                    thumbnailHtml = `<img src="https://img.youtube.com/vi/${youtubeMatch[1]}/hqdefault.jpg" alt="Video Thumbnail" loading="lazy">`;
+                } else {
+                    thumbnailHtml = `<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666;"><i class="fas fa-video" style="font-size: 2rem;"></i></div>`;
+                }
+
                 mediaItem.innerHTML = `
-                    ${generateEmbedHtml(link)}
+                    ${thumbnailHtml}
                     <button class="remove-media" onclick="removeVideo(${index})">×</button>
                 `;
                 preview.appendChild(mediaItem);
