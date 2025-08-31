@@ -54,6 +54,7 @@
         .cmalogoh { 
             width: 100px;
             height: 100px;
+            cursor: pointer;
         }
 
         .navigation ul {
@@ -1193,6 +1194,42 @@
             min-width: unset !important;
         }
 
+        /* إضافات للتحسينات المطلوبة */
+        .upload-progress {
+            width: 100%;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #d4af37, #ffd700);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .error-message {
+            background: #ff4444;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .success-message {
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+
         /* وسائط استعلام للشاشات المختلفة */
         @media (max-width: 767px) {
             .container {
@@ -1615,7 +1652,12 @@
                         <div class="file-input">
                             <label>صورة الخدمة:</label>
                             <input type="file" id="serviceImage" accept="image/*" required>
+                            <div class="upload-progress">
+                                <div class="progress-bar"></div>
+                            </div>
                         </div>
+                        <div class="error-message" id="serviceErrorMessage"></div>
+                        <div class="success-message" id="serviceSuccessMessage"></div>
                         <button type="submit">إضافة الخدمة</button>
                     </form>
                 </div>
@@ -1640,8 +1682,11 @@
                         <textarea id="workDescriptionEn" name="workDescriptionEn" placeholder="وصف العمل بالإنجليزية" required></textarea>
                         
                         <div class="file-input">
-                            <label>الصور:</label>
+                            <label>الصور (يمكن اختيار صور متعددة):</label>
                             <input type="file" id="workImages" accept="image/*" multiple>
+                            <div class="upload-progress">
+                                <div class="progress-bar"></div>
+                            </div>
                         </div>
                         
                         <div class="video-link-input">
@@ -1651,6 +1696,9 @@
                         
                         <div id="mediaPreview" class="media-grid">
                             </div>
+                        
+                        <div class="error-message" id="workErrorMessage"></div>
+                        <div class="success-message" id="workSuccessMessage"></div>
                         
                         <button type="submit" id="addWorkButton">إضافة العمل</button>
                         <button type="button" id="cancelEditButton" style="display: none; background: #666;" onclick="cancelEditWork()">إلغاء التعديل</button>
@@ -1752,83 +1800,155 @@
         let currentSlide = 0;
         let videoLinks = [];
         let currentlyEditingWorkId = null;
-        let currentWorkImages = []; // لتخزين صور العمل الحالية (Base64)
-        let youtubePlayers = {}; // لتخزين كائنات مشغلات YouTube API
+        let currentWorkImages = [];
+        let youtubePlayers = {};
+        let logoClickCount = 0;
+        let logoClickTimer = null;
 
-        // بيانات افتراضية للنظام
-        const defaultData = {
-            services: [
-                {
-                    id: 'photography',
-                    name: 'التصوير',
-                    nameEn: 'Photography',
-                    description: 'خدمات تصوير احترافية لجميع احتياجاتك',
-                    descriptionEn: 'Professional photography services for all your needs',
-                    image: 'sss/Content Management IM.svg'
-                },
-                {
-                    id: 'video-editing',
-                    name: 'مونتاج الفيديو',
-                    nameEn: 'Video Editing',
-                    description: 'مونتاج فيديو احترافي وجرافيك متحرك',
-                    descriptionEn: 'Professional video editing and motion graphics',
-                    image: 'sss/social-media-concept-with-smartphone.svg'
-                },
-                {
-                    id: 'graphic-design',
-                    name: 'تصميم الجرافيك',
-                    nameEn: 'Graphic Design',
-                    description: 'حلول تصميم جرافيك إبداعية لعملك',
-                    descriptionEn: 'Creative graphic design solutions for your business',
-                    image: 'sss/تعديل فيديو.svg'
+        // نظام معالجة الأخطاء المحسن
+        class ErrorHandler {
+            static showError(elementId, message) {
+                const errorElement = document.getElementById(elementId);
+                if (errorElement) {
+                    errorElement.textContent = message;
+                    errorElement.style.display = 'block';
+                    setTimeout(() => {
+                        errorElement.style.display = 'none';
+                    }, 5000);
                 }
-            ],
-            works: [
-                {
-                    id: 1,
-                    service: 'photography',
-                    title: 'تصوير منتجات تجارية',
-                    titleEn: 'Commercial Product Photography',
-                    description: 'تصوير احترافي للمنتجات التجارية بجودة عالية',
-                    descriptionEn: 'Professional high-quality commercial product photography',
-                    media: ['sss/تصوير.svg'],
-                    videos: []
-                },
-                {
-                    id: 2,
-                    service: 'video-editing',
-                    title: 'مونتاج إعلان تجاري',
-                    titleEn: 'Commercial Video Editing',
-                    description: 'مونتاج إعلان تجاري احترافي مع مؤثرات بصرية',
-                    descriptionEn: 'Professional commercial video editing with visual effects',
-                    media: [],
-                    videos: ['https://www.youtube.com/watch?v=dQw4w9WgXcQ']
-                },
-                {
-                    id: 3,
-                    service: 'graphic-design',
-                    title: 'تصميم هوية بصرية',
-                    titleEn: 'Brand Identity Design',
-                    description: 'تصميم هوية بصرية متكاملة للشركات',
-                    descriptionEn: 'Complete brand identity design for businesses',
-                    media: ['sss/تعديل فيديو.svg'],
-                    videos: []
+            }
+
+            static showSuccess(elementId, message) {
+                const successElement = document.getElementById(elementId);
+                if (successElement) {
+                    successElement.textContent = message;
+                    successElement.style.display = 'block';
+                    setTimeout(() => {
+                        successElement.style.display = 'none';
+                    }, 3000);
                 }
-            ],
-            messages: [],
-            consultations: [],
-            visitors: [],
-            users: [{
-                username: 'admin',
-                password: 'cma2024'
-            }]
-        };
+            }
+
+            static validateImageFile(file) {
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                
+                if (file.size > maxSize) {
+                    return 'حجم الملف كبير جداً. الحد الأقصى 5MB';
+                }
+                
+                if (!allowedTypes.includes(file.type.toLowerCase())) {
+                    return 'نوع الملف غير مدعوم. استخدم JPG, PNG, GIF, أو WebP';
+                }
+                
+                return null;
+            }
+        }
+
+        // نظام إدارة البيانات المحسن
+        class DataManager {
+            constructor() {
+                this.storageKey = 'cmaData';
+            }
+
+            getData() {
+                try {
+                    const data = localStorage.getItem(this.storageKey);
+                    return data ? JSON.parse(data) : this.getDefaultData();
+                } catch (error) {
+                    console.error('خطأ في استرجاع البيانات:', error);
+                    return this.getDefaultData();
+                }
+            }
+
+            saveData(data) {
+                try {
+                    localStorage.setItem(this.storageKey, JSON.stringify(data));
+                    return true;
+                } catch (error) {
+                    console.error('خطأ في حفظ البيانات:', error);
+                    return false;
+                }
+            }
+
+            getDefaultData() {
+                return {
+                    services: [
+                        {
+                            id: 'photography',
+                            name: 'التصوير',
+                            nameEn: 'Photography',
+                            description: 'خدمات تصوير احترافية لجميع احتياجاتك',
+                            descriptionEn: 'Professional photography services for all your needs',
+                            image: 'sss/Content Management IM.svg'
+                        },
+                        {
+                            id: 'video-editing',
+                            name: 'مونتاج الفيديو',
+                            nameEn: 'Video Editing',
+                            description: 'مونتاج فيديو احترافي وجرافيك متحرك',
+                            descriptionEn: 'Professional video editing and motion graphics',
+                            image: 'sss/social-media-concept-with-smartphone.svg'
+                        },
+                        {
+                            id: 'graphic-design',
+                            name: 'تصميم الجرافيك',
+                            nameEn: 'Graphic Design',
+                            description: 'حلول تصميم جرافيك إبداعية لعملك',
+                            descriptionEn: 'Creative graphic design solutions for your business',
+                            image: 'sss/تعديل فيديو.svg'
+                        }
+                    ],
+                    works: [
+                        {
+                            id: 1,
+                            service: 'photography',
+                            title: 'تصوير منتجات تجارية',
+                            titleEn: 'Commercial Product Photography',
+                            description: 'تصوير احترافي للمنتجات التجارية بجودة عالية',
+                            descriptionEn: 'Professional high-quality commercial product photography',
+                            media: ['sss/تصوير.svg'],
+                            videos: []
+                        },
+                        {
+                            id: 2,
+                            service: 'video-editing',
+                            title: 'مونتاج إعلان تجاري',
+                            titleEn: 'Commercial Video Editing',
+                            description: 'مونتاج إعلان تجاري احترافي مع مؤثرات بصرية',
+                            descriptionEn: 'Professional commercial video editing with visual effects',
+                            media: [],
+                            videos: ['https://www.youtube.com/watch?v=dQw4w9WgXcQ']
+                        },
+                        {
+                            id: 3,
+                            service: 'graphic-design',
+                            title: 'تصميم هوية بصرية',
+                            titleEn: 'Brand Identity Design',
+                            description: 'تصميم هوية بصرية متكاملة للشركات',
+                            descriptionEn: 'Complete brand identity design for businesses',
+                            media: ['sss/تعديل فيديو.svg'],
+                            videos: []
+                        }
+                    ],
+                    messages: [],
+                    consultations: [],
+                    visitors: [],
+                    users: [{
+                        username: 'admin',
+                        password: 'password123'
+                    }]
+                };
+            }
+        }
+
+        const dataManager = new DataManager();
 
         // تهيئة النظام
         function initializeSystem() {
             // تحميل البيانات من localStorage أو استخدام البيانات الافتراضية
             if (!localStorage.getItem('cmaData')) {
-                localStorage.setItem('cmaData', JSON.stringify(defaultData));
+                dataManager.saveData(dataManager.getDefaultData());
             }
             
             // تسجيل زائر جديد
@@ -1843,20 +1963,42 @@
             // تحديث الإحصائيات
             updateStats();
 
-            // التحقق من URL للداش بورد
-            checkDashboardAccess();
+            // إعداد نظام النقر على اللوجو
+            setupLogoAccess();
 
             // تحميل YouTube IFrame API
             loadScript('https://www.youtube.com/iframe_api', 'youtube-iframe-api');
         }
 
+        // إعداد نظام الوصول للداش بورد عبر النقر على اللوجو
+        function setupLogoAccess() {
+            const logo = document.querySelector('.cmalogoh');
+            if (logo) {
+                logo.addEventListener('click', function() {
+                    logoClickCount++;
+                    
+                    if (logoClickTimer) {
+                        clearTimeout(logoClickTimer);
+                    }
+                    
+                    logoClickTimer = setTimeout(() => {
+                        logoClickCount = 0;
+                    }, 3000);
+                    
+                    if (logoClickCount === 5) {
+                        showLogin();
+                        logoClickCount = 0;
+                    }
+                });
+            }
+        }
+
         // تتبع الزوار
         function trackVisitor() {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const data = dataManager.getData();
             const now = new Date();
             const today = now.toDateString();
             
-            // البحث عن زائر اليوم
             let todayVisitor = data.visitors.find(v => v.date === today);
             
             if (todayVisitor) {
@@ -1872,17 +2014,7 @@
                 });
             }
             
-            localStorage.setItem('cmaData', JSON.stringify(data));
-        }
-
-        // التحقق من الوصول للداش بورد
-        function checkDashboardAccess() {
-            const path = window.location.pathname;
-            const hash = window.location.hash;
-            
-            if (path.endsWith('/XCMA') || hash === '#XCMA') {
-                showLogin();
-            }
+            dataManager.saveData(data);
         }
 
         // تبديل اللغة
@@ -1893,7 +2025,6 @@
             elements.forEach(el => {
                 const newText = isArabic ? el.getAttribute('data-ar') : el.getAttribute('data-en');
                 if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                    // للحقول النصية، استخدم placeholder
                     const placeholderAr = el.getAttribute('data-placeholder-ar');
                     const placeholderEn = el.getAttribute('data-placeholder-en');
                     if (placeholderAr && placeholderEn) {
@@ -1908,12 +2039,9 @@
             document.documentElement.setAttribute("lang", isArabic ? "ar" : "en");
             document.body.style.direction = isArabic ? "rtl" : "ltr";
             currentLanguage = isArabic ? 'ar' : 'en';
-
-            // تحديث النصوص في الصفحات المختلفة
-            updatePageTexts();
         });
 
-        // معالجة إرسال النموذج
+        // معالجة تحسين إرسال النموذج
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -1933,9 +2061,11 @@
                 read: false
             };
             
-            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const data = dataManager.getData();
             data.messages.push(message);
-            localStorage.setItem('cmaData', JSON.stringify(data));
+            if (dataManager.saveData(data)) {
+                updateStats();
+            }
             
             // تغيير نص الزر أثناء الإرسال
             const loadingText = currentLanguage === 'ar' ? 'جارِ الإرسال...' : 'Sending...';
@@ -1953,12 +2083,10 @@
             .then(response => {
                 document.getElementById('thankYouPopup').style.display = 'flex';
                 form.reset();
-                updateStats();
             })
             .catch(error => {
                 document.getElementById('thankYouPopup').style.display = 'flex';
                 form.reset();
-                updateStats();
             })
             .finally(() => {
                 submitButton.textContent = originalButtonText;
@@ -1968,13 +2096,11 @@
 
         // إظهار إشعار الاستشارة
         function showConsultationPopup() {
-            // عدم إظهار الإشعار في الداش بورد
             if (document.getElementById('dashboardContainer').classList.contains('active') || 
                 document.getElementById('loginContainer').style.display !== 'none') {
                 return;
             }
             
-            // عدم إظهار الإشعار إذا تم طلب استشارة من قبل
             if (localStorage.getItem('consultationRequested') === 'true') {
                 return;
             }
@@ -1985,18 +2111,6 @@
         // إرسال إيميل الاستشارة
         function sendConsultationEmail(consultation) {
             const subject = 'طلب استشارة تسويقية جديد - CMA';
-            const body = `
-طلب استشارة تسويقية جديد:
-
-الاسم: ${consultation.name}
-الهاتف: ${consultation.phone}
-البريد الإلكتروني: ${consultation.email}
-التاريخ: ${new Date(consultation.date).toLocaleString('ar-EG')}
-
-يرجى التواصل مع العميل في أقرب وقت ممكن.
-            `;
-            
-            // إرسال الإيميل باستخدام FormSubmit
             const formData = new FormData();
             formData.append('_subject', subject);
             formData.append('name', consultation.name);
@@ -2028,7 +2142,6 @@
             }
         });
 
-        // إغلاق إشعار الاستشارة عند النقر خارجه
         document.getElementById('consultationPopup').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeConsultationPopup();
@@ -2055,8 +2168,7 @@
                     pageId = 'graphicDesignPage';
                     break;
                 default:
-                    // للخدمات المضافة حديثاً
-                    pageId = 'photographyPage'; // استخدام صفحة افتراضية
+                    pageId = 'photographyPage';
                     break;
             }
             
@@ -2066,7 +2178,7 @@
 
         // تحميل أعمال الخدمة
         function loadServiceWorks(serviceId) {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const data = dataManager.getData();
             const works = data.works.filter(work => work.service === serviceId);
             
             let galleryId;
@@ -2095,12 +2207,10 @@
                 workElement.className = 'service-item';
                 workElement.onclick = () => showProjectDetail(work);
                 
-                // استخدام أول وسيط متاح (صورة أو صورة مصغرة للفيديو)
                 let mediaElement = '';
                 if (work.media && work.media.length > 0) {
                     mediaElement = `<img src="${work.media[0]}" alt="${currentLanguage === 'ar' ? work.title : work.titleEn}" loading="lazy">`;
                 } else if (work.videos && work.videos.length > 0) {
-                    // عرض صورة مصغرة للفيديو مع أيقونة تشغيل
                     const videoUrl = work.videos[0];
                     const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
                     const youtubeMatch = videoUrl.match(youtubeRegex);
@@ -2148,23 +2258,19 @@
         function showProjectDetail(work) {
             currentProjectDetail = work;
             
-            // إخفاء جميع الصفحات
             document.getElementById('mainSite').style.display = 'none';
             document.getElementById('dashboardContainer').classList.remove('active');
             const servicePages = document.querySelectorAll('.service-page');
             servicePages.forEach(page => page.classList.remove('active'));
             
-            // إظهار صفحة التفاصيل
             const detailPage = document.getElementById('projectDetailPage');
             detailPage.classList.add('active');
             
-            // تحديث المحتوى
             document.getElementById('projectDetailTitle').textContent = 
                 currentLanguage === 'ar' ? work.title : work.titleEn;
             document.getElementById('projectDetailDescription').textContent = 
                 currentLanguage === 'ar' ? work.description : work.descriptionEn;
             
-            // إنشاء معرض الصور والفيديوهات
             createProjectGallery(work);
         }
 
@@ -2175,18 +2281,16 @@
             
             gallery.innerHTML = '';
             indicators.innerHTML = '';
-            youtubePlayers = {}; // إعادة تعيين مشغلات YouTube عند إنشاء معرض جديد
+            youtubePlayers = {};
             
             const allMedia = [];
             
-            // إضافة الصور
             if (work.media) {
                 work.media.forEach(media => {
                     allMedia.push({type: 'image', src: media});
                 });
             }
             
-            // إضافة الفيديوهات
             if (work.videos) {
                 work.videos.forEach((video, index) => {
                     allMedia.push({type: 'video', src: video, id: `youtube-player-${work.id}-${index}`});
@@ -2211,13 +2315,12 @@
                 
                 if (media.type === 'image') {
                     slide.innerHTML = `<img src="${media.src}" alt="Project Image" loading="lazy">`;
-                } else { // It's a video
-                    slide.innerHTML = generateEmbedHtml(media.src, true, media.id); // تمرير true لـ isDetailPage ومعرف المشغل
+                } else {
+                    slide.innerHTML = generateEmbedHtml(media.src, true, media.id);
                 }
                 
                 gallery.appendChild(slide);
                 
-                // إنشاء مؤشر
                 const indicator = document.createElement('div');
                 indicator.className = 'gallery-indicator';
                 if (index === 0) indicator.classList.add('active');
@@ -2229,9 +2332,8 @@
             updateGalleryDisplay();
         }
 
-        // Helper function to load external scripts
         function loadScript(src, id) {
-            if (document.getElementById(id)) return; // Script already loaded
+            if (document.getElementById(id)) return;
             const script = document.createElement('script');
             script.src = src;
             script.id = id;
@@ -2239,23 +2341,19 @@
             document.head.appendChild(script);
         }
 
-        // دالة يتم استدعاؤها بواسطة YouTube IFrame API عند التحميل
         function onYouTubeIframeAPIReady() {
-            // هذه الدالة يجب أن تكون موجودة عالمياً
-            // لا تفعل شيئاً هنا، سيتم إنشاء المشغلات عند الحاجة في createProjectGallery
+            // سيتم إنشاء المشغلات عند الحاجة في createProjectGallery
         }
     
-        // New function to generate embed HTML for various platforms
         function generateEmbedHtml(url, isDetailPage = false, playerId = null) {
             let embedHtml = '';
-            const playsinlineParam = 'playsinline=1'; // للحفاظ على التشغيل داخل المتصفح على iOS
-            const controlsParam = 'controls=1'; // إظهار أزرار التحكم
-            const modestbrandingParam = 'modestbranding=1'; // إزالة شعار يوتيوب الكبير
-            const relParam = 'rel=0'; // عدم عرض فيديوهات ذات صلة بعد انتهاء الفيديو
-            const enablejsapiParam = 'enablejsapi=1'; // لتمكين التحكم عبر JavaScript
-            const originParam = `origin=${window.location.origin}`; // لتحديد النطاق الذي يستضيف المشغل
+            const playsinlineParam = 'playsinline=1';
+            const controlsParam = 'controls=1';
+            const modestbrandingParam = 'modestbranding=1';
+            const relParam = 'rel=0';
+            const enablejsapiParam = 'enablejsapi=1';
+            const originParam = `origin=${window.location.origin}`;
 
-            // YouTube
             const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
             const youtubeMatch = url.match(youtubeRegex);
             if (youtubeMatch && youtubeMatch[1]) {
@@ -2263,15 +2361,13 @@
                 const isShort = url.includes('/shorts/');
                 const aspectRatioClass = isShort ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
                 
-                // استخدام div بدلاً من iframe مباشرة لإنشاء المشغل لاحقاً بواسطة YouTube API
                 embedHtml = `
                     <div class="embed-responsive ${aspectRatioClass}">
                         <div id="${playerId}" class="youtube-player-placeholder"></div>
                     </div>`;
                 
-                // إنشاء المشغل بعد تحميل الـ API وتضمين الـ div
                 if (isDetailPage && typeof YT !== 'undefined' && YT.Player) {
-                    setTimeout(() => { // تأخير بسيط لضمان أن الـ div موجود في DOM
+                    setTimeout(() => {
                         youtubePlayers[playerId] = new YT.Player(playerId, {
                             videoId: videoId,
                             playerVars: {
@@ -2281,14 +2377,14 @@
                                 'enablejsapi': 1,
                                 'origin': window.location.origin,
                                 'playsinline': 1,
-                                'autoplay': 0 // تأكيد عدم التشغيل التلقائي
+                                'autoplay': 0
                             },
                             events: {
                                 'onReady': (event) => {
-                                    // يمكنك إضافة منطق هنا عند جاهزية المشغل
+                                    // يمكن إضافة منطق هنا عند جاهزية المشغل
                                 },
                                 'onStateChange': (event) => {
-                                    // يمكنك إضافة منطق هنا لتتبع حالة التشغيل
+                                    // يمكن إضافة منطق هنا لتتبع حالة التشغيل
                                 }
                             }
                         });
@@ -2297,7 +2393,6 @@
                 return embedHtml;
             }
     
-            // Instagram
             const instagramRegex = /https:\/\/(?:www\.)?instagram\.com\/(p|reel)\/([a-zA-Z0-9_-]+)/;
             const instagramMatch = url.match(instagramRegex);
             if (instagramMatch && instagramMatch[2]) {
@@ -2313,17 +2408,14 @@
                                      style="width: 100%; height: 100%; margin: 0;">
                          </blockquote>
                     </div>`;
-                 // Instagram's script will handle the content loading.
                 return embedHtml;
             }
     
-            // TikTok
             const tiktokRegex = /https:\/\/(?:www\.|vm\.)?tiktok\.com\/.*\/video\/(\d+)/;
             const tiktokMatch = url.match(tiktokRegex);
             if (tiktokMatch && tiktokMatch[1]) {
                 const videoId = tiktokMatch[1];
                 loadScript('https://www.tiktok.com/embed.js', 'tiktok-embed-script');
-                // TikTok blockquote is responsive by nature but we wrap it for consistency and to control aspect ratio.
                 embedHtml = `
                     <div class="embed-responsive embed-responsive-9by16">
                         <blockquote class="tiktok-embed"
@@ -2335,7 +2427,6 @@
                 return embedHtml;
             }
     
-            // Facebook
             const facebookRegex = /https:\/\/(?:www\.)?facebook\.com\/(?:watch\/?\?v=|.*\/videos\/|reel\/)(\d+)/;
             const facebookMatch = url.match(facebookRegex);
             if (facebookMatch) {
@@ -2355,7 +2446,6 @@
                 return embedHtml;
             }
     
-            // Fallback for direct video links
             embedHtml = `
                 <div class="embed-responsive embed-responsive-16by9">
                     <video controls playsinline webkit-playsinline loading="lazy">
@@ -2371,7 +2461,6 @@
             const slides = document.querySelectorAll('.gallery-slide');
             if (slides.length === 0) return;
             
-            // إيقاف أي فيديو يعمل حالياً قبل تغيير الشريحة
             stopAllVideoPlayers();
 
             currentSlide += direction;
@@ -2385,15 +2474,12 @@
             updateGalleryDisplay();
         }
 
-        // الذهاب لشريحة محددة
         function goToSlide(index) {
-            // إيقاف أي فيديو يعمل حالياً قبل تغيير الشريحة
             stopAllVideoPlayers();
             currentSlide = index;
             updateGalleryDisplay();
         }
 
-        // تحديث عرض المعرض
         function updateGalleryDisplay() {
             const gallery = document.getElementById('projectGallery');
             const indicators = document.querySelectorAll('.gallery-indicator');
@@ -2407,14 +2493,12 @@
             });
         }
 
-        // إيقاف جميع مشغلات الفيديو (خاصة YouTube)
         function stopAllVideoPlayers() {
             for (const playerId in youtubePlayers) {
                 if (youtubePlayers[playerId] && typeof youtubePlayers[playerId].pauseVideo === 'function') {
                     youtubePlayers[playerId].pauseVideo();
                 }
             }
-            // إيقاف عناصر <video> المباشرة
             document.querySelectorAll('.project-gallery video').forEach(video => {
                 if (!video.paused) {
                     video.pause();
@@ -2422,7 +2506,6 @@
             });
         }
 
-        // العودة للصفحة الرئيسية
         function backToHome() {
             document.getElementById('mainSite').style.display = 'block';
             document.getElementById('loginContainer').style.display = 'none';
@@ -2434,35 +2517,31 @@
             
             currentServicePage = '';
             currentProjectDetail = null;
-            stopAllVideoPlayers(); // إيقاف الفيديوهات عند العودة للصفحة الرئيسية
+            stopAllVideoPlayers();
         }
 
-        // العودة للخدمة
         function backToService() {
             document.getElementById('projectDetailPage').classList.remove('active');
-            stopAllVideoPlayers(); // إيقاف الفيديوهات عند العودة لصفحة الخدمة
+            stopAllVideoPlayers();
             if (currentServicePage) {
                 showService(currentServicePage);
             } else if (isLoggedIn) {
                 document.getElementById('dashboardContainer').classList.add('active');
-            }
-            else {
+            } else {
                 backToHome();
             }
         }
 
-        // عرض تسجيل الدخول
         function showLogin() {
             document.getElementById('mainSite').style.display = 'none';
             document.getElementById('loginContainer').style.display = 'flex';
         }
 
-        // تسجيل الدخول
         function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
-            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const data = dataManager.getData();
             const user = data.users.find(u => u.username === username && u.password === password);
             
             if (user) {
@@ -2476,14 +2555,12 @@
             }
         }
 
-        // تسجيل الخروج
         function logout() {
             isLoggedIn = false;
             currentUser = null;
             backToHome();
         }
 
-        // تحميل الداش بورد
         function loadDashboard() {
             updateStats();
             loadServices();
@@ -2495,26 +2572,20 @@
             document.getElementById('workFilterInput').addEventListener('input', filterWorks);
         }
 
-        // عرض قسم الداش بورد
         function showDashboardSection(section) {
-            // إخفاء جميع الأقسام
             const sections = document.querySelectorAll('.dashboard-section');
             sections.forEach(s => s.classList.remove('active'));
             
-            // إزالة الفئة النشطة من جميع الأزرار
             const buttons = document.querySelectorAll('.dashboard-nav button');
             buttons.forEach(btn => btn.classList.remove('active'));
             
-            // عرض القسم المحدد
             document.getElementById(section + 'Section').classList.add('active');
             
-            // تفعيل الزر المحدد
             event.target.classList.add('active');
         }
 
-        // تحديث الإحصائيات
         function updateStats() {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const data = dataManager.getData();
             
             const totalServicesEl = document.getElementById('totalServices');
             const totalWorksEl = document.getElementById('totalWorks');
@@ -2538,14 +2609,12 @@
             }
         }
 
-        // تحميل الخدمات
         function loadServices() {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const data = dataManager.getData();
             const servicesList = document.getElementById('servicesList');
             const servicesGrid = document.getElementById('servicesGrid');
             const workService = document.getElementById('workService');
             
-            // تحديث قائمة الخدمات في الداش بورد
             if (servicesList) {
                 servicesList.innerHTML = '';
                 data.services.forEach(service => {
@@ -2565,7 +2634,6 @@
                 });
             }
             
-            // تحديث شبكة الخدمات في الصفحة الرئيسية
             if (servicesGrid) {
                 servicesGrid.innerHTML = '';
                 data.services.forEach(service => {
@@ -2582,7 +2650,6 @@
                 });
             }
             
-            // تحديث قائمة اختيار الخدمة في إضافة الأعمال
             if (workService) {
                 workService.innerHTML = '<option value="">اختر الخدمة</option>';
                 data.services.forEach(service => {
@@ -2594,24 +2661,21 @@
             }
         }
         
-        // عرض العمل في الداش بورد
         function viewWorkInDashboard(workId) {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const data = dataManager.getData();
             const work = data.works.find(w => w.id === workId);
             if(work) {
                 showProjectDetail(work);
             }
         }
         
-        // تعديل العمل
         function editWork(workId) {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const data = dataManager.getData();
             const work = data.works.find(w => w.id === workId);
             if (!work) return;
 
             currentlyEditingWorkId = workId;
 
-            // ملء النموذج
             document.getElementById('workService').value = work.service;
             document.getElementById('workTitle').value = work.title;
             document.getElementById('workTitleEn').value = work.titleEn;
@@ -2619,9 +2683,8 @@
             document.getElementById('workDescriptionEn').value = work.descriptionEn;
             
             videoLinks = [...(work.videos || [])];
-            currentWorkImages = [...(work.media || [])]; // حفظ الصور الموجودة
+            currentWorkImages = [...(work.media || [])];
 
-            // تحديث واجهة المستخدم لوضع التعديل
             document.getElementById('workFormTitle').textContent = 'تعديل العمل';
             document.getElementById('addWorkButton').textContent = 'تحديث العمل';
             document.getElementById('cancelEditButton').style.display = 'inline-block';
@@ -2633,15 +2696,14 @@
             currentlyEditingWorkId = null;
             document.getElementById('addWorkForm').reset();
             videoLinks = [];
-            currentWorkImages = []; // مسح الصور المؤقتة
-            document.getElementById('workImages').value = ''; // مسح الملفات المختارة
+            currentWorkImages = [];
+            document.getElementById('workImages').value = '';
             updateMediaPreview();
             document.getElementById('workFormTitle').textContent = 'إضافة عمل جديد';
             document.getElementById('addWorkButton').textContent = 'إضافة العمل';
             document.getElementById('cancelEditButton').style.display = 'none';
         }
 
-        // فلترة الأعمال
         function filterWorks() {
             const filterValue = document.getElementById('workFilterInput').value.toLowerCase();
             const worksList = document.getElementById('worksList');
@@ -2658,9 +2720,8 @@
             });
         }
 
-        // تحميل الأعمال
         function loadWorks() {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const data = dataManager.getData();
             const worksList = document.getElementById('worksList');
             
             if (worksList) {
@@ -2689,9 +2750,8 @@
             }
         }
 
-        // تحميل الرسائل
         function loadMessages() {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const data = dataManager.getData();
             const messagesList = document.getElementById('messagesList');
             
             if (messagesList) {
@@ -2719,9 +2779,8 @@
             }
         }
 
-        // تحميل طلبات الاستشارة
         function loadConsultations() {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const data = dataManager.getData();
             const consultationsList = document.getElementById('consultationsList');
             
             if (consultationsList) {
@@ -2747,9 +2806,8 @@
             }
         }
 
-        // تحميل بيانات الزوار
         function loadVisitors() {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const data = dataManager.getData();
             const visitorsList = document.getElementById('visitorsList');
             
             if (visitorsList) {
@@ -2770,17 +2828,15 @@
             }
         }
 
-        // إنشاء الرسوم البيانية
         function createCharts() {
             createWorksChart();
             createVisitorsChart();
         }
 
-        // إنشاء رسم بياني للأعمال
         function createWorksChart() {
             const ctx = document.getElementById('worksChart');
             if (ctx && !worksChart) {
-                const data = JSON.parse(localStorage.getItem('cmaData'));
+                const data = dataManager.getData();
                 const servicesData = data.services.map(service => ({
                     service: service.name,
                     count: data.works.filter(work => work.service === service.id).length
@@ -2824,13 +2880,11 @@
             }
         }
 
-        // إنشاء رسم بياني للزوار
         function createVisitorsChart() {
             const ctx = document.getElementById('visitorsChart');
             if (ctx && !visitorsChart) {
-                const data = JSON.parse(localStorage.getItem('cmaData'));
+                const data = dataManager.getData();
                 
-                // إنشاء بيانات آخر 7 أيام
                 const last7Days = [];
                 const visitorCounts = [];
                 
@@ -2897,7 +2951,6 @@
             }
         }
 
-        // إضافة رابط فيديو
         function addVideoLink() {
             const input = document.getElementById('videoLinkInput');
             const url = input.value.trim();
@@ -2909,12 +2962,12 @@
             }
         }
 
-        // تحديث معاينة الوسائط
-        function updateMediaPreview() {
+        // تحسين تحديث معاينة الوسائط مع معالجة الأخطاء
+        async function updateMediaPreview() {
             const preview = document.getElementById('mediaPreview');
             preview.innerHTML = '';
             
-            // عرض الصور الموجودة (إذا كنا في وضع التعديل)
+            // عرض الصور الموجودة
             currentWorkImages.forEach((imgSrc, index) => {
                 const mediaItem = document.createElement('div');
                 mediaItem.className = 'media-item';
@@ -2925,22 +2978,32 @@
                 preview.appendChild(mediaItem);
             });
 
-            // عرض الصور المختارة حديثًا
+            // عرض الصور المختارة حديثًا مع معالجة الأخطاء
             const fileInput = document.getElementById('workImages');
             if (fileInput.files) {
-                Array.from(fileInput.files).forEach((file, index) => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    const file = fileInput.files[i];
+                    
+                    // التحقق من صحة الملف
+                    const validationError = ErrorHandler.validateImageFile(file);
+                    if (validationError) {
+                        ErrorHandler.showError('workErrorMessage', validationError);
+                        continue;
+                    }
+                    
+                    try {
+                        const base64 = await fileToBase64(file);
                         const mediaItem = document.createElement('div');
                         mediaItem.className = 'media-item';
                         mediaItem.innerHTML = `
-                            <img src="${e.target.result}" alt="Work Image" loading="lazy">
-                            <button class="remove-media" onclick="removeNewImage(${index})">×</button>
+                            <img src="${base64}" alt="Work Image" loading="lazy">
+                            <button class="remove-media" onclick="removeNewImage(${i})">×</button>
                         `;
                         preview.appendChild(mediaItem);
-                    };
-                    reader.readAsDataURL(file);
-                });
+                    } catch (error) {
+                        ErrorHandler.showError('workErrorMessage', 'خطأ في تحميل الصورة: ' + file.name);
+                    }
+                }
             }
             
             // عرض روابط الفيديو
@@ -2956,18 +3019,25 @@
             });
         }
 
-        // إزالة صورة موجودة (من العمل المحفوظ)
+        // تحويل الملف إلى Base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
         function removeExistingImage(index) {
             currentWorkImages.splice(index, 1);
             updateMediaPreview();
         }
 
-        // إزالة صورة جديدة (تم اختيارها للتو)
         function removeNewImage(index) {
             const fileInput = document.getElementById('workImages');
             const dt = new DataTransfer();
             
-            // إعادة بناء FileList بدون الملف المحذوف
             Array.from(fileInput.files).forEach((file, i) => {
                 if (i !== index) {
                     dt.items.add(file);
@@ -2978,43 +3048,55 @@
             updateMediaPreview();
         }
 
-        // إزالة فيديو
         function removeVideo(index) {
             videoLinks.splice(index, 1);
             updateMediaPreview();
         }
 
-        // معالجة نماذج الداش بورد
-        document.getElementById('addServiceForm').addEventListener('submit', function(e) {
+        // معالجة النماذج المحسنة
+        document.getElementById('addServiceForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const formData = new FormData(this);
             const serviceImageFile = document.getElementById('serviceImage').files[0];
             
-            if (serviceImageFile) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const service = {
-                        id: 'service-' + Date.now(),
-                        name: formData.get('serviceName'),
-                        nameEn: formData.get('serviceNameEn'),
-                        description: formData.get('serviceDescription'),
-                        descriptionEn: formData.get('serviceDescriptionEn'),
-                        image: e.target.result // Base64 string
-                    };
-                    
-                    const data = JSON.parse(localStorage.getItem('cmaData'));
-                    data.services.push(service);
-                    localStorage.setItem('cmaData', JSON.stringify(data));
-                    
+            if (!serviceImageFile) {
+                ErrorHandler.showError('serviceErrorMessage', 'الرجاء اختيار صورة للخدمة');
+                return;
+            }
+
+            // التحقق من صحة الملف
+            const validationError = ErrorHandler.validateImageFile(serviceImageFile);
+            if (validationError) {
+                ErrorHandler.showError('serviceErrorMessage', validationError);
+                return;
+            }
+            
+            try {
+                const base64Image = await fileToBase64(serviceImageFile);
+                
+                const service = {
+                    id: 'service-' + Date.now(),
+                    name: formData.get('serviceName'),
+                    nameEn: formData.get('serviceNameEn'),
+                    description: formData.get('serviceDescription'),
+                    descriptionEn: formData.get('serviceDescriptionEn'),
+                    image: base64Image
+                };
+                
+                const data = dataManager.getData();
+                data.services.push(service);
+                
+                if (dataManager.saveData(data)) {
                     loadServices();
                     updateStats();
-                    document.getElementById('addServiceForm').reset();
-                    alert('تم إضافة الخدمة بنجاح');
-                };
-                reader.readAsDataURL(serviceImageFile);
-            } else {
-                alert('الرجاء اختيار صورة للخدمة.');
+                    this.reset();
+                    ErrorHandler.showSuccess('serviceSuccessMessage', 'تم إضافة الخدمة بنجاح');
+                } else {
+                    ErrorHandler.showError('serviceErrorMessage', 'فشل في حفظ الخدمة');
+                }
+            } catch (error) {
+                ErrorHandler.showError('serviceErrorMessage', 'حدث خطأ في معالجة الصورة');
             }
         });
 
@@ -3033,251 +3115,5 @@
                 videos: [...videoLinks]
             };
 
-            // تحويل الصور الجديدة إلى Base64
-            const newImageUrls = await Promise.all(
-                Array.from(workImagesFiles).map(file => {
-                    return new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = (e) => resolve(e.target.result);
-                        reader.readAsDataURL(file);
-                    });
-                })
-            );
-
-            // دمج الصور الموجودة مع الصور الجديدة
-            const allImageUrls = [...currentWorkImages, ...newImageUrls];
-
-            const data = JSON.parse(localStorage.getItem('cmaData'));
-
-            if(currentlyEditingWorkId) {
-                // وضع التعديل
-                const workIndex = data.works.findIndex(w => w.id === currentlyEditingWorkId);
-                if(workIndex !== -1) {
-                    const existingWork = data.works[workIndex];
-                    data.works[workIndex] = {
-                        ...existingWork,
-                        ...workData,
-                        media: allImageUrls // استخدام جميع الصور المدمجة
-                    };
-                    alert('تم تحديث العمل بنجاح');
-                }
-            } else {
-                // وضع الإضافة
-                const newWork = {
-                    ...workData,
-                    id: Date.now(),
-                    media: allImageUrls, // استخدام جميع الصور المدمجة
-                };
-                data.works.push(newWork);
-                alert('تم إضافة العمل بنجاح');
-            }
-            
-            localStorage.setItem('cmaData', JSON.stringify(data));
-            
-            loadWorks();
-            updateStats();
-            cancelEditWork(); // لإعادة تعيين النموذج
-            
-            if (worksChart) {
-                worksChart.destroy();
-                worksChart = null;
-                createWorksChart();
-            }
-        });
-        
-        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (currentPassword !== currentUser.password) {
-                alert('كلمة المرور الحالية غير صحيحة');
-                return;
-            }
-            
-            if (newPassword !== confirmPassword) {
-                alert('كلمة المرور الجديدة غير متطابقة');
-                return;
-            }
-            
-            const data = JSON.parse(localStorage.getItem('cmaData'));
-            const userIndex = data.users.findIndex(u => u.username === currentUser.username);
-            data.users[userIndex].password = newPassword;
-            localStorage.setItem('cmaData', JSON.stringify(data));
-            
-            currentUser.password = newPassword;
-            document.getElementById('changePasswordForm').reset();
-            alert('تم تغيير كلمة المرور بنجاح');
-        });
-
-        // مراقبة تغيير الملفات
-        document.getElementById('workImages').addEventListener('change', updateMediaPreview);
-
-        // وظائف الحذف والتعديل
-        function deleteService(serviceId) {
-            if (confirm('هل أنت متأكد من حذف هذه الخدمة؟ سيتم حذف جميع الأعمال المرتبطة بها.')) {
-                const data = JSON.parse(localStorage.getItem('cmaData'));
-                data.services = data.services.filter(s => s.id !== serviceId);
-                data.works = data.works.filter(w => w.service !== serviceId);
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                
-                loadServices();
-                loadWorks();
-                updateStats();
-            }
-        }
-
-        function deleteWork(workId) {
-            if (confirm('هل أنت متأكد من حذف هذا العمل؟')) {
-                const data = JSON.parse(localStorage.getItem('cmaData'));
-                data.works = data.works.filter(w => w.id !== workId);
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                
-                loadWorks();
-                updateStats();
-                if (worksChart) {
-                    worksChart.destroy();
-                    worksChart = null;
-                    createWorksChart();
-                }
-            }
-        }
-
-        function deleteMessage(messageId) {
-            if (confirm('هل أنت متأكد من حذف هذه الرسالة؟')) {
-                const data = JSON.parse(localStorage.getItem('cmaData'));
-                data.messages = data.messages.filter(m => m.id !== messageId);
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                
-                loadMessages();
-                updateStats();
-            }
-        }
-
-        function deleteConsultation(consultationId) {
-            if (confirm('هل أنت متأكد من حذف طلب الاستشارة؟')) {
-                const data = JSON.parse(localStorage.getItem('cmaData'));
-                data.consultations = data.consultations.filter(c => c.id !== consultationId);
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                
-                loadConsultations();
-                updateStats();
-            }
-        }
-
-        function toggleMessageRead(messageId) {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
-            const message = data.messages.find(m => m.id === messageId);
-            if (message) {
-                message.read = !message.read;
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                loadMessages();
-                updateStats();
-            }
-        }
-
-        function updateConsultationStatus(consultationId, newStatus) {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
-            const consultation = data.consultations.find(c => c.id === consultationId);
-            if (consultation) {
-                consultation.status = newStatus;
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                loadConsultations();
-            }
-        }
-
-        // تهيئة النظام عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeSystem();
-            
-            // التحقق من معاملات URL
-            if (window.location.search.includes('submitted=true')) {
-                document.getElementById('thankYouPopup').style.display = 'flex';
-                const url = new URL(window.location);
-                url.searchParams.delete('submitted');
-                window.history.replaceState({}, document.title, url.toString());
-            }
-
-            // معالج نموذج الاستشارة
-            const consultationForm = document.getElementById('consultationForm');
-            if (consultationForm) {
-                consultationForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const form = e.target;
-                    const name = form.elements.consultationName.value;
-                    const phone = form.elements.consultationPhone.value;
-                    const email = form.elements.consultationEmail.value;
-
-                    if (name && phone && email) {
-                        const consultation = {
-                            id: Date.now(),
-                            name: name,
-                            phone: phone,
-                            email: email,
-                            date: new Date().toISOString(),
-                            status: 'جديد'
-                        };
-
-                        const data = JSON.parse(localStorage.getItem('cmaData'));
-                        data.consultations.push(consultation);
-                        localStorage.setItem('cmaData', JSON.stringify(data));
-
-                        sendConsultationEmail(consultation);
-
-                        localStorage.setItem('consultationRequested', 'true');
-                        closeConsultationPopup();
-
-                        alert(currentLanguage === 'ar' ?
-                            'تم طلب الاستشارة بنجاح! سنتواصل معك قريباً.' :
-                            'Consultation requested successfully! We will contact you soon.');
-
-                        updateStats();
-                        form.reset();
-                    }
-                });
-            }
-        });
-
-        // معالجة أحداث لوحة المفاتيح للمعرض
-        document.addEventListener('keydown', function(e) {
-            if (document.getElementById('projectDetailPage').classList.contains('active')) {
-                if (e.key === 'ArrowLeft') {
-                    changeSlide(-1);
-                } else if (e.key === 'ArrowRight') {
-                    changeSlide(1);
-                } else if (e.key === 'Escape') {
-                    backToService();
-                }
-            }
-        });
-
-        // دعم التمرير باللمس للمعرض
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        document.getElementById('projectGallery').addEventListener('touchstart', function(e) {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-
-        document.getElementById('projectGallery').addEventListener('touchend', function(e) {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        });
-
-        function handleSwipe() {
-            const swipeThreshold = 50;
-            const diff = touchStartX - touchEndX;
-            
-            if (Math.abs(diff) > swipeThreshold) {
-                if (diff > 0) {
-                    changeSlide(1); // تمرير لليسار
-                } else {
-                    changeSlide(-1); // تمرير لليمين
-                }
-            }
-        }
-    </script>
-</body>
-</html>
+            try {
+                // تحويل الصور الجديدة إلى Base64 مع التحقق من ص
