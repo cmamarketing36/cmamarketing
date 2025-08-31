@@ -729,8 +729,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* إضافة انتقال سلس هنا */
-            transition: transform 0.5s ease-in-out; /* يمكن تعديل المدة ونوع الانتقال */
+            transition: transform 0.5s ease;
         }
 
         .gallery-slide img, .gallery-slide video, .gallery-slide .embed-responsive {
@@ -984,18 +983,6 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
-            /* إضافة خصائص السحب والإفلات */
-            cursor: grab;
-            transition: background-color 0.2s ease;
-        }
-
-        .list-item:active {
-            cursor: grabbing;
-        }
-
-        .list-item.dragging {
-            opacity: 0.5;
-            background-color: #3a3a3a;
         }
 
         .list-item-actions {
@@ -1769,11 +1756,9 @@
         let videoLinks = [];
         let currentlyEditingWorkId = null;
         let currentWorkImages = []; // لتخزين صور العمل الحالية (Base64)
+        let newlySelectedImages = []; // NEW: لتخزين الصور الجديدة التي تم اختيارها للتو
         let youtubePlayers = {}; // لتخزين كائنات مشغلات YouTube API
         let currentlyEditingServiceId = null; // New variable for service editing
-
-        // متغيرات السحب والإفلات
-        let draggedItem = null;
 
         // بيانات افتراضية للنظام
         const defaultData = {
@@ -2271,7 +2256,9 @@
                 if (media.type === 'image') {
                     slide.innerHTML = `<img src="${media.src}" alt="Project Image" loading="lazy">`;
                 } else { // It's a video
-                    slide.innerHTML = generateEmbedHtml(media.src, true, media.id); // تمرير true لـ isDetailPage ومعرف المشغل
+                    // تأكد أن playerId فريد وموجود
+                    const currentPlayerId = `youtube-player-${work.id}-${index}`;
+                    slide.innerHTML = generateEmbedHtml(media.src, true, currentPlayerId);
                 }
                 
                 gallery.appendChild(slide);
@@ -2286,6 +2273,39 @@
             
             currentSlide = 0;
             updateGalleryDisplay();
+
+            // بعد إضافة جميع الشرائح إلى DOM، قم بتهيئة مشغلات YouTube
+            // هذا يضمن أن العناصر التي سيتم تضمين المشغل فيها موجودة
+            if (typeof YT !== 'undefined' && YT.Player) {
+                allMedia.forEach((media, index) => {
+                    if (media.type === 'video' && media.src.includes('youtube.com')) {
+                        const currentId = `youtube-player-${work.id}-${index}`;
+                        // تأكد أن العنصر موجود قبل محاولة إنشاء المشغل
+                        if (document.getElementById(currentId)) {
+                            youtubePlayers[currentId] = new YT.Player(currentId, {
+                                videoId: media.src.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/)[1],
+                                playerVars: {
+                                    'controls': 1,
+                                    'modestbranding': 1,
+                                    'rel': 0,
+                                    'enablejsapi': 1,
+                                    'origin': window.location.origin,
+                                    'playsinline': 1,
+                                    'autoplay': 0
+                                },
+                                events: {
+                                    'onReady': (event) => {
+                                        // console.log(`YouTube player ${currentId} is ready.`);
+                                    },
+                                    'onStateChange': (event) => {
+                                        // console.log(`YouTube player ${currentId} state changed to: ${event.data}`);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
         }
 
         // Helper function to load external scripts
@@ -2330,30 +2350,7 @@
                     </div>`;
                 
                 // إنشاء المشغل بعد تحميل الـ API وتضمين الـ div
-                if (isDetailPage && typeof YT !== 'undefined' && YT.Player) {
-                    setTimeout(() => { // تأخير بسيط لضمان أن الـ div موجود في DOM
-                        youtubePlayers[playerId] = new YT.Player(playerId, {
-                            videoId: videoId,
-                            playerVars: {
-                                'controls': 1,
-                                'modestbranding': 1,
-                                'rel': 0,
-                                'enablejsapi': 1,
-                                'origin': window.location.origin,
-                                'playsinline': 1,
-                                'autoplay': 0 // تأكيد عدم التشغيل التلقائي
-                            },
-                            events: {
-                                'onReady': (event) => {
-                                    // يمكنك إضافة منطق هنا عند جاهزية المشغل
-                                },
-                                'onStateChange': (event) => {
-                                    // يمكنك إضافة منطق هنا لتتبع حالة التشغيل
-                                }
-                            }
-                        });
-                    }, 100);
-                }
+                // تم نقل هذا الجزء إلى createProjectGallery لضمان أن العنصر موجود في DOM
                 return embedHtml;
             }
     
@@ -2457,8 +2454,7 @@
         function updateGalleryDisplay() {
             const gallery = document.getElementById('projectGallery');
             const indicators = document.querySelectorAll('.gallery-indicator');
-            const slides = document.querySelectorAll('.gallery-slide'); // جلب الشرائح
-
+            
             if (gallery) {
                 gallery.style.transform = `translateX(-${currentSlide * 100}%)`;
             }
@@ -2466,22 +2462,6 @@
             indicators.forEach((indicator, index) => {
                 indicator.classList.toggle('active', index === currentSlide);
             });
-
-            // إيقاف جميع الفيديوهات أولاً
-            stopAllVideoPlayers();
-
-            // تشغيل الفيديو في الشريحة الحالية إذا كان موجوداً
-            if (slides.length > 0 && slides[currentSlide]) {
-                const currentSlideElement = slides[currentSlide];
-                const videoElement = currentSlideElement.querySelector('video');
-                const youtubePlayerPlaceholder = currentSlideElement.querySelector('.youtube-player-placeholder');
-
-                if (videoElement) {
-                    videoElement.play().catch(e => console.log("Video autoplay prevented:", e));
-                } else if (youtubePlayerPlaceholder && youtubePlayers[youtubePlayerPlaceholder.id]) {
-                    youtubePlayers[youtubePlayerPlaceholder.id].playVideo();
-                }
-            }
         }
 
         // إيقاف جميع مشغلات الفيديو (خاصة YouTube)
@@ -2628,8 +2608,6 @@
                 data.services.forEach(service => {
                     const serviceElement = document.createElement('div');
                     serviceElement.className = 'list-item';
-                    serviceElement.setAttribute('draggable', 'true'); // جعل العنصر قابلاً للسحب
-                    serviceElement.dataset.id = service.id; // تخزين الـ ID في dataset
                     serviceElement.innerHTML = `
                         <div>
                             <strong>${service.name}</strong>
@@ -2642,7 +2620,6 @@
                     `;
                     servicesList.appendChild(serviceElement);
                 });
-                addDragAndDropListeners(servicesList, 'services'); // إضافة مستمعات السحب والإفلات
             }
             
             // تحديث شبكة الخدمات في الصفحة الرئيسية
@@ -2741,6 +2718,7 @@
             
             videoLinks = [...(work.videos || [])];
             currentWorkImages = [...(work.media || [])]; // حفظ الصور الموجودة
+            newlySelectedImages = []; // NEW: Clear newly selected images when editing
 
             // تحديث واجهة المستخدم لوضع التعديل
             document.getElementById('workFormTitle').textContent = 'تعديل العمل';
@@ -2755,6 +2733,7 @@
             document.getElementById('addWorkForm').reset();
             videoLinks = [];
             currentWorkImages = []; // مسح الصور المؤقتة
+            newlySelectedImages = []; // NEW: Clear newly selected images
             document.getElementById('workImages').value = ''; // مسح الملفات المختارة
             updateMediaPreview();
             document.getElementById('workFormTitle').textContent = 'إضافة عمل جديد';
@@ -2794,8 +2773,6 @@
                     
                     const workElement = document.createElement('div');
                     workElement.className = 'list-item';
-                    workElement.setAttribute('draggable', 'true'); // جعل العنصر قابلاً للسحب
-                    workElement.dataset.id = work.id; // تخزين الـ ID في dataset
                     workElement.innerHTML = `
                         <div>
                             <strong>${work.title}</strong>
@@ -2811,7 +2788,6 @@
                     `;
                     worksList.appendChild(workElement);
                 });
-                addDragAndDropListeners(worksList, 'works'); // إضافة مستمعات السحب والإفلات
             }
         }
 
@@ -3003,7 +2979,7 @@
                             label: 'الزوار',
                             data: visitorCounts,
                             borderColor: '#ffd700',
-                            backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                            backgroundColor: 'rgba(255, 255, 0, 0.1)',
                             borderWidth: 3,
                             fill: true,
                             tension: 0.4
@@ -3064,7 +3040,7 @@
             const preview = document.getElementById('mediaPreview');
             preview.innerHTML = '';
             
-            // عرض الصور الموجودة (إذا كنا في وضع التعديل)
+            // عرض الصور الموجودة (من العمل المحفوظ)
             currentWorkImages.forEach((imgSrc, index) => {
                 const mediaItem = document.createElement('div');
                 mediaItem.className = 'media-item';
@@ -3075,31 +3051,30 @@
                 preview.appendChild(mediaItem);
             });
 
-            // عرض الصور المختارة حديثًا
-            const fileInput = document.getElementById('workImages');
-            if (fileInput.files) {
-                Array.from(fileInput.files).forEach((file, index) => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const mediaItem = document.createElement('div');
-                        mediaItem.className = 'media-item';
-                        mediaItem.innerHTML = `
-                            <img src="${e.target.result}" alt="Work Image" loading="lazy">
-                            <button class="remove-media" onclick="removeNewImage(${index})">×</button>
-                        `;
-                        preview.appendChild(mediaItem);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
+            // عرض الصور الجديدة التي تم اختيارها للتو
+            newlySelectedImages.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const mediaItem = document.createElement('div');
+                    mediaItem.className = 'media-item';
+                    mediaItem.innerHTML = `
+                        <img src="${e.target.result}" alt="New Work Image" loading="lazy">
+                        <button class="remove-media" onclick="removeNewlySelectedImage(${index})">×</button>
+                    `;
+                    preview.appendChild(mediaItem);
+                };
+                reader.readAsDataURL(file);
+            });
             
             // عرض روابط الفيديو
             videoLinks.forEach((link, index) => {
                 const mediaItem = document.createElement('div');
                 mediaItem.className = 'media-item';
                 
+                // استخدم playerId فريد لكل فيديو في المعاينة
+                const previewPlayerId = `preview-youtube-player-${index}`;
                 mediaItem.innerHTML = `
-                    ${generateEmbedHtml(link)}
+                    ${generateEmbedHtml(link, false, previewPlayerId)}
                     <button class="remove-media" onclick="removeVideo(${index})">×</button>
                 `;
                 preview.appendChild(mediaItem);
@@ -3112,18 +3087,13 @@
             updateMediaPreview();
         }
 
-        // إزالة صورة جديدة (تم اختيارها للتو)
-        function removeNewImage(index) {
+        // NEW: إزالة صورة جديدة (تم اختيارها للتو)
+        function removeNewlySelectedImage(index) {
+            newlySelectedImages.splice(index, 1);
+            // Update the file input's FileList as well
             const fileInput = document.getElementById('workImages');
             const dt = new DataTransfer();
-            
-            // إعادة بناء FileList بدون الملف المحذوف
-            Array.from(fileInput.files).forEach((file, i) => {
-                if (i !== index) {
-                    dt.items.add(file);
-                }
-            });
-            
+            newlySelectedImages.forEach(file => dt.items.add(file));
             fileInput.files = dt.files;
             updateMediaPreview();
         }
@@ -3198,7 +3168,6 @@
             e.preventDefault();
             
             const formData = new FormData(this);
-            const workImagesFiles = document.getElementById('workImages').files;
             
             const workData = {
                 service: formData.get('workService'),
@@ -3209,9 +3178,9 @@
                 videos: [...videoLinks]
             };
 
-            // تحويل الصور الجديدة إلى Base64
+            // تحويل الصور الجديدة التي تم اختيارها للتو إلى Base64
             const newImageUrls = await Promise.all(
-                Array.from(workImagesFiles).map(file => {
+                newlySelectedImages.map(file => { // Use newlySelectedImages here
                     return new Promise((resolve) => {
                         const reader = new FileReader();
                         reader.onload = (e) => resolve(e.target.result);
@@ -3289,7 +3258,10 @@
         });
 
         // مراقبة تغيير الملفات
-        document.getElementById('workImages').addEventListener('change', updateMediaPreview);
+        document.getElementById('workImages').addEventListener('change', function() {
+            newlySelectedImages = Array.from(this.files); // NEW: Store newly selected files
+            updateMediaPreview();
+        });
         document.getElementById('serviceImage').addEventListener('change', function() {
             const currentServiceImage = document.getElementById('currentServiceImage');
             if (this.files && this.files[0]) {
@@ -3473,98 +3445,6 @@
                 }
             }
         }
-
-        // ----------------------------------------------------
-        // وظائف السحب والإفلات (Drag & Drop) للداش بورد
-        // ----------------------------------------------------
-
-        function addDragAndDropListeners(container, dataType) {
-            let draggedItem = null;
-
-            container.addEventListener('dragstart', (e) => {
-                if (e.target.classList.contains('list-item')) {
-                    draggedItem = e.target;
-                    e.target.classList.add('dragging');
-                    e.dataTransfer.effectAllowed = 'move';
-                    e.dataTransfer.setData('text/plain', e.target.dataset.id); // Store ID
-                }
-            });
-
-            container.addEventListener('dragover', (e) => {
-                e.preventDefault(); // السماح بالإفلات
-                const afterElement = getDragAfterElement(container, e.clientY);
-                const draggable = document.querySelector('.dragging');
-                if (draggable) {
-                    if (afterElement == null) {
-                        container.appendChild(draggable);
-                    } else {
-                        container.insertBefore(draggable, afterElement);
-                    }
-                }
-            });
-
-            container.addEventListener('dragenter', (e) => {
-                e.preventDefault();
-            });
-
-            container.addEventListener('dragleave', () => {
-                // لا يوجد إجراء محدد عند مغادرة العنصر
-            });
-
-            container.addEventListener('drop', (e) => {
-                e.preventDefault();
-                const draggable = document.querySelector('.dragging');
-                if (draggable) {
-                    draggable.classList.remove('dragging');
-                    saveNewOrder(container, dataType); // حفظ الترتيب الجديد
-                }
-            });
-
-            container.addEventListener('dragend', (e) => {
-                if (draggedItem) {
-                    draggedItem.classList.remove('dragging');
-                    draggedItem = null;
-                }
-            });
-        }
-
-        function getDragAfterElement(container, y) {
-            const draggableElements = [...container.querySelectorAll('.list-item:not(.dragging)')];
-
-            return draggableElements.reduce((closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offset = y - box.top - box.height / 2;
-                if (offset < 0 && offset > closest.offset) {
-                    return { offset: offset, element: child };
-                } else {
-                    return closest;
-                }
-            }, { offset: -Infinity }).element;
-        }
-
-        function saveNewOrder(container, dataType) {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
-            const orderedIds = Array.from(container.children).map(item => item.dataset.id);
-            
-            let reorderedArray = [];
-            if (dataType === 'services') {
-                reorderedArray = orderedIds.map(id => data.services.find(s => s.id === id));
-                data.services = reorderedArray.filter(Boolean); // إزالة أي عناصر غير موجودة (للتأكد)
-            } else if (dataType === 'works') {
-                reorderedArray = orderedIds.map(id => data.works.find(w => w.id == id)); // استخدام == للمقارنة بين string و number
-                data.works = reorderedArray.filter(Boolean);
-            }
-            
-            localStorage.setItem('cmaData', JSON.stringify(data));
-            
-            // إعادة تحميل القوائم لضمان التحديث الكامل (خاصة في الواجهة الأمامية)
-            if (dataType === 'services') {
-                loadServices();
-            } else if (dataType === 'works') {
-                loadWorks();
-            }
-        }
-
     </script>
 </body>
 </html>
