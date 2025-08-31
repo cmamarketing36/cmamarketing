@@ -2256,7 +2256,9 @@
                 if (media.type === 'image') {
                     slide.innerHTML = `<img src="${media.src}" alt="Project Image" loading="lazy">`;
                 } else { // It's a video
-                    slide.innerHTML = generateEmbedHtml(media.src, true, media.id); // تمرير true لـ isDetailPage ومعرف المشغل
+                    // تأكد أن playerId فريد وموجود
+                    const currentPlayerId = `youtube-player-${work.id}-${index}`;
+                    slide.innerHTML = generateEmbedHtml(media.src, true, currentPlayerId);
                 }
                 
                 gallery.appendChild(slide);
@@ -2271,6 +2273,39 @@
             
             currentSlide = 0;
             updateGalleryDisplay();
+
+            // بعد إضافة جميع الشرائح إلى DOM، قم بتهيئة مشغلات YouTube
+            // هذا يضمن أن العناصر التي سيتم تضمين المشغل فيها موجودة
+            if (typeof YT !== 'undefined' && YT.Player) {
+                allMedia.forEach((media, index) => {
+                    if (media.type === 'video' && media.src.includes('youtube.com')) {
+                        const currentId = `youtube-player-${work.id}-${index}`;
+                        // تأكد أن العنصر موجود قبل محاولة إنشاء المشغل
+                        if (document.getElementById(currentId)) {
+                            youtubePlayers[currentId] = new YT.Player(currentId, {
+                                videoId: media.src.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/)[1],
+                                playerVars: {
+                                    'controls': 1,
+                                    'modestbranding': 1,
+                                    'rel': 0,
+                                    'enablejsapi': 1,
+                                    'origin': window.location.origin,
+                                    'playsinline': 1,
+                                    'autoplay': 0
+                                },
+                                events: {
+                                    'onReady': (event) => {
+                                        // console.log(`YouTube player ${currentId} is ready.`);
+                                    },
+                                    'onStateChange': (event) => {
+                                        // console.log(`YouTube player ${currentId} state changed to: ${event.data}`);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
         }
 
         // Helper function to load external scripts
@@ -2315,30 +2350,7 @@
                     </div>`;
                 
                 // إنشاء المشغل بعد تحميل الـ API وتضمين الـ div
-                if (isDetailPage && typeof YT !== 'undefined' && YT.Player) {
-                    setTimeout(() => { // تأخير بسيط لضمان أن الـ div موجود في DOM
-                        youtubePlayers[playerId] = new YT.Player(playerId, {
-                            videoId: videoId,
-                            playerVars: {
-                                'controls': 1,
-                                'modestbranding': 1,
-                                'rel': 0,
-                                'enablejsapi': 1,
-                                'origin': window.location.origin,
-                                'playsinline': 1,
-                                'autoplay': 0 // تأكيد عدم التشغيل التلقائي
-                            },
-                            events: {
-                                'onReady': (event) => {
-                                    // يمكنك إضافة منطق هنا عند جاهزية المشغل
-                                },
-                                'onStateChange': (event) => {
-                                    // يمكنك إضافة منطق هنا لتتبع حالة التشغيل
-                                }
-                            }
-                        });
-                    }, 100);
-                }
+                // تم نقل هذا الجزء إلى createProjectGallery لضمان أن العنصر موجود في DOM
                 return embedHtml;
             }
     
@@ -3059,8 +3071,10 @@
                 const mediaItem = document.createElement('div');
                 mediaItem.className = 'media-item';
                 
+                // استخدم playerId فريد لكل فيديو في المعاينة
+                const previewPlayerId = `preview-youtube-player-${index}`;
                 mediaItem.innerHTML = `
-                    ${generateEmbedHtml(link)}
+                    ${generateEmbedHtml(link, false, previewPlayerId)}
                     <button class="remove-media" onclick="removeVideo(${index})">×</button>
                 `;
                 preview.appendChild(mediaItem);
@@ -3434,4 +3448,3 @@
     </script>
 </body>
 </html>
-
