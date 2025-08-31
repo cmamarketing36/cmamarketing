@@ -729,7 +729,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.5s ease;
+            /* إضافة انتقال سلس هنا */
+            transition: transform 0.5s ease-in-out; /* يمكن تعديل المدة ونوع الانتقال */
         }
 
         .gallery-slide img, .gallery-slide video, .gallery-slide .embed-responsive {
@@ -2456,7 +2457,8 @@
         function updateGalleryDisplay() {
             const gallery = document.getElementById('projectGallery');
             const indicators = document.querySelectorAll('.gallery-indicator');
-            
+            const slides = document.querySelectorAll('.gallery-slide'); // جلب الشرائح
+
             if (gallery) {
                 gallery.style.transform = `translateX(-${currentSlide * 100}%)`;
             }
@@ -2464,6 +2466,22 @@
             indicators.forEach((indicator, index) => {
                 indicator.classList.toggle('active', index === currentSlide);
             });
+
+            // إيقاف جميع الفيديوهات أولاً
+            stopAllVideoPlayers();
+
+            // تشغيل الفيديو في الشريحة الحالية إذا كان موجوداً
+            if (slides.length > 0 && slides[currentSlide]) {
+                const currentSlideElement = slides[currentSlide];
+                const videoElement = currentSlideElement.querySelector('video');
+                const youtubePlayerPlaceholder = currentSlideElement.querySelector('.youtube-player-placeholder');
+
+                if (videoElement) {
+                    videoElement.play().catch(e => console.log("Video autoplay prevented:", e));
+                } else if (youtubePlayerPlaceholder && youtubePlayers[youtubePlayerPlaceholder.id]) {
+                    youtubePlayers[youtubePlayerPlaceholder.id].playVideo();
+                }
+            }
         }
 
         // إيقاف جميع مشغلات الفيديو (خاصة YouTube)
