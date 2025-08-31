@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMA Marketing Agency - Enhanced Digital Services</title>
+    <title>CMA Marketing Agency - Digital Services Enhanced</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* تم نقل استيراد الخطوط إلى <link> في قسم <head> لتحسين الأداء */
         * {
             margin: 0;
             padding: 0;
@@ -494,6 +495,7 @@
             color: black;
         }
 
+        /* أنماط إشعار الشكر */
         .thank-you-popup, .consultation-popup {
             display: none;
             position: fixed;
@@ -573,6 +575,7 @@
             box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
         }
 
+        /* أنماط صفحة الخدمة */
         .service-page {
             display: none;
             padding: 4rem 2rem;
@@ -667,64 +670,6 @@
             line-height: 1.5;
         }
 
-        .media-carousel {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .media-carousel-track {
-            display: flex;
-            transition: transform 0.3s ease;
-        }
-
-        .media-carousel-slide {
-            min-width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .media-count-indicator {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            color: #ffd700;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .media-carousel-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 215, 0, 0.8);
-            border: none;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .service-item:hover .media-carousel-nav {
-            opacity: 1;
-        }
-
-        .media-carousel-nav.prev {
-            left: 10px;
-        }
-
-        .media-carousel-nav.next {
-            right: 10px;
-        }
-
         .back-btn {
             display: inline-block;
             margin-bottom: 2rem;
@@ -742,6 +687,7 @@
             transform: translateY(-2px);
         }
 
+        /* أنماط صفحة تفاصيل المشروع */
         .project-detail-page {
             display: none;
             padding: 2rem;
@@ -880,6 +826,7 @@
             transform: translateY(-2px);
         }
 
+        /* أنماط الداش بورد */
         .dashboard-container {
             display: none;
             min-height: 100vh;
@@ -1036,27 +983,6 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
-        }
-
-        .list-item.draggable {
-            cursor: move;
-            transition: transform 0.2s ease;
-        }
-
-        .list-item.dragging {
-            opacity: 0.5;
-            transform: scale(1.05);
-        }
-
-        .drag-handle {
-            color: #ffd700;
-            cursor: grab;
-            padding: 0 10px;
-            font-size: 1.2rem;
-        }
-
-        .drag-handle:active {
-            cursor: grabbing;
         }
 
         .list-item-actions {
@@ -1223,6 +1149,7 @@
             cursor: pointer;
         }
         
+        /* Aspect Ratio Styles for Video Embeds */
         .embed-responsive {
             position: relative;
             display: block;
@@ -1237,15 +1164,15 @@
         }
 
         .embed-responsive-16by9::before {
-            padding-top: 56.25%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
         }
 
         .embed-responsive-9by16::before {
-            padding-top: 177.77%;
+            padding-top: 177.77%; /* 9:16 Aspect Ratio for Vertical Videos */
         }
         
         .embed-responsive-1by1::before {
-            padding-top: 100%;
+            padding-top: 100%; /* 1:1 Aspect Ratio for Instagram Square */
         }
 
         .embed-responsive iframe,
@@ -1260,33 +1187,13 @@
             border: 0;
         }
 
+        /* TikTok specific style */
         .tiktok-embed {
             max-width: 100% !important;
             min-width: unset !important;
         }
 
-        .sorting-controls {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .sorting-controls select,
-        .sorting-controls input {
-            padding: 0.5rem;
-            border-radius: 5px;
-            border: 1px solid #444;
-            background: #2a2a2a;
-            color: #fff;
-        }
-
-        .sorting-controls label {
-            color: #ffd700;
-            font-weight: bold;
-        }
-
+        /* وسائط استعلام للشاشات المختلفة */
         @media (max-width: 767px) {
             .container {
                 max-width: 100%;
@@ -1419,19 +1326,9 @@
             .gallery-nav.next {
                 right: 10px;
             }
-
-            .media-carousel-nav {
-                width: 30px;
-                height: 30px;
-                font-size: 0.8rem;
-            }
-
-            .sorting-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
         }
 
+        /* تحسين الاستجابة للشاشات الصغيرة جداً */
         @media (max-width: 480px) {
             .consultation-content, .thank-you-content {
                 padding: 20px;
@@ -1451,7 +1348,7 @@
 <body>
     <div id="mainSite">
         <header>
-            <img class="cmalogoh" src="https://cmamarketing36.github.io/cmamarketing/SVG/asdgfArtboard%201.svg" alt="cma logo" loading="lazy" />
+            <img class="cmalogoh" src="SVG/asdgfArtboard 1.svg" alt="cma logo" loading="lazy" />
             <nav class="navigation">
                 <ul>
                     <li><a href="#about" data-en="About" data-ar="من نحن">About</a></li>
@@ -1472,13 +1369,13 @@
                     <a class="Contactus" href="https://wa.me/201004435408" target="_blank" data-en="Contact us" data-ar="تواصل معنا">Contact us</a>
                 </div>
             </div>
-            <img class="plan" src="https://cmamarketing36.github.io/cmamarketing/sss/cmaaa.svg" alt="logocma2" loading="lazy" />
+            <img class="plan" src="sss/cmaaa.svg" alt="logocma2" loading="lazy" />
         </section>
 
         <section class="about" id="about">
             <div class="about-container">
                 <div class="about-image">
-                    <img src="https://cmamarketing36.github.io/cmamarketing/sss/people-taking-part-business-event%20(1).svg" alt="About CMA" width="600" height="400" loading="lazy">
+                    <img src="sss/people-taking-part-business-event (1).svg" alt="About CMA" width="600" height="400" loading="lazy">
                 </div>
                 <div class="about-text">
                     <h2 data-en="About CMA" data-ar="من نحن">About CMA</h2>
@@ -1509,7 +1406,7 @@
                 </div>
 
                 <ul class="projects" id="servicesGrid">
-                </ul>
+                    </ul>
             </div>
         </section>
 
@@ -1566,7 +1463,7 @@
             <p data-en="Professional photography services for all your needs" data-ar="خدمات تصوير احترافية لجميع احتياجاتك">Professional photography services for all your needs</p>
         </div>
         <div class="service-gallery" id="photographyGallery">
-        </div>
+            </div>
     </div>
 
     <div id="videoEditingPage" class="service-page">
@@ -1578,7 +1475,7 @@
             <p data-en="Professional video editing and motion graphics" data-ar="مونتاج فيديو احترافي وجرافيك متحرك">Professional video editing and motion graphics</p>
         </div>
         <div class="service-gallery" id="videoEditingGallery">
-        </div>
+            </div>
     </div>
 
     <div id="graphicDesignPage" class="service-page">
@@ -1590,7 +1487,7 @@
             <p data-en="Creative graphic design solutions for your business" data-ar="حلول تصميم جرافيك إبداعية لعملك">Creative graphic design solutions for your business</p>
         </div>
         <div class="service-gallery" id="graphicDesignGallery">
-        </div>
+            </div>
     </div>
 
     <div id="projectDetailPage" class="project-detail-page">
@@ -1604,7 +1501,7 @@
 
         <div class="project-gallery-container">
             <div class="project-gallery" id="projectGallery">
-            </div>
+                </div>
             <button class="gallery-nav prev" onclick="changeSlide(-1)">
                 <i class="fas fa-chevron-left"></i>
             </button>
@@ -1612,7 +1509,7 @@
                 <i class="fas fa-chevron-right"></i>
             </button>
             <div class="gallery-indicators" id="galleryIndicators">
-            </div>
+                </div>
         </div>
 
         <div class="project-info">
@@ -1729,7 +1626,7 @@
                 <div class="services-list">
                     <h3>الخدمات الحالية</h3>
                     <div id="servicesList">
-                    </div>
+                        </div>
                 </div>
             </div>
 
@@ -1756,7 +1653,7 @@
                         </div>
                         
                         <div id="mediaPreview" class="media-grid">
-                        </div>
+                            </div>
                         
                         <button type="submit" id="addWorkButton">إضافة العمل</button>
                         <button type="button" id="cancelEditWorkButton" style="display: none; background: #666;" onclick="cancelEditWork()">إلغاء التعديل</button>
@@ -1765,27 +1662,9 @@
 
                 <div class="works-list">
                     <h3>الأعمال الحالية</h3>
-                    
-                    <div class="sorting-controls">
-                        <label for="workSortBy">ترتيب حسب:</label>
-                        <select id="workSortBy" onchange="sortWorks()">
-                            <option value="date-desc">الأحدث أولاً</option>
-                            <option value="date-asc">الأقدم أولاً</option>
-                            <option value="title-asc">العنوان أ-ي</option>
-                            <option value="title-desc">العنوان ي-أ</option>
-                            <option value="service">حسب الخدمة</option>
-                            <option value="custom">ترتيب مخصص</option>
-                        </select>
-                        
-                        <input type="text" id="workFilterInput" placeholder="بحث في الأعمال..." style="margin-bottom: 0;">
-                        
-                        <button onclick="resetWorksOrder()" style="padding: 0.5rem 1rem; background: #666; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                            إعادة تعيين الترتيب
-                        </button>
-                    </div>
-                    
+                    <input type="text" id="workFilterInput" placeholder="بحث في الأعمال..." style="margin-bottom: 1rem;">
                     <div id="worksList">
-                    </div>
+                        </div>
                 </div>
             </div>
 
@@ -1793,7 +1672,7 @@
                 <div class="messages-list">
                     <h3>رسائل العملاء</h3>
                     <div id="messagesList">
-                    </div>
+                        </div>
                 </div>
             </div>
 
@@ -1801,7 +1680,7 @@
                 <div class="consultations-list">
                     <h3>طلبات الاستشارة التسويقية</h3>
                     <div id="consultationsList">
-                    </div>
+                        </div>
                 </div>
             </div>
 
@@ -1809,7 +1688,7 @@
                 <div class="visitors-list">
                     <h3>تفاصيل الزوار</h3>
                     <div id="visitorsList">
-                    </div>
+                        </div>
                 </div>
             </div>
 
@@ -1865,6 +1744,7 @@
     </div>
 
     <script>
+        // متغيرات عامة
         let currentLanguage = 'en';
         let isLoggedIn = false;
         let currentUser = null;
@@ -1875,11 +1755,11 @@
         let currentSlide = 0;
         let videoLinks = [];
         let currentlyEditingWorkId = null;
-        let currentWorkImages = [];
-        let youtubePlayers = {};
-        let currentlyEditingServiceId = null;
-        let draggedElement = null;
+        let currentWorkImages = []; // لتخزين صور العمل الحالية (Base64)
+        let youtubePlayers = {}; // لتخزين كائنات مشغلات YouTube API
+        let currentlyEditingServiceId = null; // New variable for service editing
 
+        // بيانات افتراضية للنظام
         const defaultData = {
             services: [
                 {
@@ -1888,7 +1768,7 @@
                     nameEn: 'Photography',
                     description: 'خدمات تصوير احترافية لجميع احتياجاتك',
                     descriptionEn: 'Professional photography services for all your needs',
-                    image: 'https://cmamarketing36.github.io/cmamarketing/sss/Content%20Management%20IM.svg'
+                    image: 'sss/Content Management IM.svg'
                 },
                 {
                     id: 'video-editing',
@@ -1896,7 +1776,7 @@
                     nameEn: 'Video Editing',
                     description: 'مونتاج فيديو احترافي وجرافيك متحرك',
                     descriptionEn: 'Professional video editing and motion graphics',
-                    image: 'https://cmamarketing36.github.io/cmamarketing/sss/social-media-concept-with-smartphone.svg'
+                    image: 'sss/social-media-concept-with-smartphone.svg'
                 },
                 {
                     id: 'graphic-design',
@@ -1904,7 +1784,7 @@
                     nameEn: 'Graphic Design',
                     description: 'حلول تصميم جرافيك إبداعية لعملك',
                     descriptionEn: 'Creative graphic design solutions for your business',
-                    image: 'https://cmamarketing36.github.io/cmamarketing/sss/%D8%AA%D8%B9%D8%AF%D9%8A%D9%84%20%D9%81%D9%8A%D8%AF%D9%8A%D9%88.svg'
+                    image: 'sss/تعديل فيديو.svg'
                 }
             ],
             works: [
@@ -1915,10 +1795,8 @@
                     titleEn: 'Commercial Product Photography',
                     description: 'تصوير احترافي للمنتجات التجارية بجودة عالية',
                     descriptionEn: 'Professional high-quality commercial product photography',
-                    media: ['https://cmamarketing36.github.io/cmamarketing/sss/%D8%AA%D8%B5%D9%88%D9%8A%D8%B1.svg'],
-                    videos: [],
-                    order: 1,
-                    createdAt: Date.now() - 86400000
+                    media: ['sss/تصوير.svg'],
+                    videos: []
                 },
                 {
                     id: 2,
@@ -1928,9 +1806,7 @@
                     description: 'مونتاج إعلان تجاري احترافي مع مؤثرات بصرية',
                     descriptionEn: 'Professional commercial video editing with visual effects',
                     media: [],
-                    videos: ['https://www.youtube.com/watch?v=dQw4w9WgXcQ'],
-                    order: 2,
-                    createdAt: Date.now() - 172800000
+                    videos: ['https://www.youtube.com/watch?v=dQw4w9WgXcQ']
                 },
                 {
                     id: 3,
@@ -1939,10 +1815,8 @@
                     titleEn: 'Brand Identity Design',
                     description: 'تصميم هوية بصرية متكاملة للشركات',
                     descriptionEn: 'Complete brand identity design for businesses',
-                    media: ['https://cmamarketing36.github.io/cmamarketing/sss/%D8%AA%D8%B9%D8%AF%D9%8A%D9%84%20%D9%81%D9%8A%D8%AF%D9%8A%D9%88.svg'],
-                    videos: [],
-                    order: 3,
-                    createdAt: Date.now() - 259200000
+                    media: ['sss/تعديل فيديو.svg'],
+                    videos: []
                 }
             ],
             messages: [],
@@ -1954,24 +1828,39 @@
             }]
         };
 
+        // تهيئة النظام
         function initializeSystem() {
+            // تحميل البيانات من localStorage أو استخدام البيانات الافتراضية
             if (!localStorage.getItem('cmaData')) {
                 localStorage.setItem('cmaData', JSON.stringify(defaultData));
             }
             
+            // تسجيل زائر جديد
             trackVisitor();
+            
+            // تحميل الخدمات
             loadServices();
+            
+            // إظهار إشعار الاستشارة بعد 30 ثانية
             setTimeout(showConsultationPopup, 30000);
+            
+            // تحديث الإحصائيات
             updateStats();
+
+            // التحقق من URL للداش بورد
             checkDashboardAccess();
+
+            // تحميل YouTube IFrame API
             loadScript('https://www.youtube.com/iframe_api', 'youtube-iframe-api');
         }
 
+        // تتبع الزوار
         function trackVisitor() {
             const data = JSON.parse(localStorage.getItem('cmaData'));
             const now = new Date();
             const today = now.toDateString();
             
+            // البحث عن زائر اليوم
             let todayVisitor = data.visitors.find(v => v.date === today);
             
             if (todayVisitor) {
@@ -1990,6 +1879,7 @@
             localStorage.setItem('cmaData', JSON.stringify(data));
         }
 
+        // التحقق من الوصول للداش بورد
         function checkDashboardAccess() {
             const path = window.location.pathname;
             const hash = window.location.hash;
@@ -1999,6 +1889,7 @@
             }
         }
 
+        // تبديل اللغة
         document.getElementById('langToggle').addEventListener('click', function () {
             const isArabic = this.innerText === 'AR';
             const elements = document.querySelectorAll('[data-en]');
@@ -2006,6 +1897,7 @@
             elements.forEach(el => {
                 const newText = isArabic ? el.getAttribute('data-ar') : el.getAttribute('data-en');
                 if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                    // للحقول النصية، استخدم placeholder
                     const placeholderAr = el.getAttribute('data-placeholder-ar');
                     const placeholderEn = el.getAttribute('data-placeholder-en');
                     if (placeholderAr && placeholderEn) {
@@ -2021,9 +1913,11 @@
             document.body.style.direction = isArabic ? "rtl" : "ltr";
             currentLanguage = isArabic ? 'ar' : 'en';
 
-            updatePageTexts();
+            // تحديث النصوص في الصفحات المختلفة
+            updatePageTexts(); // Call this function to update dynamic texts
         });
 
+        // Function to update dynamic texts based on currentLanguage
         function updatePageTexts() {
             const elements = document.querySelectorAll('[data-en], [data-ar]');
             elements.forEach(el => {
@@ -2038,10 +1932,13 @@
                 }
             });
 
+            // Update service grid texts
             loadServices();
+            // If a service page is active, reload its works to update titles/descriptions
             if (currentServicePage) {
                 loadServiceWorks(currentServicePage);
             }
+            // If project detail page is active, update its texts
             if (currentProjectDetail) {
                 document.getElementById('projectDetailTitle').textContent = 
                     currentLanguage === 'ar' ? currentProjectDetail.title : currentProjectDetail.titleEn;
@@ -2050,6 +1947,8 @@
             }
         }
 
+
+        // معالجة إرسال النموذج
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -2058,6 +1957,7 @@
             const submitButton = form.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.textContent;
             
+            // حفظ الرسالة محلياً
             const message = {
                 id: Date.now(),
                 name: formData.get('name'),
@@ -2072,10 +1972,12 @@
             data.messages.push(message);
             localStorage.setItem('cmaData', JSON.stringify(data));
             
+            // تغيير نص الزر أثناء الإرسال
             const loadingText = currentLanguage === 'ar' ? 'جارِ الإرسال...' : 'Sending...';
             submitButton.textContent = loadingText;
             submitButton.disabled = true;
             
+            // إرسال بيانات النموذج
             fetch(form.action, {
                 method: 'POST',
                 body: formData,
@@ -2099,12 +2001,15 @@
             });
         });
 
+        // إظهار إشعار الاستشارة
         function showConsultationPopup() {
+            // عدم إظهار الإشعار في الداش بورد
             if (document.getElementById('dashboardContainer').classList.contains('active') || 
                 document.getElementById('loginContainer').style.display !== 'none') {
                 return;
             }
             
+            // عدم إظهار الإشعار إذا تم طلب استشارة من قبل
             if (localStorage.getItem('consultationRequested') === 'true') {
                 return;
             }
@@ -2112,6 +2017,7 @@
             document.getElementById('consultationPopup').style.display = 'flex';
         }
 
+        // إرسال إيميل الاستشارة
         function sendConsultationEmail(consultation) {
             const subject = 'طلب استشارة تسويقية جديد - CMA';
             const body = `
@@ -2125,6 +2031,7 @@
 يرجى التواصل مع العميل في أقرب وقت ممكن.
             `;
             
+            // إرسال الإيميل باستخدام FormSubmit
             const formData = new FormData();
             formData.append('_subject', subject);
             formData.append('name', consultation.name);
@@ -2140,10 +2047,12 @@
             }).catch(error => console.log('Email sending error:', error));
         }
 
+        // إغلاق إشعار الاستشارة
         function closeConsultationPopup() {
             document.getElementById('consultationPopup').style.display = 'none';
         }
 
+        // إغلاق إشعار الشكر
         document.getElementById('closeThankYou').addEventListener('click', function() {
             document.getElementById('thankYouPopup').style.display = 'none';
         });
@@ -2154,12 +2063,14 @@
             }
         });
 
+        // إغلاق إشعار الاستشارة عند النقر خارجه
         document.getElementById('consultationPopup').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeConsultationPopup();
             }
         });
 
+        // عرض صفحة الخدمة
         function showService(serviceId) {
             const pages = document.querySelectorAll('.service-page');
             pages.forEach(page => page.classList.remove('active'));
@@ -2168,145 +2079,47 @@
             
             currentServicePage = serviceId;
             let pageId;
+            // Find the service object to get its name and description for the header
             const data = JSON.parse(localStorage.getItem('cmaData'));
             const service = data.services.find(s => s.id === serviceId);
 
             if (!service) {
                 console.error('Service not found:', serviceId);
-                backToHome();
+                backToHome(); // Fallback to home if service not found
                 return;
             }
 
+            // Dynamically set the service page header
             const serviceHeader = document.querySelector(`#${serviceId}Page .service-header`);
             if (serviceHeader) {
                 serviceHeader.querySelector('h1').textContent = currentLanguage === 'ar' ? service.name : service.nameEn;
                 serviceHeader.querySelector('p').textContent = currentLanguage === 'ar' ? service.description : service.descriptionEn;
             }
 
+            // Use the serviceId directly as the pageId if it matches the pattern
             pageId = `${serviceId}Page`;
+            // If a specific page for this service doesn't exist, create a generic one or use a fallback
             if (!document.getElementById(pageId)) {
+                // This part would require dynamic HTML creation if you want truly dynamic service pages
+                // For now, we'll assume the three default pages are sufficient or use a fallback
                 console.warn(`Page for service ID '${serviceId}' not found. Using photographyPage as fallback.`);
-                pageId = 'photographyPage';
+                pageId = 'photographyPage'; // Fallback to an existing service page
             }
             
             document.getElementById(pageId).classList.add('active');
             loadServiceWorks(serviceId);
         }
 
-        function createMediaCarousel(work, containerId) {
-            const container = document.getElementById(containerId);
-            if (!container) return '';
-
-            const allMedia = [];
-            
-            if (work.media) {
-                work.media.forEach(media => {
-                    allMedia.push({type: 'image', src: media});
-                });
-            }
-            
-            if (work.videos) {
-                work.videos.forEach(video => {
-                    allMedia.push({type: 'video', src: video});
-                });
-            }
-
-            if (allMedia.length === 0) {
-                return `<div style="display: flex; align-items: center; justify-content: center; color: #666;">
-                    <i class="fas fa-image" style="font-size: 3rem;"></i>
-                </div>`;
-            }
-
-            let carouselHtml = `
-                <div class="media-carousel" id="carousel-${work.id}">
-                    <div class="media-carousel-track" style="transform: translateX(0%);">
-            `;
-
-            allMedia.forEach((media, index) => {
-                if (media.type === 'image') {
-                    carouselHtml += `
-                        <div class="media-carousel-slide">
-                            <img src="${media.src}" alt="Work Image" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
-                    `;
-                } else {
-                    const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
-                    const youtubeMatch = media.src.match(youtubeRegex);
-                    let thumbnailUrl = '';
-                    if (youtubeMatch && youtubeMatch[1]) {
-                        thumbnailUrl = `https://img.youtube.com/vi/${youtubeMatch[1]}/hqdefault.jpg`;
-                    } else if (media.src.includes('instagram.com')) {
-                        thumbnailUrl = 'https://via.placeholder.com/250x250/333/fff?text=Instagram';
-                    } else if (media.src.includes('tiktok.com')) {
-                        thumbnailUrl = 'https://via.placeholder.com/250x250/333/fff?text=TikTok';
-                    } else if (media.src.includes('facebook.com')) {
-                        thumbnailUrl = 'https://via.placeholder.com/250x250/333/fff?text=Facebook';
-                    }
-                    
-                    carouselHtml += `
-                        <div class="media-carousel-slide">
-                            <div style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #000;">
-                                <img src="${thumbnailUrl || 'https://via.placeholder.com/250x250/333/fff?text=Video'}" alt="Video Thumbnail" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
-                                <i class="fas fa-play-circle" style="position: absolute; font-size: 3rem; color: rgba(255, 255, 255, 0.8); cursor: pointer;"></i>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-
-            carouselHtml += `
-                    </div>
-            `;
-
-            if (allMedia.length > 1) {
-                carouselHtml += `
-                    <button class="media-carousel-nav prev" onclick="navigateCarousel(${work.id}, -1)">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="media-carousel-nav next" onclick="navigateCarousel(${work.id}, 1)">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                    <div class="media-count-indicator">${allMedia.length} <i class="fas fa-images"></i></div>
-                `;
-            }
-
-            carouselHtml += `</div>`;
-
-            return carouselHtml;
-        }
-
-        function navigateCarousel(workId, direction) {
-            const carousel = document.getElementById(`carousel-${workId}`);
-            if (!carousel) return;
-
-            const track = carousel.querySelector('.media-carousel-track');
-            const slides = carousel.querySelectorAll('.media-carousel-slide');
-            
-            if (slides.length <= 1) return;
-
-            let currentIndex = parseInt(carousel.dataset.currentIndex || '0');
-            currentIndex += direction;
-
-            if (currentIndex >= slides.length) {
-                currentIndex = 0;
-            } else if (currentIndex < 0) {
-                currentIndex = slides.length - 1;
-            }
-
-            carousel.dataset.currentIndex = currentIndex;
-            track.style.transform = `translateX(-${currentIndex * 100}%)`;
-        }
-
+        // تحميل أعمال الخدمة
         function loadServiceWorks(serviceId) {
             const data = JSON.parse(localStorage.getItem('cmaData'));
-            let works = data.works.filter(work => work.service === serviceId);
+            const works = data.works.filter(work => work.service === serviceId);
             
-            // Apply current sorting
-            works = sortWorksArray(works);
-            
+            // Determine the correct gallery ID based on the serviceId
             let galleryId = `${serviceId}Gallery`;
+            // Fallback if a specific gallery ID doesn't exist (e.g., for newly added services)
             if (!document.getElementById(galleryId)) {
-                galleryId = 'photographyGallery';
+                galleryId = 'photographyGallery'; // Default fallback
             }
             
             const gallery = document.getElementById(galleryId);
@@ -2319,10 +2132,40 @@
                 workElement.className = 'service-item';
                 workElement.onclick = () => showProjectDetail(work);
                 
-                const mediaElement = createMediaCarousel(work, `media-${work.id}`);
+                // استخدام أول وسيط متاح (صورة أو صورة مصغرة للفيديو)
+                let mediaElement = '';
+                if (work.media && work.media.length > 0) {
+                    mediaElement = `<img src="${work.media[0]}" alt="${currentLanguage === 'ar' ? work.title : work.titleEn}" loading="lazy">`;
+                } else if (work.videos && work.videos.length > 0) {
+                    // عرض صورة مصغرة للفيديو مع أيقونة تشغيل
+                    const videoUrl = work.videos[0];
+                    const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
+                    const youtubeMatch = videoUrl.match(youtubeRegex);
+                    let thumbnailUrl = '';
+                    if (youtubeMatch && youtubeMatch[1]) {
+                        thumbnailUrl = `https://img.youtube.com/vi/${youtubeMatch[1]}/hqdefault.jpg`;
+                    } else if (videoUrl.includes('instagram.com')) {
+                        thumbnailUrl = 'https://via.placeholder.com/250x250?text=Instagram+Video'; // Generic placeholder for Instagram
+                    } else if (videoUrl.includes('tiktok.com')) {
+                        thumbnailUrl = 'https://via.placeholder.com/250x250?text=TikTok+Video'; // Generic placeholder for TikTok
+                    } else if (videoUrl.includes('facebook.com')) {
+                        thumbnailUrl = 'https://via.placeholder.com/250x250?text=Facebook+Video'; // Generic placeholder for Facebook
+                    }
+                    
+                    mediaElement = `
+                        <div style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #000;">
+                            <img src="${thumbnailUrl || 'https://via.placeholder.com/250x250?text=Video'}" alt="Video Thumbnail" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+                            <i class="fas fa-play-circle" style="position: absolute; font-size: 3rem; color: rgba(255, 255, 255, 0.8); cursor: pointer;"></i>
+                        </div>
+                    `;
+                } else {
+                    mediaElement = `<div style="display: flex; align-items: center; justify-content: center; color: #666;">
+                        <i class="fas fa-image" style="font-size: 3rem;"></i>
+                    </div>`;
+                }
                 
                 workElement.innerHTML = `
-                    <div class="service-item-media" id="media-${work.id}">
+                    <div class="service-item-media">
                         ${mediaElement}
                     </div>
                     <div class="service-item-content">
@@ -2344,41 +2187,49 @@
             }
         }
 
+        // عرض تفاصيل المشروع
         function showProjectDetail(work) {
             currentProjectDetail = work;
             
+            // إخفاء جميع الصفحات
             document.getElementById('mainSite').style.display = 'none';
             document.getElementById('dashboardContainer').classList.remove('active');
             const servicePages = document.querySelectorAll('.service-page');
             servicePages.forEach(page => page.classList.remove('active'));
             
+            // إظهار صفحة التفاصيل
             const detailPage = document.getElementById('projectDetailPage');
             detailPage.classList.add('active');
             
+            // تحديث المحتوى
             document.getElementById('projectDetailTitle').textContent = 
                 currentLanguage === 'ar' ? work.title : work.titleEn;
             document.getElementById('projectDetailDescription').textContent = 
                 currentLanguage === 'ar' ? work.description : work.descriptionEn;
             
+            // إنشاء معرض الصور والفيديوهات
             createProjectGallery(work);
         }
 
+        // إنشاء معرض المشروع
         function createProjectGallery(work) {
             const gallery = document.getElementById('projectGallery');
             const indicators = document.getElementById('galleryIndicators');
             
             gallery.innerHTML = '';
             indicators.innerHTML = '';
-            youtubePlayers = {};
+            youtubePlayers = {}; // إعادة تعيين مشغلات YouTube عند إنشاء معرض جديد
             
             const allMedia = [];
             
+            // إضافة الصور
             if (work.media) {
                 work.media.forEach(media => {
                     allMedia.push({type: 'image', src: media});
                 });
             }
             
+            // إضافة الفيديوهات
             if (work.videos) {
                 work.videos.forEach((video, index) => {
                     allMedia.push({type: 'video', src: video, id: `youtube-player-${work.id}-${index}`});
@@ -2403,12 +2254,13 @@
                 
                 if (media.type === 'image') {
                     slide.innerHTML = `<img src="${media.src}" alt="Project Image" loading="lazy">`;
-                } else {
-                    slide.innerHTML = generateEmbedHtml(media.src, true, media.id);
+                } else { // It's a video
+                    slide.innerHTML = generateEmbedHtml(media.src, true, media.id); // تمرير true لـ isDetailPage ومعرف المشغل
                 }
                 
                 gallery.appendChild(slide);
                 
+                // إنشاء مؤشر
                 const indicator = document.createElement('div');
                 indicator.className = 'gallery-indicator';
                 if (index === 0) indicator.classList.add('active');
@@ -2420,8 +2272,9 @@
             updateGalleryDisplay();
         }
 
+        // Helper function to load external scripts
         function loadScript(src, id) {
-            if (document.getElementById(id)) return;
+            if (document.getElementById(id)) return; // Script already loaded
             const script = document.createElement('script');
             script.src = src;
             script.id = id;
@@ -2429,18 +2282,24 @@
             document.head.appendChild(script);
         }
 
+        // دالة يتم استدعاؤها بواسطة YouTube IFrame API عند التحميل
         function onYouTubeIframeAPIReady() {
+            // This function is called by the YouTube API when it's ready.
+            // We don't need to do anything specific here, as players are created dynamically.
+            // However, it's good practice to have it defined globally.
         }
     
+        // New function to generate embed HTML for various platforms
         function generateEmbedHtml(url, isDetailPage = false, playerId = null) {
             let embedHtml = '';
-            const playsinlineParam = 'playsinline=1';
-            const controlsParam = 'controls=1';
-            const modestbrandingParam = 'modestbranding=1';
-            const relParam = 'rel=0';
-            const enablejsapiParam = 'enablejsapi=1';
-            const originParam = `origin=${window.location.origin}`;
+            const playsinlineParam = 'playsinline=1'; // للحفاظ على التشغيل داخل المتصفح على iOS
+            const controlsParam = 'controls=1'; // إظهار أزرار التحكم
+            const modestbrandingParam = 'modestbranding=1'; // إزالة شعار يوتيوب الكبير
+            const relParam = 'rel=0'; // عدم عرض فيديوهات ذات صلة بعد انتهاء الفيديو
+            const enablejsapiParam = 'enablejsapi=1'; // لتمكين التحكم عبر JavaScript
+            const originParam = `origin=${window.location.origin}`; // لتحديد النطاق الذي يستضيف المشغل
 
+            // YouTube
             const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/ ]{11})/;
             const youtubeMatch = url.match(youtubeRegex);
             if (youtubeMatch && youtubeMatch[1]) {
@@ -2448,13 +2307,15 @@
                 const isShort = url.includes('/shorts/');
                 const aspectRatioClass = isShort ? 'embed-responsive-9by16' : 'embed-responsive-16by9';
                 
+                // استخدام div بدلاً من iframe مباشرة لإنشاء المشغل لاحقاً بواسطة YouTube API
                 embedHtml = `
                     <div class="embed-responsive ${aspectRatioClass}">
                         <div id="${playerId}" class="youtube-player-placeholder"></div>
                     </div>`;
                 
+                // إنشاء المشغل بعد تحميل الـ API وتضمين الـ div
                 if (isDetailPage && typeof YT !== 'undefined' && YT.Player) {
-                    setTimeout(() => {
+                    setTimeout(() => { // تأخير بسيط لضمان أن الـ div موجود في DOM
                         youtubePlayers[playerId] = new YT.Player(playerId, {
                             videoId: videoId,
                             playerVars: {
@@ -2464,12 +2325,14 @@
                                 'enablejsapi': 1,
                                 'origin': window.location.origin,
                                 'playsinline': 1,
-                                'autoplay': 0
+                                'autoplay': 0 // تأكيد عدم التشغيل التلقائي
                             },
                             events: {
                                 'onReady': (event) => {
+                                    // يمكنك إضافة منطق هنا عند جاهزية المشغل
                                 },
                                 'onStateChange': (event) => {
+                                    // يمكنك إضافة منطق هنا لتتبع حالة التشغيل
                                 }
                             }
                         });
@@ -2478,6 +2341,7 @@
                 return embedHtml;
             }
     
+            // Instagram
             const instagramRegex = /https:\/\/(?:www\.)?instagram\.com\/(p|reel)\/([a-zA-Z0-9_-]+)/;
             const instagramMatch = url.match(instagramRegex);
             if (instagramMatch && instagramMatch[2]) {
@@ -2493,14 +2357,17 @@
                                      style="width: 100%; height: 100%; margin: 0;">
                          </blockquote>
                     </div>`;
+                 // Instagram's script will handle the content loading.
                 return embedHtml;
             }
     
+            // TikTok
             const tiktokRegex = /https:\/\/(?:www\.|vm\.)?tiktok\.com\/.*\/video\/(\d+)/;
             const tiktokMatch = url.match(tiktokRegex);
             if (tiktokMatch && tiktokMatch[1]) {
                 const videoId = tiktokMatch[1];
                 loadScript('https://www.tiktok.com/embed.js', 'tiktok-embed-script');
+                // TikTok blockquote is responsive by nature but we wrap it for consistency and to control aspect ratio.
                 embedHtml = `
                     <div class="embed-responsive embed-responsive-9by16">
                         <blockquote class="tiktok-embed"
@@ -2512,6 +2379,7 @@
                 return embedHtml;
             }
     
+            // Facebook
             const facebookRegex = /https:\/\/(?:www\.)?facebook\.com\/(?:watch\/?\?v=|.*\/videos\/|reel\/)(\d+)/;
             const facebookMatch = url.match(facebookRegex);
             if (facebookMatch) {
@@ -2531,6 +2399,7 @@
                 return embedHtml;
             }
     
+            // Fallback for direct video links
             embedHtml = `
                 <div class="embed-responsive embed-responsive-16by9">
                     <video controls playsinline webkit-playsinline loading="lazy">
@@ -2541,10 +2410,12 @@
             return embedHtml;
         }
 
+        // تغيير الشريحة
         function changeSlide(direction) {
             const slides = document.querySelectorAll('.gallery-slide');
             if (slides.length === 0) return;
             
+            // إيقاف أي فيديو يعمل حالياً قبل تغيير الشريحة
             stopAllVideoPlayers();
 
             currentSlide += direction;
@@ -2558,12 +2429,15 @@
             updateGalleryDisplay();
         }
 
+        // الذهاب لشريحة محددة
         function goToSlide(index) {
+            // إيقاف أي فيديو يعمل حالياً قبل تغيير الشريحة
             stopAllVideoPlayers();
             currentSlide = index;
             updateGalleryDisplay();
         }
 
+        // تحديث عرض المعرض
         function updateGalleryDisplay() {
             const gallery = document.getElementById('projectGallery');
             const indicators = document.querySelectorAll('.gallery-indicator');
@@ -2577,12 +2451,14 @@
             });
         }
 
+        // إيقاف جميع مشغلات الفيديو (خاصة YouTube)
         function stopAllVideoPlayers() {
             for (const playerId in youtubePlayers) {
                 if (youtubePlayers[playerId] && typeof youtubePlayers[playerId].pauseVideo === 'function') {
                     youtubePlayers[playerId].pauseVideo();
                 }
             }
+            // إيقاف عناصر <video> المباشرة
             document.querySelectorAll('.project-gallery video').forEach(video => {
                 if (!video.paused) {
                     video.pause();
@@ -2590,6 +2466,7 @@
             });
         }
 
+        // العودة للصفحة الرئيسية
         function backToHome() {
             document.getElementById('mainSite').style.display = 'block';
             document.getElementById('loginContainer').style.display = 'none';
@@ -2601,12 +2478,13 @@
             
             currentServicePage = '';
             currentProjectDetail = null;
-            stopAllVideoPlayers();
+            stopAllVideoPlayers(); // إيقاف الفيديوهات عند العودة للصفحة الرئيسية
         }
 
+        // العودة للخدمة
         function backToService() {
             document.getElementById('projectDetailPage').classList.remove('active');
-            stopAllVideoPlayers();
+            stopAllVideoPlayers(); // إيقاف الفيديوهات عند العودة لصفحة الخدمة
             if (currentServicePage) {
                 showService(currentServicePage);
             } else if (isLoggedIn) {
@@ -2617,11 +2495,13 @@
             }
         }
 
+        // عرض تسجيل الدخول
         function showLogin() {
             document.getElementById('mainSite').style.display = 'none';
             document.getElementById('loginContainer').style.display = 'flex';
         }
 
+        // تسجيل الدخول
         function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
@@ -2640,12 +2520,14 @@
             }
         }
 
+        // تسجيل الخروج
         function logout() {
             isLoggedIn = false;
             currentUser = null;
             backToHome();
         }
 
+        // تحميل الداش بورد
         function loadDashboard() {
             updateStats();
             loadServices();
@@ -2654,25 +2536,27 @@
             loadConsultations();
             loadVisitors();
             createCharts();
-            
-            const workFilterInput = document.getElementById('workFilterInput');
-            if (workFilterInput) {
-                workFilterInput.addEventListener('input', filterWorks);
-            }
+            document.getElementById('workFilterInput').addEventListener('input', filterWorks);
         }
 
+        // عرض قسم الداش بورد
         function showDashboardSection(section) {
+            // إخفاء جميع الأقسام
             const sections = document.querySelectorAll('.dashboard-section');
             sections.forEach(s => s.classList.remove('active'));
             
+            // إزالة الفئة النشطة من جميع الأزرار
             const buttons = document.querySelectorAll('.dashboard-nav button');
             buttons.forEach(btn => btn.classList.remove('active'));
             
+            // عرض القسم المحدد
             document.getElementById(section + 'Section').classList.add('active');
             
+            // تفعيل الزر المحدد
             event.target.classList.add('active');
         }
 
+        // تحديث الإحصائيات
         function updateStats() {
             const data = JSON.parse(localStorage.getItem('cmaData'));
             
@@ -2698,12 +2582,14 @@
             }
         }
 
+        // تحميل الخدمات
         function loadServices() {
             const data = JSON.parse(localStorage.getItem('cmaData'));
             const servicesList = document.getElementById('servicesList');
             const servicesGrid = document.getElementById('servicesGrid');
             const workService = document.getElementById('workService');
             
+            // تحديث قائمة الخدمات في الداش بورد
             if (servicesList) {
                 servicesList.innerHTML = '';
                 data.services.forEach(service => {
@@ -2723,6 +2609,7 @@
                 });
             }
             
+            // تحديث شبكة الخدمات في الصفحة الرئيسية
             if (servicesGrid) {
                 servicesGrid.innerHTML = '';
                 data.services.forEach(service => {
@@ -2739,6 +2626,7 @@
                 });
             }
             
+            // تحديث قائمة اختيار الخدمة في إضافة الأعمال
             if (workService) {
                 workService.innerHTML = '<option value="">اختر الخدمة</option>';
                 data.services.forEach(service => {
@@ -2750,6 +2638,7 @@
             }
         }
 
+        // تعديل الخدمة
         function editService(serviceId) {
             const data = JSON.parse(localStorage.getItem('cmaData'));
             const service = data.services.find(s => s.id === serviceId);
@@ -2757,6 +2646,7 @@
 
             currentlyEditingServiceId = serviceId;
 
+            // Fill the form
             document.getElementById('serviceId').value = service.id;
             document.getElementById('serviceName').value = service.name;
             document.getElementById('serviceNameEn').value = service.nameEn;
@@ -2771,12 +2661,14 @@
                 currentServiceImage.style.display = 'none';
             }
 
+            // Update UI for edit mode
             document.getElementById('serviceFormTitle').textContent = 'تعديل الخدمة';
             document.getElementById('addServiceButton').textContent = 'تحديث الخدمة';
             document.getElementById('cancelEditServiceButton').style.display = 'inline-block';
-            document.getElementById('serviceImage').required = false;
+            document.getElementById('serviceImage').required = false; // Image is not required for update
         }
 
+        // إلغاء تعديل الخدمة
         function cancelEditService() {
             currentlyEditingServiceId = null;
             document.getElementById('addServiceForm').reset();
@@ -2784,9 +2676,10 @@
             document.getElementById('serviceFormTitle').textContent = 'إضافة خدمة جديدة';
             document.getElementById('addServiceButton').textContent = 'إضافة الخدمة';
             document.getElementById('cancelEditServiceButton').style.display = 'none';
-            document.getElementById('serviceImage').required = true;
+            document.getElementById('serviceImage').required = true; // Image is required for new service
         }
         
+        // عرض العمل في الداش بورد
         function viewWorkInDashboard(workId) {
             const data = JSON.parse(localStorage.getItem('cmaData'));
             const work = data.works.find(w => w.id === workId);
@@ -2795,6 +2688,7 @@
             }
         }
         
+        // تعديل العمل
         function editWork(workId) {
             const data = JSON.parse(localStorage.getItem('cmaData'));
             const work = data.works.find(w => w.id === workId);
@@ -2802,6 +2696,7 @@
 
             currentlyEditingWorkId = workId;
 
+            // ملء النموذج
             document.getElementById('workService').value = work.service;
             document.getElementById('workTitle').value = work.title;
             document.getElementById('workTitleEn').value = work.titleEn;
@@ -2809,8 +2704,9 @@
             document.getElementById('workDescriptionEn').value = work.descriptionEn;
             
             videoLinks = [...(work.videos || [])];
-            currentWorkImages = [...(work.media || [])];
+            currentWorkImages = [...(work.media || [])]; // حفظ الصور الموجودة
 
+            // تحديث واجهة المستخدم لوضع التعديل
             document.getElementById('workFormTitle').textContent = 'تعديل العمل';
             document.getElementById('addWorkButton').textContent = 'تحديث العمل';
             document.getElementById('cancelEditWorkButton').style.display = 'inline-block';
@@ -2822,198 +2718,15 @@
             currentlyEditingWorkId = null;
             document.getElementById('addWorkForm').reset();
             videoLinks = [];
-            currentWorkImages = [];
-            document.getElementById('workImages').value = '';
+            currentWorkImages = []; // مسح الصور المؤقتة
+            document.getElementById('workImages').value = ''; // مسح الملفات المختارة
             updateMediaPreview();
             document.getElementById('workFormTitle').textContent = 'إضافة عمل جديد';
             document.getElementById('addWorkButton').textContent = 'إضافة العمل';
             document.getElementById('cancelEditWorkButton').style.display = 'none';
         }
 
-        function sortWorksArray(works) {
-            const sortBy = document.getElementById('workSortBy')?.value || 'custom';
-            
-            switch(sortBy) {
-                case 'date-desc':
-                    return [...works].sort((a, b) => (b.createdAt || b.id) - (a.createdAt || a.id));
-                case 'date-asc':
-                    return [...works].sort((a, b) => (a.createdAt || a.id) - (b.createdAt || b.id));
-                case 'title-asc':
-                    return [...works].sort((a, b) => a.title.localeCompare(b.title, 'ar'));
-                case 'title-desc':
-                    return [...works].sort((a, b) => b.title.localeCompare(a.title, 'ar'));
-                case 'service':
-                    return [...works].sort((a, b) => a.service.localeCompare(b.service));
-                case 'custom':
-                default:
-                    return [...works].sort((a, b) => (a.order || 0) - (b.order || 0));
-            }
-        }
-
-        function sortWorks() {
-            const data = JSON.parse(localStorage.getItem('cmaData'));
-            const sortBy = document.getElementById('workSortBy').value;
-            
-            if (sortBy === 'custom') {
-                enableDragDrop();
-            } else {
-                disableDragDrop();
-            }
-            
-            loadWorks();
-            
-            // Also update service pages if currently viewing one
-            if (currentServicePage) {
-                loadServiceWorks(currentServicePage);
-            }
-        }
-
-        function enableDragDrop() {
-            setTimeout(() => {
-                const worksList = document.getElementById('worksList');
-                if (!worksList) return;
-                
-                const listItems = worksList.querySelectorAll('.list-item');
-                listItems.forEach(item => {
-                    item.classList.add('draggable');
-                    item.draggable = true;
-                    
-                    // Add drag handle
-                    if (!item.querySelector('.drag-handle')) {
-                        const dragHandle = document.createElement('div');
-                        dragHandle.className = 'drag-handle';
-                        dragHandle.innerHTML = '<i class="fas fa-grip-vertical"></i>';
-                        item.insertBefore(dragHandle, item.firstChild);
-                    }
-                });
-                
-                addDragListeners();
-            }, 100);
-        }
-
-        function disableDragDrop() {
-            const worksList = document.getElementById('worksList');
-            if (!worksList) return;
-            
-            const listItems = worksList.querySelectorAll('.list-item');
-            listItems.forEach(item => {
-                item.classList.remove('draggable');
-                item.draggable = false;
-                
-                const dragHandle = item.querySelector('.drag-handle');
-                if (dragHandle) {
-                    dragHandle.remove();
-                }
-            });
-            
-            removeDragListeners();
-        }
-
-        function addDragListeners() {
-            const worksList = document.getElementById('worksList');
-            if (!worksList) return;
-            
-            worksList.addEventListener('dragstart', handleDragStart);
-            worksList.addEventListener('dragover', handleDragOver);
-            worksList.addEventListener('drop', handleDrop);
-            worksList.addEventListener('dragend', handleDragEnd);
-        }
-
-        function removeDragListeners() {
-            const worksList = document.getElementById('worksList');
-            if (!worksList) return;
-            
-            worksList.removeEventListener('dragstart', handleDragStart);
-            worksList.removeEventListener('dragover', handleDragOver);
-            worksList.removeEventListener('drop', handleDrop);
-            worksList.removeEventListener('dragend', handleDragEnd);
-        }
-
-        function handleDragStart(e) {
-            if (!e.target.classList.contains('draggable')) return;
-            
-            draggedElement = e.target;
-            e.target.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'move';
-        }
-
-        function handleDragOver(e) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            
-            const afterElement = getDragAfterElement(e.currentTarget, e.clientY);
-            if (afterElement == null) {
-                e.currentTarget.appendChild(draggedElement);
-            } else {
-                e.currentTarget.insertBefore(draggedElement, afterElement);
-            }
-        }
-
-        function handleDrop(e) {
-            e.preventDefault();
-            
-            if (draggedElement) {
-                const worksList = document.getElementById('worksList');
-                const listItems = Array.from(worksList.querySelectorAll('.list-item'));
-                
-                const data = JSON.parse(localStorage.getItem('cmaData'));
-                
-                listItems.forEach((item, index) => {
-                    const workTitle = item.querySelector('strong').textContent;
-                    const work = data.works.find(w => w.title === workTitle);
-                    if (work) {
-                        work.order = index + 1;
-                    }
-                });
-                
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                
-                // Update service pages
-                if (currentServicePage) {
-                    loadServiceWorks(currentServicePage);
-                }
-            }
-        }
-
-        function handleDragEnd(e) {
-            e.target.classList.remove('dragging');
-            draggedElement = null;
-        }
-
-        function getDragAfterElement(container, y) {
-            const draggableElements = [...container.querySelectorAll('.draggable:not(.dragging)')];
-            
-            return draggableElements.reduce((closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offset = y - box.top - box.height / 2;
-                
-                if (offset < 0 && offset > closest.offset) {
-                    return { offset: offset, element: child };
-                } else {
-                    return closest;
-                }
-            }, { offset: Number.NEGATIVE_INFINITY }).element;
-        }
-
-        function resetWorksOrder() {
-            if (confirm('هل أنت متأكد من إعادة تعيين ترتيب جميع الأعمال؟')) {
-                const data = JSON.parse(localStorage.getItem('cmaData'));
-                
-                data.works.forEach((work, index) => {
-                    work.order = index + 1;
-                });
-                
-                localStorage.setItem('cmaData', JSON.stringify(data));
-                loadWorks();
-                
-                if (currentServicePage) {
-                    loadServiceWorks(currentServicePage);
-                }
-                
-                alert('تم إعادة تعيين الترتيب بنجاح');
-            }
-        }
-
+        // فلترة الأعمال
         function filterWorks() {
             const filterValue = document.getElementById('workFilterInput').value.toLowerCase();
             const worksList = document.getElementById('worksList');
@@ -3021,8 +2734,8 @@
 
             Array.from(items).forEach(item => {
                 const title = item.querySelector('strong').textContent.toLowerCase();
-                const description = item.querySelector('p:last-of-type').textContent.toLowerCase();
-                const serviceName = item.querySelector('p:first-of-type').textContent.toLowerCase();
+                const description = item.querySelector('p:last-of-type').textContent.toLowerCase(); // Assuming description is the last p tag
+                const serviceName = item.querySelector('p:first-of-type').textContent.toLowerCase(); // Assuming service name is the first p tag
                 
                 if (title.includes(filterValue) || description.includes(filterValue) || serviceName.includes(filterValue)) {
                     item.style.display = 'flex';
@@ -3032,18 +2745,14 @@
             });
         }
 
+        // تحميل الأعمال
         function loadWorks() {
             const data = JSON.parse(localStorage.getItem('cmaData'));
-            let works = [...data.works];
-            
-            // Apply sorting
-            works = sortWorksArray(works);
-            
             const worksList = document.getElementById('worksList');
             
             if (worksList) {
                 worksList.innerHTML = '';
-                works.forEach(work => {
+                data.works.forEach(work => {
                     const service = data.services.find(s => s.id === work.service);
                     const mediaCount = (work.media ? work.media.length : 0) + (work.videos ? work.videos.length : 0);
                     
@@ -3064,26 +2773,22 @@
                     `;
                     worksList.appendChild(workElement);
                 });
-                
-                // Enable drag and drop if custom sorting is selected
-                const sortBy = document.getElementById('workSortBy')?.value;
-                if (sortBy === 'custom') {
-                    enableDragDrop();
-                }
             }
         }
 
+        // تحميل الرسائل
         function loadMessages() {
             const data = JSON.parse(localStorage.getItem('cmaData'));
             const messagesList = document.getElementById('messagesList');
             
             if (messagesList) {
                 messagesList.innerHTML = '';
+                // Sort messages by date, unread first
                 const sortedMessages = [...data.messages].sort((a, b) => {
                     if (a.read === b.read) {
-                        return new Date(b.date) - new Date(a.date);
+                        return new Date(b.date) - new Date(a.date); // Newest first
                     }
-                    return a.read ? 1 : -1;
+                    return a.read ? 1 : -1; // Unread first
                 });
 
                 sortedMessages.forEach(message => {
@@ -3104,4 +2809,631 @@
                             <button class="delete-btn" onclick="deleteMessage(${message.id})">حذف</button>
                         </div>
                     `;
-                    messagesList.
+                    messagesList.appendChild(messageElement);
+                });
+            }
+        }
+
+        // تحميل طلبات الاستشارة
+        function loadConsultations() {
+            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const consultationsList = document.getElementById('consultationsList');
+            
+            if (consultationsList) {
+                consultationsList.innerHTML = '';
+                // Sort consultations by date, new first
+                const sortedConsultations = [...data.consultations].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                sortedConsultations.forEach(consultation => {
+                    const consultationElement = document.createElement('div');
+                    consultationElement.className = 'list-item';
+                    consultationElement.innerHTML = `
+                        <div>
+                            <strong>${consultation.name}</strong>
+                            <p style="color: #666; font-size: 0.9rem;">الهاتف: ${consultation.phone} | البريد: ${consultation.email}</p>
+                            <p style="color: #ddd; margin-top: 0.5rem;">الحالة: ${consultation.status}</p>
+                            <p style="color: #666; font-size: 0.8rem; margin-top: 0.5rem;">${new Date(consultation.date).toLocaleString('ar-EG')}</p>
+                        </div>
+                        <div class="list-item-actions">
+                            <button class="edit-btn" onclick="updateConsultationStatus(${consultation.id}, 'تم التواصل')">تم التواصل</button>
+                            <button class="view-btn" onclick="updateConsultationStatus(${consultation.id}, 'مكتمل')">مكتمل</button>
+                            <button class="delete-btn" onclick="deleteConsultation(${consultation.id})">حذف</button>
+                        </div>
+                    `;
+                    consultationsList.appendChild(consultationElement);
+                });
+            }
+        }
+
+        // تحميل بيانات الزوار
+        function loadVisitors() {
+            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const visitorsList = document.getElementById('visitorsList');
+            
+            if (visitorsList) {
+                visitorsList.innerHTML = '';
+                // Sort visitors by date, newest first
+                const sortedVisitors = [...data.visitors].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                sortedVisitors.forEach(visitor => {
+                    const visitorElement = document.createElement('div');
+                    visitorElement.className = 'list-item';
+                    visitorElement.innerHTML = `
+                        <div>
+                            <strong>تاريخ: ${visitor.date}</strong>
+                            <p style="color: #666; font-size: 0.9rem;">عدد الزيارات: ${visitor.count}</p>
+                            <p style="color: #666; font-size: 0.9rem;">آخر زيارة: ${new Date(visitor.lastVisit).toLocaleString('ar-EG')}</p>
+                            <p style="color: #666; font-size: 0.8rem;">المتصفح: ${visitor.userAgent.substring(0, 50)}...</p>
+                            <p style="color: #666; font-size: 0.8rem;">اللغة: ${visitor.language}</p>
+                        </div>
+                    `;
+                    visitorsList.appendChild(visitorElement);
+                });
+            }
+        }
+
+        // إنشاء الرسوم البيانية
+        function createCharts() {
+            // Destroy existing charts before creating new ones to prevent duplicates
+            if (worksChart) {
+                worksChart.destroy();
+                worksChart = null;
+            }
+            if (visitorsChart) {
+                visitorsChart.destroy();
+                visitorsChart = null;
+            }
+            createWorksChart();
+            createVisitorsChart();
+        }
+
+        // إنشاء رسم بياني للأعمال
+        function createWorksChart() {
+            const ctx = document.getElementById('worksChart');
+            if (ctx && !worksChart) {
+                const data = JSON.parse(localStorage.getItem('cmaData'));
+                const servicesData = data.services.map(service => ({
+                    service: service.name,
+                    count: data.works.filter(work => work.service === service.id).length
+                }));
+                
+                worksChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: servicesData.map(s => s.service),
+                        datasets: [{
+                            data: servicesData.map(s => s.count),
+                            backgroundColor: [
+                                '#ffd700',
+                                '#d4af37',
+                                '#fff8dc',
+                                '#ffcc00',
+                                '#ffb300',
+                                '#f0c040',
+                                '#e6b800'
+                            ],
+                            borderWidth: 2,
+                            borderColor: '#1c1c1e'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#ffffff',
+                                    font: {
+                                        family: 'Poppins',
+                                        size: 14
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // إنشاء رسم بياني للزوار
+        function createVisitorsChart() {
+            const ctx = document.getElementById('visitorsChart');
+            if (ctx && !visitorsChart) {
+                const data = JSON.parse(localStorage.getItem('cmaData'));
+                
+                // إنشاء بيانات آخر 7 أيام
+                const last7Days = [];
+                const visitorCounts = [];
+                
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    const dateString = date.toDateString();
+                    
+                    last7Days.push(date.toLocaleDateString('ar-EG', { weekday: 'short', day: 'numeric' }));
+                    
+                    const visitor = data.visitors.find(v => v.date === dateString);
+                    visitorCounts.push(visitor ? visitor.count : 0);
+                }
+                
+                visitorsChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: last7Days,
+                        datasets: [{
+                            label: 'الزوار',
+                            data: visitorCounts,
+                            borderColor: '#ffd700',
+                            backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#ffffff',
+                                    font: {
+                                        family: 'Poppins',
+                                        size: 14
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#ffffff'
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#ffffff'
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // إضافة رابط فيديو
+        function addVideoLink() {
+            const input = document.getElementById('videoLinkInput');
+            const url = input.value.trim();
+            
+            if (url) {
+                videoLinks.push(url);
+                input.value = '';
+                updateMediaPreview();
+            }
+        }
+
+        // تحديث معاينة الوسائط
+        function updateMediaPreview() {
+            const preview = document.getElementById('mediaPreview');
+            preview.innerHTML = '';
+            
+            // عرض الصور الموجودة (إذا كنا في وضع التعديل)
+            currentWorkImages.forEach((imgSrc, index) => {
+                const mediaItem = document.createElement('div');
+                mediaItem.className = 'media-item';
+                mediaItem.innerHTML = `
+                    <img src="${imgSrc}" alt="Work Image" loading="lazy">
+                    <button class="remove-media" onclick="removeExistingImage(${index})">×</button>
+                `;
+                preview.appendChild(mediaItem);
+            });
+
+            // عرض الصور المختارة حديثًا
+            const fileInput = document.getElementById('workImages');
+            if (fileInput.files) {
+                Array.from(fileInput.files).forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const mediaItem = document.createElement('div');
+                        mediaItem.className = 'media-item';
+                        mediaItem.innerHTML = `
+                            <img src="${e.target.result}" alt="Work Image" loading="lazy">
+                            <button class="remove-media" onclick="removeNewImage(${index})">×</button>
+                        `;
+                        preview.appendChild(mediaItem);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+            
+            // عرض روابط الفيديو
+            videoLinks.forEach((link, index) => {
+                const mediaItem = document.createElement('div');
+                mediaItem.className = 'media-item';
+                
+                mediaItem.innerHTML = `
+                    ${generateEmbedHtml(link)}
+                    <button class="remove-media" onclick="removeVideo(${index})">×</button>
+                `;
+                preview.appendChild(mediaItem);
+            });
+        }
+
+        // إزالة صورة موجودة (من العمل المحفوظ)
+        function removeExistingImage(index) {
+            currentWorkImages.splice(index, 1);
+            updateMediaPreview();
+        }
+
+        // إزالة صورة جديدة (تم اختيارها للتو)
+        function removeNewImage(index) {
+            const fileInput = document.getElementById('workImages');
+            const dt = new DataTransfer();
+            
+            // إعادة بناء FileList بدون الملف المحذوف
+            Array.from(fileInput.files).forEach((file, i) => {
+                if (i !== index) {
+                    dt.items.add(file);
+                }
+            });
+            
+            fileInput.files = dt.files;
+            updateMediaPreview();
+        }
+
+        // إزالة فيديو
+        function removeVideo(index) {
+            videoLinks.splice(index, 1);
+            updateMediaPreview();
+        }
+
+        // معالجة نماذج الداش بورد
+        document.getElementById('addServiceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const serviceImageFile = document.getElementById('serviceImage').files[0];
+            
+            const serviceData = {
+                name: formData.get('serviceName'),
+                nameEn: formData.get('serviceNameEn'),
+                description: formData.get('serviceDescription'),
+                descriptionEn: formData.get('serviceDescriptionEn'),
+            };
+
+            const data = JSON.parse(localStorage.getItem('cmaData'));
+
+            const saveService = (imageUrl) => {
+                if (currentlyEditingServiceId) {
+                    // Update existing service
+                    const serviceIndex = data.services.findIndex(s => s.id === currentlyEditingServiceId);
+                    if (serviceIndex !== -1) {
+                        const existingService = data.services[serviceIndex];
+                        data.services[serviceIndex] = {
+                            ...existingService,
+                            ...serviceData,
+                            image: imageUrl || existingService.image // Keep old image if no new one
+                        };
+                        alert('تم تحديث الخدمة بنجاح');
+                    }
+                } else {
+                    // Add new service
+                    const newService = {
+                        id: 'service-' + Date.now(),
+                        ...serviceData,
+                        image: imageUrl
+                    };
+                    data.services.push(newService);
+                    alert('تم إضافة الخدمة بنجاح');
+                }
+                localStorage.setItem('cmaData', JSON.stringify(data));
+                loadServices();
+                updateStats();
+                cancelEditService();
+            };
+
+            if (serviceImageFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    saveService(e.target.result); // Base64 string
+                };
+                reader.readAsDataURL(serviceImageFile);
+            } else {
+                if (currentlyEditingServiceId) {
+                    saveService(null); // No new image, keep existing
+                } else {
+                    alert('الرجاء اختيار صورة للخدمة.');
+                }
+            }
+        });
+
+        document.getElementById('addWorkForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const workImagesFiles = document.getElementById('workImages').files;
+            
+            const workData = {
+                service: formData.get('workService'),
+                title: formData.get('workTitle'),
+                titleEn: formData.get('workTitleEn'),
+                description: formData.get('workDescription'),
+                descriptionEn: formData.get('workDescriptionEn'),
+                videos: [...videoLinks]
+            };
+
+            // تحويل الصور الجديدة إلى Base64
+            const newImageUrls = await Promise.all(
+                Array.from(workImagesFiles).map(file => {
+                    return new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                })
+            );
+
+            // دمج الصور الموجودة مع الصور الجديدة
+            const allImageUrls = [...currentWorkImages, ...newImageUrls];
+
+            const data = JSON.parse(localStorage.getItem('cmaData'));
+
+            if(currentlyEditingWorkId) {
+                // وضع التعديل
+                const workIndex = data.works.findIndex(w => w.id === currentlyEditingWorkId);
+                if(workIndex !== -1) {
+                    const existingWork = data.works[workIndex];
+                    data.works[workIndex] = {
+                        ...existingWork,
+                        ...workData,
+                        media: allImageUrls // استخدام جميع الصور المدمجة
+                    };
+                    alert('تم تحديث العمل بنجاح');
+                }
+            } else {
+                // وضع الإضافة
+                const newWork = {
+                    ...workData,
+                    id: Date.now(),
+                    media: allImageUrls, // استخدام جميع الصور المدمجة
+                };
+                data.works.push(newWork);
+                alert('تم إضافة العمل بنجاح');
+            }
+            
+            localStorage.setItem('cmaData', JSON.stringify(data));
+            
+            loadWorks();
+            updateStats();
+            cancelEditWork(); // لإعادة تعيين النموذج
+            
+            if (worksChart) {
+                worksChart.destroy();
+                worksChart = null;
+                createWorksChart();
+            }
+        });
+        
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (currentPassword !== currentUser.password) {
+                alert('كلمة المرور الحالية غير صحيحة');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('كلمة المرور الجديدة غير متطابقة');
+                return;
+            }
+            
+            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const userIndex = data.users.findIndex(u => u.username === currentUser.username);
+            data.users[userIndex].password = newPassword;
+            localStorage.setItem('cmaData', JSON.stringify(data));
+            
+            currentUser.password = newPassword;
+            document.getElementById('changePasswordForm').reset();
+            alert('تم تغيير كلمة المرور بنجاح');
+        });
+
+        // مراقبة تغيير الملفات
+        document.getElementById('workImages').addEventListener('change', updateMediaPreview);
+        document.getElementById('serviceImage').addEventListener('change', function() {
+            const currentServiceImage = document.getElementById('currentServiceImage');
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    currentServiceImage.src = e.target.result;
+                    currentServiceImage.style.display = 'block';
+                };
+                reader.readAsDataURL(this.files[0]);
+            } else {
+                currentServiceImage.style.display = 'none';
+            }
+        });
+
+
+        // وظائف الحذف والتعديل
+        function deleteService(serviceId) {
+            if (confirm('هل أنت متأكد من حذف هذه الخدمة؟ سيتم حذف جميع الأعمال المرتبطة بها.')) {
+                const data = JSON.parse(localStorage.getItem('cmaData'));
+                data.services = data.services.filter(s => s.id !== serviceId);
+                data.works = data.works.filter(w => w.service !== serviceId);
+                localStorage.setItem('cmaData', JSON.stringify(data));
+                
+                loadServices();
+                loadWorks();
+                updateStats();
+                if (worksChart) { // Recreate works chart if services/works changed
+                    worksChart.destroy();
+                    worksChart = null;
+                    createWorksChart();
+                }
+            }
+        }
+
+        function deleteWork(workId) {
+            if (confirm('هل أنت متأكد من حذف هذا العمل؟')) {
+                const data = JSON.parse(localStorage.getItem('cmaData'));
+                data.works = data.works.filter(w => w.id !== workId);
+                localStorage.setItem('cmaData', JSON.stringify(data));
+                
+                loadWorks();
+                updateStats();
+                if (worksChart) {
+                    worksChart.destroy();
+                    worksChart = null;
+                    createWorksChart();
+                }
+            }
+        }
+
+        function deleteMessage(messageId) {
+            if (confirm('هل أنت متأكد من حذف هذه الرسالة؟')) {
+                const data = JSON.parse(localStorage.getItem('cmaData'));
+                data.messages = data.messages.filter(m => m.id !== messageId);
+                localStorage.setItem('cmaData', JSON.stringify(data));
+                
+                loadMessages();
+                updateStats();
+            }
+        }
+
+        function deleteConsultation(consultationId) {
+            if (confirm('هل أنت متأكد من حذف طلب الاستشارة؟')) {
+                const data = JSON.parse(localStorage.getItem('cmaData'));
+                data.consultations = data.consultations.filter(c => c.id !== consultationId);
+                localStorage.setItem('cmaData', JSON.stringify(data));
+                
+                loadConsultations();
+                updateStats();
+            }
+        }
+
+        function toggleMessageRead(messageId) {
+            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const message = data.messages.find(m => m.id === messageId);
+            if (message) {
+                message.read = !message.read;
+                localStorage.setItem('cmaData', JSON.stringify(data));
+                loadMessages();
+                updateStats();
+            }
+        }
+
+        function updateConsultationStatus(consultationId, newStatus) {
+            const data = JSON.parse(localStorage.getItem('cmaData'));
+            const consultation = data.consultations.find(c => c.id === consultationId);
+            if (consultation) {
+                consultation.status = newStatus;
+                localStorage.setItem('cmaData', JSON.stringify(data));
+                loadConsultations();
+            }
+        }
+
+        // تهيئة النظام عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSystem();
+            
+            // التحقق من معاملات URL
+            if (window.location.search.includes('submitted=true')) {
+                document.getElementById('thankYouPopup').style.display = 'flex';
+                const url = new URL(window.location);
+                url.searchParams.delete('submitted');
+                window.history.replaceState({}, document.title, url.toString());
+            }
+
+            // معالج نموذج الاستشارة
+            const consultationForm = document.getElementById('consultationForm');
+            if (consultationForm) {
+                consultationForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const form = e.target;
+                    const name = form.elements.consultationName.value;
+                    const phone = form.elements.consultationPhone.value;
+                    const email = form.elements.consultationEmail.value;
+
+                    if (name && phone && email) {
+                        const consultation = {
+                            id: Date.now(),
+                            name: name,
+                            phone: phone,
+                            email: email,
+                            date: new Date().toISOString(),
+                            status: 'جديد'
+                        };
+
+                        const data = JSON.parse(localStorage.getItem('cmaData'));
+                        data.consultations.push(consultation);
+                        localStorage.setItem('cmaData', JSON.stringify(data));
+
+                        sendConsultationEmail(consultation);
+
+                        localStorage.setItem('consultationRequested', 'true');
+                        closeConsultationPopup();
+
+                        alert(currentLanguage === 'ar' ?
+                            'تم طلب الاستشارة بنجاح! سنتواصل معك قريباً.' :
+                            'Consultation requested successfully! We will contact you soon.');
+
+                        updateStats();
+                        form.reset();
+                    }
+                });
+            }
+        });
+
+        // معالجة أحداث لوحة المفاتيح للمعرض
+        document.addEventListener('keydown', function(e) {
+            if (document.getElementById('projectDetailPage').classList.contains('active')) {
+                if (e.key === 'ArrowLeft') {
+                    changeSlide(-1);
+                } else if (e.key === 'ArrowRight') {
+                    changeSlide(1);
+                } else if (e.key === 'Escape') {
+                    backToService();
+                }
+            }
+        });
+
+        // دعم التمرير باللمس للمعرض
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.getElementById('projectGallery').addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.getElementById('projectGallery').addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    changeSlide(1); // تمرير لليسار
+                } else {
+                    changeSlide(-1); // تمرير لليمين
+                }
+            }
+        }
+    </script>
+</body>
+</html>
