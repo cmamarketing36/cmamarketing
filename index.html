@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* تم نقل استيراد الخطوط إلى <link> في قسم <head> لتحسين الأداء */
         * {
             margin: 0;
             padding: 0;
@@ -1095,6 +1096,7 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
+            /* إضافة خصائص السحب والإفلات */
             cursor: grab;
             transition: background-color 0.2s ease;
         }
@@ -1583,7 +1585,7 @@
             <div class="footer-content">
                 <div class="footer-left">
                     <p><i class="fas fa-phone"></i> <span data-en="+20 100 443 5408" data-ar="+20 100 443 5408">+20 100 443 5408</span></p>
-                    <p><i class="fas fa-envelope"></i> <a href="mailto:cmamarketing36@gmail.com">cmamarketing36@gmail.com</a></p>
+                    <p><i class="fas fa-envelope"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="02616f636f63706967766b6c65313442656f636b6e2c616d6f">[email&#160;protected]</a></p>
                 </div>
                 <div class="footer-right">
                     <a href="https://wa.me/201004435408" target="_blank"><i class="fab fa-whatsapp"></i></a>
@@ -1618,7 +1620,7 @@
 
     <div id="videoService" class="service-page">
         <a href="#" class="back-btn" onclick="showMainSite()" data-en="Back to Home" data-ar="العودة للرئيسية">
-            <i class="fas fa-arrow-left"></i> العودة للرئيسية
+            <i class="fas fa-arrow-left"></i> العودة للرئiسية
         </a>
         
         <div class="service-header">
@@ -1684,7 +1686,7 @@
                 <i class="fas fa-phone"></i>
                 <span data-en="Call" data-ar="اتصل">اتصل</span>
             </a>
-            <a href="mailto:cmamarketing36@gmail.com" class="contact-btn">
+            <a href="/cdn-cgi/l/email-protection#a0c3cdc1cdc1d2cbc5d4c9cec79396e0c7cdc1c9cc8ec3cfcd" class="contact-btn">
                 <i class="fas fa-envelope"></i>
                 <span data-en="Email" data-ar="بريد">بريد</span>
             </a>
@@ -1719,13 +1721,13 @@
         <div class="dashboard-header">
             <h1>CMA Dashboard</h1>
             <div class="dashboard-nav">
-                <button onclick="showDashboardSection('overview')" class="active">Overview</button>
-                <button onclick="showDashboardSection('services')">Services</button>
-                <button onclick="showDashboardSection('works')">Works</button>
-                <button onclick="showDashboardSection('messages')">Messages</button>
-                <button onclick="showDashboardSection('consultations')">Consultations</button>
-                <button onclick="showDashboardSection('visitors')">Visitors</button>
-                <button onclick="showMainSite()">Exit Dashboard</button>
+                <button onclick="showDashboardSection('overview')" class="active">📈 نظرة عامة</button>
+                <button onclick="showDashboardSection('services')">🚀 الخدمات</button>
+                <button onclick="showDashboardSection('works')">🎨 الأعمال</button>
+                <button onclick="showDashboardSection('messages')">📬 الرسائل</button>
+                <button onclick="showDashboardSection('consultations')">📞 الاستشارات</button>
+                <button onclick="showDashboardSection('visitors')">👥 الزوار</button>
+                <button onclick="showMainSite()" style="background: #ff4444; border-color: #ff4444;">✖ خروج</button>
             </div>
         </div>
 
@@ -1734,33 +1736,33 @@
             <div id="dashboardOverview" class="dashboard-section active">
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <h3 id="totalServices">12</h3>
-                        <p>Total Services</p>
+                        <h3 id="totalServices">3</h3>
+                        <p>🚀 إجمالي الخدمات</p>
                     </div>
                     <div class="stat-card">
-                        <h3 id="totalWorks">48</h3>
-                        <p>Total Works</p>
+                        <h3 id="totalWorks">6</h3>
+                        <p>🎨 إجمالي الأعمال</p>
                     </div>
                     <div class="stat-card">
-                        <h3 id="totalMessages">156</h3>
-                        <p>Messages</p>
+                        <h3 id="totalMessages">0</h3>
+                        <p>📬 الرسائل</p>
                     </div>
                     <div class="stat-card">
-                        <h3 id="totalVisitors">2,847</h3>
-                        <p>Visitors</p>
+                        <h3 id="totalVisitors">0</h3>
+                        <p>👥 الزوار</p>
                     </div>
                 </div>
 
                 <!-- Charts -->
                 <div class="chart-container">
-                    <h3>Monthly Visitors</h3>
+                    <h3>📈 زوار الموقع الشهري</h3>
                     <div class="chart-wrapper">
                         <canvas id="visitorsChart"></canvas>
                     </div>
                 </div>
 
                 <div class="chart-container">
-                    <h3>Services Distribution</h3>
+                    <h3>🎨 توزيع الخدمات</h3>
                     <div class="chart-wrapper">
                         <canvas id="servicesChart"></canvas>
                     </div>
@@ -1771,27 +1773,27 @@
             <div id="dashboardServices" class="dashboard-section">
                 <div class="form-grid">
                     <div class="form-section">
-                        <h3>Add New Service</h3>
+                        <h3>🆕 إضافة خدمة جديدة</h3>
                         <form class="admin-form" id="addServiceForm">
-                            <input type="text" id="serviceName" placeholder="Service Name" required>
-                            <textarea id="serviceDescription" placeholder="Service Description" required></textarea>
+                            <input type="text" id="serviceName" placeholder="اسم الخدمة" required>
+                            <textarea id="serviceDescription" placeholder="وصف الخدمة" required></textarea>
                             <select id="serviceType" required>
-                                <option value="">Select Service Type</option>
-                                <option value="photography">Photography</option>
-                                <option value="video">Video Editing</option>
-                                <option value="design">Graphic Design</option>
+                                <option value="">اختر نوع الخدمة</option>
+                                <option value="photography">📷 تصوير</option>
+                                <option value="video">🎥 مونتاج</option>
+                                <option value="design">🎨 تصميم</option>
                             </select>
                             <div class="file-input">
-                                <label>Service Image:</label>
+                                <label>🖼️ صورة الخدمة:</label>
                                 <input type="file" id="serviceImage" accept="image/*">
                             </div>
-                            <button type="submit">Add Service</button>
+                            <button type="submit">➕ إضافة الخدمة</button>
                         </form>
                     </div>
                 </div>
 
                 <div class="services-list">
-                    <h3>Services List</h3>
+                    <h3>📋 قائمة الخدمات</h3>
                     <div id="servicesList">
                         <!-- Services will be loaded here -->
                     </div>
@@ -1802,34 +1804,34 @@
             <div id="dashboardWorks" class="dashboard-section">
                 <div class="form-grid">
                     <div class="form-section">
-                        <h3>Add New Work</h3>
+                        <h3>➕ إضافة عمل جديد</h3>
                         <form class="admin-form" id="addWorkForm">
-                            <input type="text" id="workTitle" placeholder="Work Title" required>
-                            <textarea id="workDescription" placeholder="Work Description" required></textarea>
+                            <input type="text" id="workTitle" placeholder="عنوان العمل" required>
+                            <textarea id="workDescription" placeholder="وصف العمل" required></textarea>
                             <select id="workCategory" required>
-                                <option value="">Select Category</option>
-                                <option value="photography">Photography</option>
-                                <option value="video">Video Editing</option>
-                                <option value="design">Graphic Design</option>
+                                <option value="">اختر الفئة</option>
+                                <option value="photography">📷 تصوير</option>
+                                <option value="video">🎥 مونتاج</option>
+                                <option value="design">🎨 تصميم</option>
                             </select>
                             <div class="file-input">
-                                <label>Work Images/Videos:</label>
+                                <label>📁 صور/فيديوهات العمل:</label>
                                 <input type="file" id="workMedia" accept="image/*,video/*" multiple>
                             </div>
                             <div class="video-link-input">
-                                <input type="url" id="workVideoLink" placeholder="Or paste video URL (YouTube, etc.)">
-                                <button type="button" onclick="addVideoLink()">Add Link</button>
+                                <input type="url" id="workVideoLink" placeholder="أو الصق رابط فيديو (YouTube, إلخ)">
+                                <button type="button" onclick="addVideoLink()">➕ إضافة رابط</button>
                             </div>
                             <div class="media-grid" id="workMediaPreview">
                                 <!-- Media preview will appear here -->
                             </div>
-                            <button type="submit">Add Work</button>
+                            <button type="submit">✅ إضافة العمل</button>
                         </form>
                     </div>
                 </div>
 
                 <div class="works-list">
-                    <h3>Works List</h3>
+                    <h3>🎭 قائمة الأعمال</h3>
                     <div id="worksList">
                         <!-- Works will be loaded here -->
                     </div>
@@ -1839,7 +1841,7 @@
             <!-- Messages Section -->
             <div id="dashboardMessages" class="dashboard-section">
                 <div class="messages-list">
-                    <h3>Contact Messages</h3>
+                    <h3>📬 رسائل التواصل</h3>
                     <div id="messagesList">
                         <!-- Messages will be loaded here -->
                     </div>
@@ -1849,7 +1851,7 @@
             <!-- Consultations Section -->
             <div id="dashboardConsultations" class="dashboard-section">
                 <div class="consultations-list">
-                    <h3>Consultation Requests</h3>
+                    <h3>📞 طلبات الاستشارة</h3>
                     <div id="consultationsList">
                         <!-- Consultations will be loaded here -->
                     </div>
@@ -1859,7 +1861,7 @@
             <!-- Visitors Section -->
             <div id="dashboardVisitors" class="dashboard-section">
                 <div class="visitors-list">
-                    <h3>Website Visitors</h3>
+                    <h3>👥 زوار الموقع</h3>
                     <div id="visitorsList">
                         <!-- Visitors data will be loaded here -->
                     </div>
@@ -1871,15 +1873,16 @@
     <!-- Login Form -->
     <div id="loginContainer" class="login-container" style="display: none;">
         <form class="login-form" id="loginForm">
-            <h2>Admin Dashboard</h2>
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Login</button>
+            <h2>CMA Dashboard</h2>
+            <p style="color: #ffd700; margin-bottom: 1rem; text-align: center; font-size: 0.9rem;">Username: cma | Password: 123</p>
+            <input type="text" id="username" placeholder="Username" required value="cma">
+            <input type="password" id="password" placeholder="Password" required value="123">
+            <button type="submit">دخول Dashboard</button>
         </form>
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
         // Data structure for services and works
         let portfolioData = {
@@ -2430,6 +2433,28 @@
             
             document.getElementById('dashboard' + section.charAt(0).toUpperCase() + section.slice(1)).classList.add('active');
             event.target.classList.add('active');
+            
+            // Load fresh data for each section
+            switch(section) {
+                case 'services':
+                    loadServicesList();
+                    break;
+                case 'works':
+                    loadWorksList();
+                    break;
+                case 'messages':
+                    loadMessagesList();
+                    break;
+                case 'consultations':
+                    loadConsultationsList();
+                    break;
+                case 'visitors':
+                    loadVisitorsList();
+                    break;
+                case 'overview':
+                    updateStats();
+                    break;
+            }
         }
 
         function initializeDashboard() {
@@ -2516,8 +2541,285 @@
         }
 
         function loadDashboardData() {
-            // Load services, works, messages, etc.
-            // This would typically come from a backend API
+            // Load services list
+            loadServicesList();
+            loadWorksList();
+            loadMessagesList();
+            loadConsultationsList();
+            loadVisitorsList();
+            updateStats();
+        }
+        
+        function loadServicesList() {
+            const servicesList = document.getElementById('servicesList');
+            if (!servicesList) return;
+            
+            const services = [
+                { id: 1, name: 'Photography Services', type: 'photography', description: 'Professional photography services' },
+                { id: 2, name: 'Video Editing', type: 'video', description: 'Professional video editing and motion graphics' },
+                { id: 3, name: 'Graphic Design', type: 'design', description: 'Creative graphic design solutions' }
+            ];
+            
+            servicesList.innerHTML = services.map(service => `
+                <div class="list-item" draggable="true">
+                    <div>
+                        <strong>${service.name}</strong><br>
+                        <small style="color: #ccc;">${service.description}</small>
+                    </div>
+                    <div class="list-item-actions">
+                        <button class="edit-btn" onclick="editService(${service.id})">تعديل</button>
+                        <button class="delete-btn" onclick="deleteService(${service.id})">حذف</button>
+                        <button class="view-btn" onclick="viewService('${service.type}')">عرض</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function loadWorksList() {
+            const worksList = document.getElementById('worksList');
+            if (!worksList) return;
+            
+            let allWorks = [];
+            Object.keys(portfolioData).forEach(category => {
+                portfolioData[category].forEach(work => {
+                    allWorks.push({...work, category});
+                });
+            });
+            
+            worksList.innerHTML = allWorks.map(work => `
+                <div class="list-item" draggable="true">
+                    <div>
+                        <strong>${work.title}</strong><br>
+                        <small style="color: #ccc;">${work.category} - ${work.subtitle}</small>
+                    </div>
+                    <div class="list-item-actions">
+                        <button class="edit-btn" onclick="editWork('${work.id}')">تعديل</button>
+                        <button class="delete-btn" onclick="deleteWork('${work.id}')">حذف</button>
+                        <button class="view-btn" onclick="viewWork('${work.id}')">عرض</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function loadMessagesList() {
+            const messagesList = document.getElementById('messagesList');
+            if (!messagesList) return;
+            
+            const messages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+            
+            if (messages.length === 0) {
+                messagesList.innerHTML = '<p style="color: #ccc; text-align: center; padding: 2rem;">لا توجد رسائل بعد</p>';
+                return;
+            }
+            
+            messagesList.innerHTML = messages.map((message, index) => `
+                <div class="list-item">
+                    <div>
+                        <strong>${message.name}</strong> - ${message.email}<br>
+                        <small style="color: #ccc;">${new Date(message.date).toLocaleString('ar-EG')}</small><br>
+                        <p style="margin-top: 0.5rem;">${message.message}</p>
+                    </div>
+                    <div class="list-item-actions">
+                        <button class="view-btn" onclick="replyToMessage('${message.email}')">رد</button>
+                        <button class="delete-btn" onclick="deleteMessage(${index})">حذف</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function loadConsultationsList() {
+            const consultationsList = document.getElementById('consultationsList');
+            if (!consultationsList) return;
+            
+            const consultations = JSON.parse(localStorage.getItem('consultations') || '[]');
+            
+            if (consultations.length === 0) {
+                consultationsList.innerHTML = '<p style="color: #ccc; text-align: center; padding: 2rem;">لا توجد طلبات استشارة بعد</p>';
+                return;
+            }
+            
+            consultationsList.innerHTML = consultations.map((consultation, index) => `
+                <div class="list-item">
+                    <div>
+                        <strong>طلب استشارة</strong><br>
+                        <small style="color: #ccc;">${new Date(consultation.date).toLocaleString('ar-EG')}</small><br>
+                        <p>الموضوع: ${consultation.topic}</p>
+                    </div>
+                    <div class="list-item-actions">
+                        <button class="view-btn" onclick="contactConsultation()">تواصل</button>
+                        <button class="delete-btn" onclick="deleteConsultation(${index})">حذف</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function loadVisitorsList() {
+            const visitorsList = document.getElementById('visitorsList');
+            if (!visitorsList) return;
+            
+            const visitors = JSON.parse(localStorage.getItem('visitors') || '[]');
+            const last10 = visitors.slice(-10).reverse();
+            
+            if (last10.length === 0) {
+                visitorsList.innerHTML = '<p style="color: #ccc; text-align: center; padding: 2rem;">لا توجد زيارات مسجلة</p>';
+                return;
+            }
+            
+            visitorsList.innerHTML = last10.map(visitor => `
+                <div class="list-item">
+                    <div>
+                        <strong>زائر جديد</strong><br>
+                        <small style="color: #ccc;">${new Date(visitor.timestamp).toLocaleString('ar-EG')}</small><br>
+                        <p>الصفحة: ${visitor.page}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function updateStats() {
+            document.getElementById('totalServices').textContent = Object.keys(portfolioData).length;
+            
+            let totalWorks = 0;
+            Object.keys(portfolioData).forEach(category => {
+                totalWorks += portfolioData[category].length;
+            });
+            document.getElementById('totalWorks').textContent = totalWorks;
+            
+            const messages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+            document.getElementById('totalMessages').textContent = messages.length;
+            
+            const visitors = JSON.parse(localStorage.getItem('visitors') || '[]');
+            document.getElementById('totalVisitors').textContent = visitors.length;
+        }
+        
+        // Dashboard action functions
+        function editService(id) {
+            alert('تعديل الخدمة #' + id);
+        }
+        
+        function deleteService(id) {
+            if (confirm('هل تريد حذف هذه الخدمة؟')) {
+                alert('تم حذف الخدمة #' + id);
+                loadServicesList();
+            }
+        }
+        
+        function viewService(type) {
+            showServicePage(type);
+        }
+        
+        function editWork(id) {
+            alert('تعديل العمل #' + id);
+        }
+        
+        function deleteWork(id) {
+            if (confirm('هل تريد حذف هذا العمل؟')) {
+                // Remove from portfolioData
+                Object.keys(portfolioData).forEach(category => {
+                    portfolioData[category] = portfolioData[category].filter(work => work.id !== id);
+                });
+                alert('تم حذف العمل');
+                loadWorksList();
+                // Refresh slider
+                initializePortfolioSlider();
+            }
+        }
+        
+        function viewWork(id) {
+            // Find and show the work
+            let foundWork = null;
+            Object.keys(portfolioData).forEach(category => {
+                const work = portfolioData[category].find(w => w.id === id);
+                if (work) {
+                    foundWork = work;
+                    showProjectDetail(work);
+                }
+            });
+        }
+        
+        function replyToMessage(email) {
+            window.open('mailto:' + email + '?subject=رد على رسالتك - CMA Marketing');
+        }
+        
+        function deleteMessage(index) {
+            if (confirm('هل تريد حذف هذه الرسالة؟')) {
+                let messages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+                messages.splice(index, 1);
+                localStorage.setItem('contactMessages', JSON.stringify(messages));
+                loadMessagesList();
+                updateStats();
+            }
+        }
+        
+        function contactConsultation() {
+            window.open('https://wa.me/201004435408?text=مرحبا، بخصوص طلب الاستشارة');
+        }
+        
+        function deleteConsultation(index) {
+            if (confirm('هل تريد حذف طلب الاستشارة؟')) {
+                let consultations = JSON.parse(localStorage.getItem('consultations') || '[]');
+                consultations.splice(index, 1);
+                localStorage.setItem('consultations', JSON.stringify(consultations));
+                loadConsultationsList();
+            }
+        }
+        
+        // Add work functionality
+        function addVideoLink() {
+            const linkInput = document.getElementById('workVideoLink');
+            const preview = document.getElementById('workMediaPreview');
+            
+            if (linkInput.value) {
+                const videoDiv = document.createElement('div');
+                videoDiv.className = 'media-item';
+                videoDiv.innerHTML = `
+                    <iframe src="${linkInput.value}" frameborder="0"></iframe>
+                    <button class="remove-media" onclick="this.parentElement.remove()">×</button>
+                `;
+                preview.appendChild(videoDiv);
+                linkInput.value = '';
+            }
+        }
+        
+        // Enhanced contact form with storage
+        function setupContactForm() {
+            const form = document.getElementById('contactForm');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form data
+                const formData = {
+                    name: form.name.value,
+                    email: form.email.value,
+                    phone: form.phone.value,
+                    message: form.message.value,
+                    date: new Date().toISOString()
+                };
+                
+                // Store message
+                let messages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+                messages.push(formData);
+                localStorage.setItem('contactMessages', JSON.stringify(messages));
+                
+                // Show success
+                setTimeout(() => {
+                    showThankYouPopup();
+                    form.reset();
+                }, 1000);
+            });
+        }
+        
+        // Enhanced consultation tracking
+        function showConsultationPopup() {
+            document.getElementById('consultationPopup').style.display = 'flex';
+            
+            // Track consultation request
+            let consultations = JSON.parse(localStorage.getItem('consultations') || '[]');
+            consultations.push({
+                date: new Date().toISOString(),
+                topic: 'طلب استشارة مجانية'
+            });
+            localStorage.setItem('consultations', JSON.stringify(consultations));
         }
 
         // Visitor tracking
@@ -2545,7 +2847,7 @@
             document.getElementById('loginContainer').style.display = 'flex';
         }
 
-        // Admin functions (simplified for demo)
+        // Enhanced admin functions
         document.addEventListener('DOMContentLoaded', function() {
             // Login form handler
             const loginForm = document.getElementById('loginForm');
@@ -2556,21 +2858,93 @@
                     const password = document.getElementById('password').value;
                     
                     // Simple authentication (in real app, this would be server-side)
-                    if (username === 'admin' && password === 'cma2024') {
+                    if (username === 'cma' && password === '123') {
                         document.getElementById('loginContainer').style.display = 'none';
                         showDashboard();
                     } else {
-                        alert('Invalid credentials');
+                        alert('خطأ في اسم المستخدم أو كلمة المرور\nUsername: cma\nPassword: 123');
                     }
+                });
+            }
+            
+            // Add service form handler
+            const addServiceForm = document.getElementById('addServiceForm');
+            if (addServiceForm) {
+                addServiceForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const serviceName = document.getElementById('serviceName').value;
+                    const serviceType = document.getElementById('serviceType').value;
+                    
+                    alert('✅ تم إضافة الخدمة: ' + serviceName);
+                    addServiceForm.reset();
+                    loadServicesList();
+                });
+            }
+            
+            // Add work form handler
+            const addWorkForm = document.getElementById('addWorkForm');
+            if (addWorkForm) {
+                addWorkForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const workTitle = document.getElementById('workTitle').value;
+                    const workCategory = document.getElementById('workCategory').value;
+                    
+                    // Create new work object
+                    const newWork = {
+                        id: 'custom_' + Date.now(),
+                        title: workTitle,
+                        titleAr: workTitle,
+                        subtitle: 'Custom Work',
+                        subtitleAr: 'عمل مخصص',
+                        category: workCategory,
+                        thumbnail: 'https://via.placeholder.com/400x250/888/fff?text=' + encodeURIComponent(workTitle),
+                        media: [{
+                            type: 'image',
+                            url: 'https://via.placeholder.com/400x250/888/fff?text=' + encodeURIComponent(workTitle)
+                        }],
+                        description: document.getElementById('workDescription').value,
+                        descriptionAr: document.getElementById('workDescription').value
+                    };
+                    
+                    // Add to portfolio data
+                    if (!portfolioData[workCategory]) {
+                        portfolioData[workCategory] = [];
+                    }
+                    portfolioData[workCategory].push(newWork);
+                    
+                    alert('✅ تم إضافة العمل: ' + workTitle);
+                    addWorkForm.reset();
+                    document.getElementById('workMediaPreview').innerHTML = '';
+                    loadWorksList();
+                    
+                    // Refresh main slider
+                    initializePortfolioSlider();
                 });
             }
         });
 
-        // Keyboard shortcuts for admin
-        document.addEventListener('keydown', function(e) {
-            // Ctrl + Shift + A = Admin login
-            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                showLogin();
+        // Simple admin access - Triple click on logo
+        let logoClickCount = 0;
+        let logoClickTimer = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const logo = document.querySelector('.cmalogoh');
+            if (logo) {
+                logo.addEventListener('click', function() {
+                    logoClickCount++;
+                    
+                    if (logoClickCount === 1) {
+                        logoClickTimer = setTimeout(() => {
+                            logoClickCount = 0;
+                        }, 2000);
+                    }
+                    
+                    if (logoClickCount === 3) {
+                        clearTimeout(logoClickTimer);
+                        logoClickCount = 0;
+                        showLogin();
+                    }
+                });
             }
         });
 
